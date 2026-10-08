@@ -1,0 +1,362 @@
+{
+  "generated": "2026-10-08",
+  "source_note": "Patterns described in our own words from Mobbin MCP search results (no images, ids or Mobbin URLs stored). Examples are public site/app names only.",
+  "notes": {
+    "richest_section_types": [
+      "hero",
+      "pricing_cards",
+      "testimonials",
+      "case_study",
+      "features_grid",
+      "footer",
+      "faq",
+      "careers",
+      "blog_index",
+      "comparison_vs_competitor"
+    ],
+    "weakest_section_types": [
+      "navbar (not indexed on its own; returns heroes/footers that contain a nav)",
+      "cta_band (often returned glued to the footer or embedded in a blog post)",
+      "how_it_works (mixes accordions, editorial numbered lists and step timelines)"
+    ],
+    "observed_flow_actions_vocabulary": [
+      "Onboarding",
+      "Creating Account",
+      "Verifying",
+      "Setting Up",
+      "Adding & Creating",
+      "Selecting & Choosing",
+      "Inviting Teammates & Friends",
+      "Subscribing & Upgrading",
+      "Purchasing & Ordering",
+      "Chatting & Sending Messages",
+      "Reviewing & Rating",
+      "Starting & Completing"
+    ],
+    "cross_cutting_observations": [
+      "Section captures frequently include the sticky navbar on top and slivers of the neighbouring sections: they are scroll screenshots, not isolated components.",
+      "The same site can appear twice in one result set (e.g. pricing monthly vs yearly state).",
+      "Most marketing sections share the same skeleton: small eyebrow label or pill -> large headline (often 2 lines, tight leading) -> muted subcopy -> content block -> optional link/CTA.",
+      "Dark sections are common for developer/AI tools (Linear, Supabase, Railway, incident.io, Spline); warm off-white/cream backgrounds are the dominant light variant in 2025-2026 captures (Tines, Hex, Maze, Passionfroot, Cursor)."
+    ]
+  },
+  "sections": [
+    {
+      "type": "hero",
+      "query": "hero section with large headline, subheadline, two CTA buttons and product screenshot below",
+      "examples": ["Vizcom", "Craft", "incident.io", "Maze", "Notion"],
+      "pattern": "Centered stack: optional announcement bar above the nav -> 2-line headline at very large size (bold sans or light grotesk; one site colors the second line with the brand accent) -> 1-2 line muted subcopy -> pair of buttons (filled primary + outline/ghost secondary, e.g. 'Book a demo' / 'Get started') -> large product screenshot or video framed in a rounded container that bleeds off the bottom edge. Variations: dark background with a desktop+phone mockup combo (incident.io), floating decorative stickers/illustrations around the screenshot (Notion), a logo strip glued to the bottom of the hero, or a left-aligned headline inside a rounded card with scattered photo thumbnails on the right (Maze)."
+    },
+    {
+      "type": "navbar_header",
+      "query": "navigation bar header with logo, menu links with dropdowns, login link and sign up button",
+      "examples": ["Mixpanel", "Wellfound", "Linear", "Calendly"],
+      "pattern": "Not indexed as a standalone section: results are heroes (or a full footer) that contain the nav. The nav itself is consistent: logo left, 4-6 text links in the middle with chevrons on the ones that open mega-menus (Product, Solutions, Resources), then right side 'Log in' text link + filled dark or brand-colored pill 'Sign up / Get started free'; sometimes a 'Contact sales' secondary. Often sits under a thin announcement bar. One capture shows the opened mega-menu as a translucent two-column panel (category label + item + one-line description)."
+    },
+    {
+      "type": "logo_cloud",
+      "query": "logo cloud of customer company logos with trusted by heading",
+      "examples": ["Structured", "Givingli", "Tines", "Hex"],
+      "pattern": "Thin horizontal strip (often <150px tall) with a tiny uppercase or italic caption ('Trusted by…', 'Trusted by industry innovators') and 6-16 monochrome logos tinted to one neutral color so no brand dominates. Layouts: single row edge-to-edge (sometimes cut at the edges = marquee), or 2 rows x 6-8 inside a softly bordered rounded box. Dark-mode strips use light gray logos on black."
+    },
+    {
+      "type": "features_grid",
+      "query": "features grid with icons, short titles and descriptions in three columns",
+      "examples": ["Aboard", "Current", "Cohere", "Sprig"],
+      "pattern": "Optional pill eyebrow ('FEATURES') + big centered headline, then a 3-column grid (2 rows of 3 or a single row). Each item: small icon (filled square chip, line icon, or larger illustration) -> bold short title -> 2-3 line description -> optional 'Learn more →'. Variants: white cards with soft shadow on a tinted background (Aboard), no cards with a vertical rule on the left of each column (Current), large geometric line-art icons (Cohere), colorful spot illustrations centered above the text (Sprig)."
+    },
+    {
+      "type": "feature_with_screenshot",
+      "query": "feature section with text on the left and large product screenshot on the right",
+      "examples": ["Deel", "Framer", "Mixpanel", "Teachable"],
+      "pattern": "Two-column composition where one side carries copy (eyebrow tag, headline, paragraph, outline 'Learn more' button) and the other a product visual: a cropped UI screenshot, a stylized UI collage on a colored panel, or a photo with floating UI cards over it. Frequent variant is two side-by-side tall cards, each with text on top and a screenshot at the bottom inside a pastel-tinted card (Mixpanel). Alternating left/right rows on long pages; a checklist row of mini-features and a centered CTA can close the block (Teachable)."
+    },
+    {
+      "type": "how_it_works_steps",
+      "query": "how it works section with numbered steps 1 2 3",
+      "examples": ["Titan", "Beside", "Railway", "Trawelt"],
+      "pattern": "Three ways to express sequence: (1) horizontal 3 columns with tiny mono numerals '01 02 03' over a bold step title and muted text (Beside); (2) vertical timeline with numbered circles joined by a line inside a dark card (Railway); (3) accordion of 'Step 1) …' rows with chevrons (Titan); editorial variant uses giant outlined numerals bleeding off the frame next to the step label (Trawelt). Heading usually literal: 'How it works'."
+    },
+    {
+      "type": "bento_grid",
+      "query": "bento grid of feature cards with different sizes and product visuals",
+      "examples": ["Loom", "Framer", "Retool", "FREITAG"],
+      "pattern": "Grid of rounded cards with unequal spans (2/3 + 1/3, or 2x2 with one wide): each card has a pastel or saturated solid background, a short label, a bold 1-2 line claim and a product visual (UI fragment, 3D object, icon set, photo). Retool mixes text-only cards with visual cards and colors the highlighted words; FREITAG uses full-bleed photo cards with uppercase labels and pill buttons inside; Loom uses uniform pastel tiles with a video thumbnail centered and a caption under it."
+    },
+    {
+      "type": "testimonials",
+      "query": "testimonials section with customer quotes, avatars, names and company",
+      "examples": ["Cake Equity", "Cursor", "Vercel", "Customer.io"],
+      "pattern": "Grid (2 columns masonry or 3 columns) of white/pale cards. Card anatomy varies: company logo on top -> quote in quotes -> avatar + name + role at the bottom with an arrow link to the full story (Cursor); avatar + name/role header then quote (Cake Equity); big circular avatars with a brand-colored ring above centered quotes, no cards (Customer.io). Small uppercase eyebrow like 'TRUSTED BY THE BEST FRONTEND TEAMS'. Quotes are long (3-6 lines) and attribution is always name + title + company."
+    },
+    {
+      "type": "case_study",
+      "query": "customer case study cards with company logo, result metric and read story link",
+      "examples": ["1Password", "Customer.io", "Sana", "Deel"],
+      "pattern": "Card grid where each card = big customer logo + one-sentence outcome ('How X cut Y by 50%') + text link 'Read the X story →'. Variants: 3-column with colored top border (1Password), horizontal card with a solid brand-colored logo panel on the left and text on the right plus numeric pagination below (Deel), tall cinematic image cards with logo overlaid and the metric sentence underneath in a horizontal carousel (Sana)."
+    },
+    {
+      "type": "stats_metrics",
+      "query": "stats section with big numbers and short labels showing company metrics",
+      "examples": ["Amplemarket", "Oyster", "Robot.com", "Deel"],
+      "pattern": "Row of 3-4 oversized numerals (with suffix like +, M, K, $B) each over a small muted label; very little else. Light versions are thin strips; playful versions put each number on a hand-drawn color blob (Oyster) or prefix a small illustrated icon (Deel); a bento variant puts each metric in its own card with a big headline card on the left (Robot.com). Typically placed between story/about blocks."
+    },
+    {
+      "type": "pricing_cards",
+      "query": "pricing section with three plan cards and monthly/yearly toggle",
+      "examples": ["Oku", "PamPam", "HoneyBook", "Spline", "Webflow"],
+      "pattern": "Headline + one-line subcopy -> billing toggle (switch or segmented control, with a 'Save 20-30%' note or pill) -> 3 (sometimes 4-5) cards in a row. Card anatomy: plan name (sometimes with a badge/icon) -> big price + '/month' + 'billed yearly' microcopy -> one-line pitch -> CTA button -> 'Everything in X, plus:' + checklist. The recommended plan is emphasized by a tinted background, accent border, 'Most popular' ribbon/tab or corner 'save 30%' sash. Enterprise column often switches to dark with 'Contact us'. Same site captured in both toggle states."
+    },
+    {
+      "type": "pricing_comparison_table",
+      "query": "pricing plan comparison table with feature rows and checkmarks per plan",
+      "examples": ["Jitter", "Sequence", "Stripe"],
+      "pattern": "Full-width table below the cards: 'Compare plans' headline, sticky-looking header row with plan names (sometimes colored per plan), left column of feature names, cells with check icons or dashes. Rows grouped by category with an icon + bold group label (Sequence), zebra striping or a raised card column for the highlighted plan (Stripe), small '?' tooltips next to feature names. Very long: captures are clipped mid-table."
+    },
+    {
+      "type": "faq",
+      "query": "FAQ section with accordion of frequently asked questions",
+      "examples": ["monday.com", "DICE", "Maxima Therapy"],
+      "pattern": "Accordion list: question rows separated by hairlines with chevron or +/- toggle on the right, first item expanded showing the answer paragraph. Layout variants: single centered column under 'Top FAQs' / 'FAQs'; two-column with a sticky left intro (title, short text, 'Contact us' button) and grouped accordions on the right with colored group headings (Maxima Therapy); dark card version with left chevrons (DICE)."
+    },
+    {
+      "type": "cta_band",
+      "query": "call to action band with headline and get started button before the footer",
+      "examples": ["Patreon", "The Leap", "ClassPass"],
+      "pattern": "Short full-width band right before the footer: one punchy question/headline ('Ready to build your…?', 'Dream big. Start small.') + single pill CTA. Treatments: plain white band between a testimonial and a dark footer (Patreon), dark band with oversized decorative gradient ribbons (The Leap), inline blue banner card with headline left and white button right inside a blog post (ClassPass). Rarely indexed alone; usually captured together with the footer."
+    },
+    {
+      "type": "newsletter_signup",
+      "query": "newsletter signup section with email input and subscribe button",
+      "examples": ["In Common With", "beehiiv", "Shopify", "The Leap"],
+      "pattern": "Inline email field + adjacent button (joined input-button group or input then button) with a 1-line promise and a consent microcopy line. Variants: minimal editorial strip with thin outlined input (In Common With), centered block framed by decorative dividers (beehiiv), split card with illustration + pitch on the left and the form on the right (Shopify), or embedded in the footer (The Leap)."
+    },
+    {
+      "type": "footer",
+      "query": "website footer with multiple link columns, logo, social icons and copyright",
+      "examples": ["Squarespace", "Grain", "Supabase", "Wellfound", "Vercel"],
+      "pattern": "Logo (+ language selector or social icons) in the left column, then 4-5 link columns with small headings (Product, Resources, Company, Developers, Follow) and 5-12 links each, bottom row with copyright and legal links; developer tools add a status indicator ('All systems normal') and theme toggle. Dark footers dominate; Squarespace uses all-caps small links; Wellfound adds a row of SEO link dropdowns above."
+    },
+    {
+      "type": "about_story",
+      "query": "about us company story section with mission statement and team photo",
+      "examples": ["Upwork", "Cake Equity", "Resend"],
+      "pattern": "Mission statement as a large serif or bold headline with a paragraph, paired with people imagery: split layout text-left / candid photo-right (Upwork), centered 'We are X' surrounded by floating circular headshots on colored discs then a two-column purpose statement (Cake Equity), or a single wide group photo under a centered heading on black (Resend). Often followed by a pull quote from an employee."
+    },
+    {
+      "type": "team",
+      "query": "team members grid with portrait photos, names and job titles",
+      "examples": ["Runway", "Customer.io", "Ragged Edge"],
+      "pattern": "Uniform portrait grid (4-5 columns) with name + role (or location) under each photo. Styles: consistent studio portraits on brand-colored backdrops with serif names (Ragged Edge), circular cropped casual photos with location chips (Customer.io), dense 5-column grid of rounded cards with small caption (Runway)."
+    },
+    {
+      "type": "careers",
+      "query": "careers open positions list grouped by department with location and apply link",
+      "examples": ["Tines", "Upwork", "Retool"],
+      "pattern": "List of roles grouped by department headings (colored or serif), each row = job title + location (Remote / city) + arrow or 'Apply' link, separated by hairlines. Department filter dropdown top-right; counter sentence ('36 roles across all locations and departments'); collapsible department groups (Retool) or a 3-column table Department / Title / Location (Upwork)."
+    },
+    {
+      "type": "blog_index",
+      "query": "blog index with featured post and grid of article cards with thumbnails, category and date",
+      "examples": ["Framer", "Linear", "Passionfroot"],
+      "pattern": "Grid of article cards (2-3 columns): 16:9 thumbnail with rounded corners -> category + date or read time in small muted text -> title in 1-3 lines -> optional excerpt. Category tabs and search above (Linear 'Now' page with ⌘K search and RSS icon). Thumbnails are either branded illustrations on flat color (Passionfroot) or dark editorial imagery (Framer, Linear). Featured post spans 2 columns at the top."
+    },
+    {
+      "type": "blog_post",
+      "query": "blog article page with title, author byline, cover image and body text",
+      "examples": ["Assembly Coffee", "Superhuman Mail", "Pitch"],
+      "pattern": "Centered narrow reading column: date -> large title (serif italic or heavy sans) -> author avatar + name + role -> body text with bold lead paragraph and inline links; floating vertical share buttons in the left gutter (Pitch). Alternatives: full-bleed cover image with title overlaid (Assembly Coffee) or split header with title left and screenshot right on a diagonal dark band (Superhuman)."
+    },
+    {
+      "type": "changelog",
+      "query": "changelog page with dated release entries, version tags and screenshots",
+      "examples": ["Linear", "Cursor", "Dub"],
+      "pattern": "Two forms: (1) homepage teaser = row of 4 small cards with date, title and 2-line summary (+ thumbnail on dark, or version pill like '1.6' on light) and an 'All updates →' link; (2) full page = left date column + right entry with large screenshot in a soft card, H2 feature title and paragraph, plus 'Subscribe to updates', X and RSS buttons at the top."
+    },
+    {
+      "type": "integrations",
+      "query": "integrations section showing grid of third-party app logos with names and categories",
+      "examples": ["ClickUp", "Sketch", "Charma"],
+      "pattern": "Logo tiles in a grid, either grouped by category rows with the category name as a large left label and a scrollable logo row (ClickUp: '1,000+ integrations.'), or as directory cards with a big logo panel on top + name + description (Sketch), or oversized rounded app icons on pastel squares with name, 1-line description, 'Read more +' and category tag (Charma)."
+    },
+    {
+      "type": "contact_form",
+      "query": "contact sales form with name, email, company fields next to contact information",
+      "examples": ["Notion", "Webflow", "OpenAI"],
+      "pattern": "Split layout: left = big headline ('Contact our sales team'), short pitch, checklist of what you get, and social proof (logo row or a testimonial card); right = 2-column form grid (first/last name, work email, job title, company, company size select, country, phone, textarea), consent checkbox, dark or brand submit button, small support-email footnote. Inputs are flat gray fills or thin bordered boxes."
+    },
+    {
+      "type": "docs_landing",
+      "query": "developer documentation landing with search bar and cards linking to guides and API reference",
+      "examples": ["Epidemic Sound", "Uniswap", "Anchor"],
+      "pattern": "Docs home with its own slim top nav (Docs label, sections, GitHub, theme toggle, ⌘K search), a welcome heading and prominent search, then 3-4 entry cards (Overview / Getting started / Authentication / Guides or API Docs / API Reference / Blog / FAQs), each with icon or illustration, one-line description and an 'Explore'/'View docs' button or ↗ arrow; below, a list of guided tutorials as bordered rows."
+    },
+    {
+      "type": "not_found_404",
+      "query": "404 page not found with illustration and back to home button",
+      "examples": ["Fruitful", "Phantom", "Paraform"],
+      "pattern": "Centered minimal composition on an empty page: small line illustration or mascot (plants, sleeping cat) -> '404' or 'Page not found' headline -> one sentence -> single 'Back home' button or text link. Brand nav may stay on top (Phantom). Lots of whitespace; color only on the button."
+    },
+    {
+      "type": "waitlist",
+      "query": "waitlist signup section with email field and join waitlist button for upcoming product",
+      "examples": ["Base", "Webflow", "Sana"],
+      "pattern": "Split hero-like block: device mockup or collage of avatars/logos on one side, 'Get on the waitlist' / 'Be the first to know' headline + one-liner + email field + dark 'Get early access' button + privacy microcopy on the other. B2B waitlists turn into multi-field forms (name, company, role, size, free text, consent checkbox)."
+    },
+    {
+      "type": "comparison_vs_competitor",
+      "query": "comparison versus competitor table showing our product against alternatives",
+      "examples": ["Notion", "Firecrawl", "Jasper"],
+      "pattern": "Table with feature rows and 2-5 product columns where the own brand column is highlighted (brand-colored header, tinted column background, green checks vs red/gray crosses). Often preceded by 'How X compares to alternatives' or a pill 'X vs. Y' and a 'Trusted by' logo row. Rows are benefit statements, not technical specs."
+    },
+    {
+      "type": "security_trust",
+      "query": "security and compliance section with SOC 2, GDPR and ISO certification badges",
+      "examples": ["Miro", "Dovetail", "Linear"],
+      "pattern": "Row of 3-4 certification badges (AICPA SOC 2, GDPR star ring, ISO 27001, HIPAA, CSA) each with the certification name and a one-line explanation, plus a 'Learn more about security' link. Variants: badges in cream cards under a big 'Certifications' title with a ribbon icon (Dovetail); dark minimal columns separated by vertical rules with monochrome badges (Linear)."
+    },
+    {
+      "type": "templates_gallery",
+      "query": "templates gallery with filter categories and grid of template preview cards",
+      "examples": ["Dropbox Paper", "Framer"],
+      "pattern": "Left sidebar of category filters (All, Agency, Blog, Portfolio, Startup… with active pill) + right grid of large preview cards (3 columns) showing a thumbnail of the template, its name, author/brand and a price tag ('Free'). Section headings split 'Popular' vs 'All' templates; a 'Submit' CTA for creators."
+    }
+  ],
+  "screens": [
+    {
+      "type": "login",
+      "platform": "web",
+      "query": "login screen with email and password fields",
+      "examples": ["Height", "Relume", "Sprig", "Descript", "Customer.io", "komoot", "Coursera"],
+      "pattern": "Centered card (300-400px wide) on a flat neutral or off-white background: logo (inside or above the card) -> 'Log in' / 'Welcome back' title -> Email field -> Password field with 'Forgot password?' link right-aligned on the label row and show/hide eye icon -> full-width dark primary button -> divider + 'Don't have an account? Sign up'. Variants: SSO buttons stacked under an 'or' divider (Coursera), two-step login that greets the known email ('Welcome back, x@…! Not this account?'), illustrated brand background around a borderless form (komoot), modal over the dimmed app."
+    },
+    {
+      "type": "signup",
+      "platform": "ios",
+      "query": "sign up screen with Apple, Google and email account creation options",
+      "examples": ["Peerspace", "Clue", "Turo"],
+      "pattern": "Stack of full-width provider buttons in the order Apple (black filled) -> Google -> (Facebook) -> email, either at the bottom of a screen with brand logo + 'How would you like to sign up?' above (Clue) or at the top of a sheet with the email field below an 'OR' divider. Close (X) or back arrow top-left; terms link at the very bottom."
+    },
+    {
+      "type": "onboarding_personalization",
+      "platform": "ios",
+      "query": "onboarding personalization screen asking user to pick interests as selectable chips",
+      "examples": ["Tinder", "BFF", "Sesame"],
+      "pattern": "Large question title ('What are you into?', 'Make X yours') + optional helper text with the selection limit -> wrap layout of pill chips (outlined when off, filled dark when on; sometimes with emoji), optionally grouped under category subheads -> sticky full-width primary button showing progress ('Next 10/10') or 'Continue'; 'Skip' top-right and a thin progress bar at the top."
+    },
+    {
+      "type": "dashboard_overview",
+      "platform": "web",
+      "query": "dashboard overview with KPI cards, line chart and recent activity table",
+      "examples": ["Base44", "Mixpanel", "Featurebase"],
+      "pattern": "Left sidebar nav (workspace switcher top, grouped items, upgrade/plan card bottom) + main area: page title, date-range segmented control/filters, KPI tiles with value and green/red delta, then a grid of chart cards (line/area, funnel bars, pie) each with a header title + '…' menu. Analytics dashboards add top lists with horizontal bar backgrounds per row (Featurebase)."
+    },
+    {
+      "type": "settings",
+      "platform": "web",
+      "query": "settings page without a sidebar",
+      "examples": ["Square", "GetYourGuide", "GoFundMe"],
+      "pattern": "Single centered column (≈600px) with a page title, optional tabs (Details / Settings), grouped rows separated by hairlines: label + optional info icon on the left, toggle switch (green or blue when on) on the right; group headings with a short description; Save button at the bottom (or Update top-right in a modal-like full page with a close X)."
+    },
+    {
+      "type": "empty_state",
+      "platform": "web",
+      "query": "empty state with illustration, short explanation and primary button to create first item",
+      "examples": ["Laravel Cloud", "PayPal", "Klarna"],
+      "pattern": "Centered inside the content area: small monochrome or brand illustration (isometric cubes, product icon cluster) -> bold one-line title ('No applications yet', 'Nothing saved') -> one sentence of guidance -> one primary action (small dark button '+ New application' or a text link 'Explore Offers'). Page chrome (tabs, nav, footer) stays visible around it; toasts may coexist."
+    },
+    {
+      "type": "paywall",
+      "platform": "ios",
+      "query": "paywall with free trial timeline and annual plan highlighted",
+      "examples": ["Deepstash", "Deezer", "The Atlantic Magazine", "5 Minute Journal", "Copilot", "Givingli", "Lifesum", "Jomo"],
+      "pattern": "Full-screen sheet with close X: headline offer ('Try 7 days free, then…') -> trial timeline (vertical steps Today / Day 5-6 reminder / Day 7 billing with icons joined by a line) and/or plan selector cards (radio cards; the annual one pre-selected with 'BEST VALUE' / '-25%' badge, struck-through price, per-month equivalent) -> big rounded primary CTA 'Start your 7-day free trial' -> reassurance line ('We'll remind you before your trial ends', 'Secured with App Store') -> Restore purchase / Terms / Privacy row. Optional extras: free vs premium comparison table, testimonial + 'Editor's choice' laurels, FAQ-style trust copy."
+    },
+    {
+      "type": "search_results",
+      "platform": "ios",
+      "query": "search results screen with filter chips and list of results with thumbnails",
+      "examples": ["IMDb", "Mindvalley", "Crouton"],
+      "pattern": "Search field (top or floating at the bottom near the tab bar) with clear button -> horizontal filter chips or segmented tabs (Top / Movies / People; selected = filled dark pill) -> optional result count + sort icon -> list rows with square thumbnail left, bold title, metadata lines (year, author, rating star, duration). Colored tag pills above results in a recipe app."
+    },
+    {
+      "type": "checkout_cart",
+      "platform": "ios",
+      "query": "pantalla de carrito de compras con resumen del pedido y botón de pagar",
+      "examples": ["Target", "HBX", "Ulta Beauty"],
+      "pattern": "Cart/Bag screen: title with subtotal and item count -> optional free-shipping progress bar -> line items or collapsed list -> rows for promo code, gift card, gift option (chevron rows) -> 'Order summary' with subtotal, discounts in red, shipping, taxes, bold total -> full-width high-contrast 'Check out' / 'SECURE CHECKOUT' button pinned above the tab bar (Cart tab with badge). Query in Spanish worked."
+    },
+    {
+      "type": "profile",
+      "platform": "ios",
+      "query": "user profile screen with avatar, name, stats and tabs for posts",
+      "examples": ["Alta", "AllTrails", "Beli"],
+      "pattern": "Large circular avatar (left-aligned with name beside it, or centered) -> name/handle, membership date, short bio -> stats row (followers / following / items, numbers bold over muted labels) -> action buttons (Edit profile, Share profile, Follow) -> optional stats card ('2025 Stats', rank, streak) -> underline tabs (Looks / Photos / Reviews / Activities) -> content grid. Settings gear and '…' in the top corners; tab bar with avatar as the profile tab."
+    },
+    {
+      "type": "notifications",
+      "platform": "ios",
+      "query": "notifications list with unread indicators, avatars and timestamps",
+      "examples": ["Alta", "Linktree", "Luma"],
+      "pattern": "Centered 'Notifications' title with back button -> optional filter chips (All / Updates / …) -> sections 'Today' / 'Yesterday' -> rows: avatar (with small status badge) + bold actor + action text + relative timestamp, optional thumbnail on the right; unread marked by a colored dot at the right edge or a tinted row background."
+    },
+    {
+      "type": "data_table",
+      "platform": "web",
+      "query": "data table with sortable columns, row checkboxes, status badges and pagination",
+      "examples": ["Twenty", "Xero", "DoorDash Merchant", "Linear"],
+      "pattern": "Toolbar (view name + count, Filter / Sort / Options, primary '+ New' button) above a dense table: checkbox column, columns with icon + header and sort arrows, chip-styled cells (domains, owners with avatars), status cells with colored dot or icon + label (Active green, Scheduled clock, Ended check), row '…' menu; footer with aggregate counts or pagination ('1-6 of 6', per-page select). Linear groups issues by status with collapsible headers and a floating bulk-action bar ('6 selected · Actions')."
+    },
+    {
+      "type": "chat_ai_assistant",
+      "platform": "web",
+      "query": "AI chat assistant interface with message thread, prompt composer and suggested prompts",
+      "examples": ["Bard", "Plane", "Upwork"],
+      "pattern": "Left rail with 'New chat' and recent threads; main area empty state = greeting with the user's name ('Hello again', 'Hey X! How can I help you today?') + grid of suggestion cards or pill chips grouped by intent (Understand / Create / Explore) -> composer pinned at the bottom (rounded field, attach/mic icons, send arrow, context selector like 'Focus: workspace') -> disclaimer microcopy under the composer ('X can make mistakes')."
+    }
+  ],
+  "flows": [
+    {
+      "type": "onboarding_personalization",
+      "platform": "ios",
+      "query": "onboarding with personalization steps choosing goals and interests",
+      "examples": ["pliability", "Headway", "Evernote", "Duolingo"],
+      "steps_pattern": "Splash/logo -> welcome screen with value promise and 'Continue' -> progress bar or numbered stepper appears -> 3-15 single-question screens (main goal, focus, level, daily goal minutes) with large selectable option cards and one sticky CTA -> interstitial value screens (illustration + benefit, 'Do you relate to the statement?' yes/no cards) -> fake 'Personalizing your experience 40%' loader with a testimonial -> paywall or welcome offer -> personalized home. Headway runs 41 screens; Duolingo puts the mascot in a speech bubble on every step and asks permission for a home-screen widget."
+    },
+    {
+      "type": "onboarding_workspace",
+      "platform": "web",
+      "query": "onboarding after signup creating a workspace, inviting teammates and choosing use case",
+      "examples": ["Coda", "Notion", "Mural"],
+      "steps_pattern": "Use-case question as 2-3 illustrated choice cards (For my team / personal / school) -> name the workspace (pre-filled 'Jane's Workspace') -> invite teammates by email with optional custom message, 'Skip' or 'Maybe later' always available -> loading 'Getting ready…' -> first doc/canvas with a 'Getting started' checklist or a progress checklist panel ('1 of 6 complete') and a welcome modal. Centered modal over a blurred skeleton of the app (Coda) or full-page minimal steps with a top progress bar (Mural)."
+    },
+    {
+      "type": "signup",
+      "platform": "web",
+      "query": "signing up with email, verifying with code and setting password",
+      "examples": ["Mistral AI", "Jira", "WorkOS"],
+      "steps_pattern": "Marketing landing (hero with email capture or 'Get started') -> centered signup card (email first, then password/name, SSO buttons Google/Microsoft/Apple/Slack under an 'or' divider) -> 'Verify your email' with 6-digit code boxes and resend link -> account details or password creation ('Email address verified ✓') -> create organization/team -> product home with a 'Let's get started' setup grid. Split-screen variant keeps the value prop + customer logos on the right (WorkOS)."
+    },
+    {
+      "type": "checkout",
+      "platform": "ios",
+      "query": "checkout from cart through shipping address, payment method selection and order confirmation",
+      "examples": ["SHEIN", "Under Armour", "Amazon Shopping"],
+      "steps_pattern": "Product page 'Add to cart' / 'Buy now' -> cart/bag with order summary and promos -> checkout screen with address row, shipping method, item recap and payment method radio list (PayPal, card, Apple Pay, Cash App) -> card entry sheet ('All data is encrypted', scan card) -> 'Place order' with sticky total + savings -> confirmation ('Payment successful', 'You're all set! Order number…', rewards points) -> upsell grid / continue shopping. Urgency and savings badges throughout (SHEIN)."
+    },
+    {
+      "type": "subscription_upgrade",
+      "platform": "web",
+      "query": "upgrading subscription from free to paid plan selecting plan and entering payment",
+      "examples": ["Render", "Uvodo", "Descript"],
+      "steps_pattern": "Entry from an 'Upgrade' button or billing settings (current plan card + 'Update plan') -> plan selection (cards in settings with 'Current plan' disabled and 'Select X' buttons, monthly/yearly) -> payment modal or split page: order summary left (plan, seats, promo code, total) and payment details right (Stripe card element / Link, country, postal code) -> back to billing showing the new plan and saved card. Descript starts from an in-app free-plan banner."
+    },
+    {
+      "type": "ai_chat_interaction",
+      "platform": "ios",
+      "query": "chatting with an AI assistant, sending a prompt and receiving a streamed answer",
+      "examples": ["v0", "X", "Meta AI"],
+      "steps_pattern": "Empty state (logo or greeting 'What are you thinking this afternoon?' + suggestion list/cards, model picker 'Auto'/'Fast' at the top) -> user types in a rounded composer with attach (+), mic and voice-mode buttons -> user message as right-aligned bubble -> assistant answer streams as plain full-width text (no bubble) with headings/bullets, a fading last line while streaming and a stop button replacing send; agentic apps show collapsible 'Thought for 1s' / tool steps (v0) -> answer footer with copy/share/regenerate/thumbs and follow-up suggestion chips."
+    }
+  ]
+}

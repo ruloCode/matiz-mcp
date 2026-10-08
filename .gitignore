@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+*.log
+# El corpus (DB + screenshots de sitios de terceros) vive en ~/.design-mcp, nunca en el repo.
+.design-mcp
+test/fixtures/

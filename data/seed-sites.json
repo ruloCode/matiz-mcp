@@ -1,0 +1,1495 @@
+{
+ "note": "Semilla del corpus: sitios PÚBLICOS que se capturan con este repo. 'curated' = lista propia por industria; 'research' = nombres de referentes observados al estudiar la taxonomía (solo el nombre/URL pública).",
+ "sites": [
+  {
+   "url": "https://anthropic.com",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://openai.com",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://perplexity.ai",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://elevenlabs.io",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://cursor.com",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://v0.app",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://lovable.dev",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://replicate.com",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://huggingface.co",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://mistral.ai",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://cohere.com",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://runwayml.com",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://granola.ai",
+   "industry": [
+    "ai"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://linear.app",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://vercel.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://supabase.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://resend.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://railway.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://render.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://clerk.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://posthog.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://neon.tech",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://planetscale.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://fly.io",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://warp.dev",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://raycast.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://tailwindcss.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://astro.build",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://bun.sh",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://deno.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://sentry.io",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://convex.dev",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://inngest.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://workos.com",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://firecrawl.dev",
+   "industry": [
+    "devtools"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://stripe.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://mercury.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://ramp.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://brex.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://wise.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://revolut.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://nubank.com.br",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://mercadopago.com.co",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://bold.co",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://clara.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://belvo.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://kushki.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://lemonsqueezy.com",
+   "industry": [
+    "fintech"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://notion.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://cal.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://arc.net",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://superhuman.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://attio.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://height.app",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://pitch.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://loom.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://culturedcode.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://coda.io",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://craft.do",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://twenty.com",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://plane.so",
+   "industry": [
+    "productivity"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://figma.com",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://framer.com",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://spline.design",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://rive.app",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://relume.io",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://readymag.com",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://jitter.video",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://sketch.com",
+   "industry": [
+    "design"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://allbirds.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://glossier.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://aesop.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://apple.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://teenage.engineering",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://nothing.tech",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://rivian.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://ouraring.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://on.com",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://freitag.ch",
+   "industry": [
+    "ecommerce"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://headspace.com",
+   "industry": [
+    "health"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://calm.com",
+   "industry": [
+    "health"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://classpass.com",
+   "industry": [
+    "health"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://platzi.com",
+   "industry": [
+    "education"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://duolingo.com",
+   "industry": [
+    "education"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://brilliant.org",
+   "industry": [
+    "education"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://coursera.org",
+   "industry": [
+    "education"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://basement.studio",
+   "industry": [
+    "agency"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://locomotive.ca",
+   "industry": [
+    "agency"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://activetheory.net",
+   "industry": [
+    "agency"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://lusion.co",
+   "industry": [
+    "agency"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://rauno.me",
+   "industry": [
+    "agency"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://studiofreight.com",
+   "industry": [
+    "agency"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://airbnb.com",
+   "industry": [
+    "travel"
+   ],
+   "tags": [
+    "curated"
+   ]
+  },
+  {
+   "url": "https://getyourguide.com",
+   "industry": [
+    "travel"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://komoot.com",
+   "industry": [
+    "travel"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://dice.fm",
+   "industry": [
+    "media"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://epidemicsound.com",
+   "industry": [
+    "media"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://beehiiv.com",
+   "industry": [
+    "media"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://descript.com",
+   "industry": [
+    "media"
+   ],
+   "tags": [
+    "curated",
+    "research"
+   ]
+  },
+  {
+   "url": "https://oku.club",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Oku"
+  },
+  {
+   "url": "https://pampam.city",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "PamPam"
+  },
+  {
+   "url": "https://www.honeybook.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "HoneyBook"
+  },
+  {
+   "url": "https://webflow.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Webflow"
+  },
+  {
+   "url": "https://shuttle.zip",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Shuttle"
+  },
+  {
+   "url": "https://www.vizcom.ai",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Vizcom"
+  },
+  {
+   "url": "https://incident.io",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "incident.io"
+  },
+  {
+   "url": "https://maze.co",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Maze"
+  },
+  {
+   "url": "https://mixpanel.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Mixpanel"
+  },
+  {
+   "url": "https://wellfound.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Wellfound"
+  },
+  {
+   "url": "https://calendly.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Calendly"
+  },
+  {
+   "url": "https://structured.app",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Structured"
+  },
+  {
+   "url": "https://givingli.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Givingli"
+  },
+  {
+   "url": "https://www.tines.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Tines"
+  },
+  {
+   "url": "https://hex.tech",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Hex"
+  },
+  {
+   "url": "https://aboard.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Aboard"
+  },
+  {
+   "url": "https://current.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Current"
+  },
+  {
+   "url": "https://sprig.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Sprig"
+  },
+  {
+   "url": "https://www.deel.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Deel"
+  },
+  {
+   "url": "https://teachable.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Teachable"
+  },
+  {
+   "url": "https://www.titan.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Titan"
+  },
+  {
+   "url": "https://beside.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Beside"
+  },
+  {
+   "url": "https://trawelt.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Trawelt"
+  },
+  {
+   "url": "https://retool.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Retool"
+  },
+  {
+   "url": "https://www.cakeequity.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Cake Equity"
+  },
+  {
+   "url": "https://customer.io",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Customer.io"
+  },
+  {
+   "url": "https://1password.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "1Password"
+  },
+  {
+   "url": "https://sanalabs.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Sana"
+  },
+  {
+   "url": "https://www.amplemarket.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Amplemarket"
+  },
+  {
+   "url": "https://www.oysterhr.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Oyster"
+  },
+  {
+   "url": "https://robot.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Robot.com"
+  },
+  {
+   "url": "https://www.sequencehq.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Sequence"
+  },
+  {
+   "url": "https://monday.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "monday.com"
+  },
+  {
+   "url": "https://maximatherapy.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Maxima Therapy"
+  },
+  {
+   "url": "https://www.patreon.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Patreon"
+  },
+  {
+   "url": "https://www.theleap.co",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "The Leap"
+  },
+  {
+   "url": "https://incommonwith.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "In Common With"
+  },
+  {
+   "url": "https://www.shopify.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Shopify"
+  },
+  {
+   "url": "https://www.squarespace.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Squarespace"
+  },
+  {
+   "url": "https://grain.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Grain"
+  },
+  {
+   "url": "https://www.upwork.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Upwork"
+  },
+  {
+   "url": "https://raggededge.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Ragged Edge"
+  },
+  {
+   "url": "https://www.passionfroot.me",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Passionfroot"
+  },
+  {
+   "url": "https://assemblycoffee.co.uk",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Assembly Coffee"
+  },
+  {
+   "url": "https://dub.co",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Dub"
+  },
+  {
+   "url": "https://clickup.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "ClickUp"
+  },
+  {
+   "url": "https://www.charma.io",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Charma"
+  },
+  {
+   "url": "https://uniswap.org",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Uniswap"
+  },
+  {
+   "url": "https://www.anchor.sh",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Anchor"
+  },
+  {
+   "url": "https://fruitful.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Fruitful"
+  },
+  {
+   "url": "https://phantom.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Phantom"
+  },
+  {
+   "url": "https://www.paraform.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Paraform"
+  },
+  {
+   "url": "https://www.base.org",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Base"
+  },
+  {
+   "url": "https://www.jasper.ai",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Jasper"
+  },
+  {
+   "url": "https://miro.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Miro"
+  },
+  {
+   "url": "https://dovetail.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Dovetail"
+  },
+  {
+   "url": "https://paper.dropbox.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Dropbox Paper"
+  },
+  {
+   "url": "https://squareup.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Square"
+  },
+  {
+   "url": "https://www.gofundme.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "GoFundMe"
+  },
+  {
+   "url": "https://base44.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Base44"
+  },
+  {
+   "url": "https://www.featurebase.app",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Featurebase"
+  },
+  {
+   "url": "https://cloud.laravel.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Laravel Cloud"
+  },
+  {
+   "url": "https://www.paypal.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "PayPal"
+  },
+  {
+   "url": "https://www.klarna.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Klarna"
+  },
+  {
+   "url": "https://gemini.google.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Bard"
+  },
+  {
+   "url": "https://www.xero.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Xero"
+  },
+  {
+   "url": "https://merchants.doordash.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "DoorDash Merchant"
+  },
+  {
+   "url": "https://www.mural.co",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Mural"
+  },
+  {
+   "url": "https://uvodo.com",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Uvodo"
+  },
+  {
+   "url": "https://www.atlassian.com/software/jira",
+   "industry": [],
+   "tags": [
+    "research"
+   ],
+   "name": "Jira"
+  }
+ ]
+}

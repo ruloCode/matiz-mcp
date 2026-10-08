@@ -1,0 +1,1154 @@
+{
+  "generated": "2026-10-08",
+  "note": "Web sites seen in Mobbin MCP results (names are facts; URLs are unverified guesses of the public homepage). Mobile-only results are listed under 'apps'. Some apps (Givingli, Notion, Linear, Descript) exist on both.",
+  "sites": [
+    {
+      "name": "Oku",
+      "guessed_url": "https://oku.club",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_cards"
+      ]
+    },
+    {
+      "name": "PamPam",
+      "guessed_url": "https://pampam.city",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_cards"
+      ]
+    },
+    {
+      "name": "HoneyBook",
+      "guessed_url": "https://www.honeybook.com",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_cards"
+      ]
+    },
+    {
+      "name": "Spline",
+      "guessed_url": "https://spline.design",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_cards"
+      ]
+    },
+    {
+      "name": "Webflow",
+      "guessed_url": "https://webflow.com",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_cards",
+        "section:contact_form",
+        "section:waitlist"
+      ]
+    },
+    {
+      "name": "Headspace",
+      "guessed_url": "https://www.headspace.com",
+      "verified": false,
+      "seen_in": [
+        "section:hero (vague style query)"
+      ]
+    },
+    {
+      "name": "Shuttle",
+      "guessed_url": "https://shuttle.zip",
+      "verified": false,
+      "seen_in": [
+        "section:hero (vague style query)"
+      ]
+    },
+    {
+      "name": "Studio Freight",
+      "guessed_url": "https://studiofreight.com",
+      "verified": false,
+      "seen_in": [
+        "section:hero (vague style query)"
+      ]
+    },
+    {
+      "name": "Vizcom",
+      "guessed_url": "https://www.vizcom.ai",
+      "verified": false,
+      "seen_in": [
+        "section:hero"
+      ]
+    },
+    {
+      "name": "Craft",
+      "guessed_url": "https://www.craft.do",
+      "verified": false,
+      "seen_in": [
+        "section:hero"
+      ]
+    },
+    {
+      "name": "incident.io",
+      "guessed_url": "https://incident.io",
+      "verified": false,
+      "seen_in": [
+        "section:hero"
+      ]
+    },
+    {
+      "name": "Maze",
+      "guessed_url": "https://maze.co",
+      "verified": false,
+      "seen_in": [
+        "section:hero"
+      ]
+    },
+    {
+      "name": "Notion",
+      "guessed_url": "https://www.notion.com",
+      "verified": false,
+      "seen_in": [
+        "section:hero",
+        "section:contact_form",
+        "section:comparison_vs_competitor",
+        "flow(web):onboarding_workspace"
+      ]
+    },
+    {
+      "name": "Mixpanel",
+      "guessed_url": "https://mixpanel.com",
+      "verified": false,
+      "seen_in": [
+        "section:navbar_header",
+        "section:feature_with_screenshot",
+        "screen(web):dashboard_overview"
+      ]
+    },
+    {
+      "name": "Wellfound",
+      "guessed_url": "https://wellfound.com",
+      "verified": false,
+      "seen_in": [
+        "section:navbar_header"
+      ]
+    },
+    {
+      "name": "Linear",
+      "guessed_url": "https://linear.app",
+      "verified": false,
+      "seen_in": [
+        "section:navbar_header",
+        "section:blog_index",
+        "section:changelog",
+        "section:security_trust",
+        "screen(web):data_table (issue list)"
+      ]
+    },
+    {
+      "name": "Calendly",
+      "guessed_url": "https://calendly.com",
+      "verified": false,
+      "seen_in": [
+        "section:navbar_header"
+      ]
+    },
+    {
+      "name": "Structured",
+      "guessed_url": "https://structured.app",
+      "verified": false,
+      "seen_in": [
+        "section:logo_cloud"
+      ]
+    },
+    {
+      "name": "Givingli",
+      "guessed_url": "https://givingli.com",
+      "verified": false,
+      "seen_in": [
+        "section:logo_cloud"
+      ]
+    },
+    {
+      "name": "Tines",
+      "guessed_url": "https://www.tines.com",
+      "verified": false,
+      "seen_in": [
+        "section:logo_cloud",
+        "section:careers"
+      ]
+    },
+    {
+      "name": "Hex",
+      "guessed_url": "https://hex.tech",
+      "verified": false,
+      "seen_in": [
+        "section:logo_cloud"
+      ]
+    },
+    {
+      "name": "Aboard",
+      "guessed_url": "https://aboard.com",
+      "verified": false,
+      "seen_in": [
+        "section:features_grid"
+      ]
+    },
+    {
+      "name": "Current",
+      "guessed_url": "https://current.com",
+      "verified": false,
+      "seen_in": [
+        "section:features_grid"
+      ]
+    },
+    {
+      "name": "Cohere",
+      "guessed_url": "https://cohere.com",
+      "verified": false,
+      "seen_in": [
+        "section:features_grid"
+      ]
+    },
+    {
+      "name": "Sprig",
+      "guessed_url": "https://sprig.com",
+      "verified": false,
+      "seen_in": [
+        "section:features_grid",
+        "screen(web):login"
+      ]
+    },
+    {
+      "name": "Deel",
+      "guessed_url": "https://www.deel.com",
+      "verified": false,
+      "seen_in": [
+        "section:feature_with_screenshot",
+        "section:case_study",
+        "section:stats_metrics"
+      ]
+    },
+    {
+      "name": "Framer",
+      "guessed_url": "https://www.framer.com",
+      "verified": false,
+      "seen_in": [
+        "section:feature_with_screenshot",
+        "section:bento_grid",
+        "section:blog_index",
+        "section:templates_gallery"
+      ]
+    },
+    {
+      "name": "Teachable",
+      "guessed_url": "https://teachable.com",
+      "verified": false,
+      "seen_in": [
+        "section:feature_with_screenshot"
+      ]
+    },
+    {
+      "name": "Titan",
+      "guessed_url": "https://www.titan.com",
+      "verified": false,
+      "seen_in": [
+        "section:how_it_works_steps"
+      ]
+    },
+    {
+      "name": "Beside",
+      "guessed_url": "https://beside.com",
+      "verified": false,
+      "seen_in": [
+        "section:how_it_works_steps"
+      ]
+    },
+    {
+      "name": "Railway",
+      "guessed_url": "https://railway.com",
+      "verified": false,
+      "seen_in": [
+        "section:how_it_works_steps"
+      ]
+    },
+    {
+      "name": "Trawelt",
+      "guessed_url": "https://trawelt.com",
+      "verified": false,
+      "seen_in": [
+        "section:how_it_works_steps"
+      ]
+    },
+    {
+      "name": "Loom",
+      "guessed_url": "https://www.loom.com",
+      "verified": false,
+      "seen_in": [
+        "section:bento_grid"
+      ]
+    },
+    {
+      "name": "Retool",
+      "guessed_url": "https://retool.com",
+      "verified": false,
+      "seen_in": [
+        "section:bento_grid",
+        "section:careers"
+      ]
+    },
+    {
+      "name": "FREITAG",
+      "guessed_url": "https://www.freitag.ch",
+      "verified": false,
+      "seen_in": [
+        "section:bento_grid"
+      ]
+    },
+    {
+      "name": "Cake Equity",
+      "guessed_url": "https://www.cakeequity.com",
+      "verified": false,
+      "seen_in": [
+        "section:testimonials",
+        "section:about_story"
+      ]
+    },
+    {
+      "name": "Cursor",
+      "guessed_url": "https://cursor.com",
+      "verified": false,
+      "seen_in": [
+        "section:testimonials",
+        "section:changelog"
+      ]
+    },
+    {
+      "name": "Vercel",
+      "guessed_url": "https://vercel.com",
+      "verified": false,
+      "seen_in": [
+        "section:testimonials"
+      ]
+    },
+    {
+      "name": "Customer.io",
+      "guessed_url": "https://customer.io",
+      "verified": false,
+      "seen_in": [
+        "section:testimonials",
+        "section:case_study",
+        "section:team",
+        "screen(web):login"
+      ]
+    },
+    {
+      "name": "1Password",
+      "guessed_url": "https://1password.com",
+      "verified": false,
+      "seen_in": [
+        "section:case_study"
+      ]
+    },
+    {
+      "name": "Sana",
+      "guessed_url": "https://sanalabs.com",
+      "verified": false,
+      "seen_in": [
+        "section:case_study",
+        "section:waitlist"
+      ]
+    },
+    {
+      "name": "Amplemarket",
+      "guessed_url": "https://www.amplemarket.com",
+      "verified": false,
+      "seen_in": [
+        "section:stats_metrics"
+      ]
+    },
+    {
+      "name": "Oyster",
+      "guessed_url": "https://www.oysterhr.com",
+      "verified": false,
+      "seen_in": [
+        "section:stats_metrics"
+      ]
+    },
+    {
+      "name": "Robot.com",
+      "guessed_url": "https://robot.com",
+      "verified": false,
+      "seen_in": [
+        "section:stats_metrics"
+      ]
+    },
+    {
+      "name": "Jitter",
+      "guessed_url": "https://jitter.video",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_comparison_table"
+      ]
+    },
+    {
+      "name": "Sequence",
+      "guessed_url": "https://www.sequencehq.com",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_comparison_table"
+      ]
+    },
+    {
+      "name": "Stripe",
+      "guessed_url": "https://stripe.com",
+      "verified": false,
+      "seen_in": [
+        "section:pricing_comparison_table"
+      ]
+    },
+    {
+      "name": "monday.com",
+      "guessed_url": "https://monday.com",
+      "verified": false,
+      "seen_in": [
+        "section:faq"
+      ]
+    },
+    {
+      "name": "DICE",
+      "guessed_url": "https://dice.fm",
+      "verified": false,
+      "seen_in": [
+        "section:faq"
+      ]
+    },
+    {
+      "name": "Maxima Therapy",
+      "guessed_url": "https://maximatherapy.com",
+      "verified": false,
+      "seen_in": [
+        "section:faq"
+      ]
+    },
+    {
+      "name": "Patreon",
+      "guessed_url": "https://www.patreon.com",
+      "verified": false,
+      "seen_in": [
+        "section:cta_band"
+      ]
+    },
+    {
+      "name": "The Leap",
+      "guessed_url": "https://www.theleap.co",
+      "verified": false,
+      "seen_in": [
+        "section:cta_band"
+      ]
+    },
+    {
+      "name": "ClassPass",
+      "guessed_url": "https://classpass.com",
+      "verified": false,
+      "seen_in": [
+        "section:cta_band"
+      ]
+    },
+    {
+      "name": "In Common With",
+      "guessed_url": "https://incommonwith.com",
+      "verified": false,
+      "seen_in": [
+        "section:newsletter_signup"
+      ]
+    },
+    {
+      "name": "beehiiv",
+      "guessed_url": "https://www.beehiiv.com",
+      "verified": false,
+      "seen_in": [
+        "section:newsletter_signup"
+      ]
+    },
+    {
+      "name": "Shopify",
+      "guessed_url": "https://www.shopify.com",
+      "verified": false,
+      "seen_in": [
+        "section:newsletter_signup"
+      ]
+    },
+    {
+      "name": "Squarespace",
+      "guessed_url": "https://www.squarespace.com",
+      "verified": false,
+      "seen_in": [
+        "section:footer"
+      ]
+    },
+    {
+      "name": "Grain",
+      "guessed_url": "https://grain.com",
+      "verified": false,
+      "seen_in": [
+        "section:footer"
+      ]
+    },
+    {
+      "name": "Supabase",
+      "guessed_url": "https://supabase.com",
+      "verified": false,
+      "seen_in": [
+        "section:footer"
+      ]
+    },
+    {
+      "name": "Upwork",
+      "guessed_url": "https://www.upwork.com",
+      "verified": false,
+      "seen_in": [
+        "section:about_story",
+        "section:careers",
+        "screen(web):chat_ai_assistant"
+      ]
+    },
+    {
+      "name": "Resend",
+      "guessed_url": "https://resend.com",
+      "verified": false,
+      "seen_in": [
+        "section:about_story"
+      ]
+    },
+    {
+      "name": "Runway",
+      "guessed_url": "https://runwayml.com",
+      "verified": false,
+      "seen_in": [
+        "section:team"
+      ]
+    },
+    {
+      "name": "Ragged Edge",
+      "guessed_url": "https://raggededge.com",
+      "verified": false,
+      "seen_in": [
+        "section:team"
+      ]
+    },
+    {
+      "name": "Passionfroot",
+      "guessed_url": "https://www.passionfroot.me",
+      "verified": false,
+      "seen_in": [
+        "section:blog_index"
+      ]
+    },
+    {
+      "name": "Assembly Coffee",
+      "guessed_url": "https://assemblycoffee.co.uk",
+      "verified": false,
+      "seen_in": [
+        "section:blog_post"
+      ]
+    },
+    {
+      "name": "Superhuman Mail",
+      "guessed_url": "https://superhuman.com",
+      "verified": false,
+      "seen_in": [
+        "section:blog_post"
+      ]
+    },
+    {
+      "name": "Pitch",
+      "guessed_url": "https://pitch.com",
+      "verified": false,
+      "seen_in": [
+        "section:blog_post"
+      ]
+    },
+    {
+      "name": "Dub",
+      "guessed_url": "https://dub.co",
+      "verified": false,
+      "seen_in": [
+        "section:changelog"
+      ]
+    },
+    {
+      "name": "ClickUp",
+      "guessed_url": "https://clickup.com",
+      "verified": false,
+      "seen_in": [
+        "section:integrations"
+      ]
+    },
+    {
+      "name": "Sketch",
+      "guessed_url": "https://www.sketch.com",
+      "verified": false,
+      "seen_in": [
+        "section:integrations"
+      ]
+    },
+    {
+      "name": "Charma",
+      "guessed_url": "https://www.charma.io",
+      "verified": false,
+      "seen_in": [
+        "section:integrations"
+      ]
+    },
+    {
+      "name": "OpenAI",
+      "guessed_url": "https://openai.com",
+      "verified": false,
+      "seen_in": [
+        "section:contact_form"
+      ]
+    },
+    {
+      "name": "Epidemic Sound",
+      "guessed_url": "https://www.epidemicsound.com",
+      "verified": false,
+      "seen_in": [
+        "section:docs_landing"
+      ]
+    },
+    {
+      "name": "Uniswap",
+      "guessed_url": "https://uniswap.org",
+      "verified": false,
+      "seen_in": [
+        "section:docs_landing"
+      ]
+    },
+    {
+      "name": "Anchor",
+      "guessed_url": "https://www.anchor.sh",
+      "verified": false,
+      "seen_in": [
+        "section:docs_landing"
+      ]
+    },
+    {
+      "name": "Fruitful",
+      "guessed_url": "https://fruitful.com",
+      "verified": false,
+      "seen_in": [
+        "section:not_found_404"
+      ]
+    },
+    {
+      "name": "Phantom",
+      "guessed_url": "https://phantom.com",
+      "verified": false,
+      "seen_in": [
+        "section:not_found_404"
+      ]
+    },
+    {
+      "name": "Paraform",
+      "guessed_url": "https://www.paraform.com",
+      "verified": false,
+      "seen_in": [
+        "section:not_found_404"
+      ]
+    },
+    {
+      "name": "Base",
+      "guessed_url": "https://www.base.org",
+      "verified": false,
+      "seen_in": [
+        "section:waitlist"
+      ]
+    },
+    {
+      "name": "Firecrawl",
+      "guessed_url": "https://www.firecrawl.dev",
+      "verified": false,
+      "seen_in": [
+        "section:comparison_vs_competitor"
+      ]
+    },
+    {
+      "name": "Jasper",
+      "guessed_url": "https://www.jasper.ai",
+      "verified": false,
+      "seen_in": [
+        "section:comparison_vs_competitor"
+      ]
+    },
+    {
+      "name": "Miro",
+      "guessed_url": "https://miro.com",
+      "verified": false,
+      "seen_in": [
+        "section:security_trust"
+      ]
+    },
+    {
+      "name": "Dovetail",
+      "guessed_url": "https://dovetail.com",
+      "verified": false,
+      "seen_in": [
+        "section:security_trust"
+      ]
+    },
+    {
+      "name": "Dropbox Paper",
+      "guessed_url": "https://paper.dropbox.com",
+      "verified": false,
+      "seen_in": [
+        "section:templates_gallery"
+      ]
+    },
+    {
+      "name": "Height",
+      "guessed_url": "https://height.app",
+      "verified": false,
+      "seen_in": [
+        "screen(web):login"
+      ]
+    },
+    {
+      "name": "Relume",
+      "guessed_url": "https://www.relume.io",
+      "verified": false,
+      "seen_in": [
+        "screen(web):login"
+      ]
+    },
+    {
+      "name": "Descript",
+      "guessed_url": "https://www.descript.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):login",
+        "flow(web):subscription_upgrade"
+      ]
+    },
+    {
+      "name": "komoot",
+      "guessed_url": "https://www.komoot.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):login"
+      ]
+    },
+    {
+      "name": "Coursera",
+      "guessed_url": "https://www.coursera.org",
+      "verified": false,
+      "seen_in": [
+        "screen(web):login"
+      ]
+    },
+    {
+      "name": "Square",
+      "guessed_url": "https://squareup.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):settings"
+      ]
+    },
+    {
+      "name": "GetYourGuide",
+      "guessed_url": "https://www.getyourguide.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):settings"
+      ]
+    },
+    {
+      "name": "GoFundMe",
+      "guessed_url": "https://www.gofundme.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):settings"
+      ]
+    },
+    {
+      "name": "Base44",
+      "guessed_url": "https://base44.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):dashboard_overview"
+      ]
+    },
+    {
+      "name": "Featurebase",
+      "guessed_url": "https://www.featurebase.app",
+      "verified": false,
+      "seen_in": [
+        "screen(web):dashboard_overview"
+      ]
+    },
+    {
+      "name": "Laravel Cloud",
+      "guessed_url": "https://cloud.laravel.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):empty_state"
+      ]
+    },
+    {
+      "name": "PayPal",
+      "guessed_url": "https://www.paypal.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):empty_state"
+      ]
+    },
+    {
+      "name": "Klarna",
+      "guessed_url": "https://www.klarna.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):empty_state"
+      ]
+    },
+    {
+      "name": "Bard",
+      "guessed_url": "https://gemini.google.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):chat_ai_assistant"
+      ]
+    },
+    {
+      "name": "Plane",
+      "guessed_url": "https://plane.so",
+      "verified": false,
+      "seen_in": [
+        "screen(web):chat_ai_assistant"
+      ]
+    },
+    {
+      "name": "Twenty",
+      "guessed_url": "https://twenty.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):data_table"
+      ]
+    },
+    {
+      "name": "Xero",
+      "guessed_url": "https://www.xero.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):data_table"
+      ]
+    },
+    {
+      "name": "DoorDash Merchant",
+      "guessed_url": "https://merchants.doordash.com",
+      "verified": false,
+      "seen_in": [
+        "screen(web):data_table"
+      ]
+    },
+    {
+      "name": "Coda",
+      "guessed_url": "https://coda.io",
+      "verified": false,
+      "seen_in": [
+        "flow(web):onboarding_workspace"
+      ]
+    },
+    {
+      "name": "Mural",
+      "guessed_url": "https://www.mural.co",
+      "verified": false,
+      "seen_in": [
+        "flow(web):onboarding_workspace"
+      ]
+    },
+    {
+      "name": "Render",
+      "guessed_url": "https://render.com",
+      "verified": false,
+      "seen_in": [
+        "flow(web):subscription_upgrade"
+      ]
+    },
+    {
+      "name": "Uvodo",
+      "guessed_url": "https://uvodo.com",
+      "verified": false,
+      "seen_in": [
+        "flow(web):subscription_upgrade"
+      ]
+    },
+    {
+      "name": "Mistral AI",
+      "guessed_url": "https://mistral.ai",
+      "verified": false,
+      "seen_in": [
+        "flow(web):signup"
+      ]
+    },
+    {
+      "name": "Jira",
+      "guessed_url": "https://www.atlassian.com/software/jira",
+      "verified": false,
+      "seen_in": [
+        "flow(web):signup"
+      ]
+    },
+    {
+      "name": "WorkOS",
+      "guessed_url": "https://workos.com",
+      "verified": false,
+      "seen_in": [
+        "flow(web):signup"
+      ]
+    }
+  ],
+  "apps": [
+    {
+      "name": "pliability",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):onboarding_personalization"
+      ]
+    },
+    {
+      "name": "Headway",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):onboarding_personalization"
+      ]
+    },
+    {
+      "name": "Evernote",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):onboarding_personalization"
+      ]
+    },
+    {
+      "name": "Duolingo",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):onboarding (app-name filter test)"
+      ]
+    },
+    {
+      "name": "Deepstash",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "Deezer",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "The Atlantic Magazine",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "5 Minute Journal",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "Copilot",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "Jomo",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "Givingli",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "Lifesum",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):paywall"
+      ]
+    },
+    {
+      "name": "Target",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):checkout_cart"
+      ]
+    },
+    {
+      "name": "HBX",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):checkout_cart"
+      ]
+    },
+    {
+      "name": "Ulta Beauty",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):checkout_cart"
+      ]
+    },
+    {
+      "name": "Peerspace",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):signup"
+      ]
+    },
+    {
+      "name": "Clue",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):signup"
+      ]
+    },
+    {
+      "name": "Turo",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):signup"
+      ]
+    },
+    {
+      "name": "Tinder",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):onboarding_personalization"
+      ]
+    },
+    {
+      "name": "BFF",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):onboarding_personalization"
+      ]
+    },
+    {
+      "name": "Sesame",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):onboarding_personalization"
+      ]
+    },
+    {
+      "name": "IMDb",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):search_results"
+      ]
+    },
+    {
+      "name": "Mindvalley",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):search_results"
+      ]
+    },
+    {
+      "name": "Crouton",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):search_results"
+      ]
+    },
+    {
+      "name": "Alta",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):profile",
+        "screen(ios):notifications"
+      ]
+    },
+    {
+      "name": "AllTrails",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):profile"
+      ]
+    },
+    {
+      "name": "Beli",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):profile"
+      ]
+    },
+    {
+      "name": "Linktree",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):notifications"
+      ]
+    },
+    {
+      "name": "Luma",
+      "platform": "ios",
+      "seen_in": [
+        "screen(ios):notifications"
+      ]
+    },
+    {
+      "name": "SHEIN",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):checkout"
+      ]
+    },
+    {
+      "name": "Under Armour",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):checkout"
+      ]
+    },
+    {
+      "name": "Amazon Shopping",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):checkout"
+      ]
+    },
+    {
+      "name": "v0",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):ai_chat_interaction"
+      ]
+    },
+    {
+      "name": "X",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):ai_chat_interaction"
+      ]
+    },
+    {
+      "name": "Meta AI",
+      "platform": "ios",
+      "seen_in": [
+        "flow(ios):ai_chat_interaction"
+      ]
+    }
+  ]
+}
