@@ -16,6 +16,7 @@ import {
 import { analyzeTypography } from "./typography.js";
 import { classifySections } from "./sections.js";
 import { inferIndustry } from "./industry.js";
+import { buildSystem } from "./system.js";
 
 const WHITE: Rgb = { r: 255, g: 255, b: 255, a: 1 };
 
@@ -265,6 +266,7 @@ export function buildDna(raw: RawPage, opts: { industry?: string[] } = {}): Dna 
 
   return {
     version: 1,
+    system: buildSystem(raw.texts, typography.baseSize, typography.families, raw.brand),
     theme: isDark(bgRgb) ? "dark" : "light",
     palette,
     typography,

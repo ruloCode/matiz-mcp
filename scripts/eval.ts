@@ -13,7 +13,7 @@ const labels: Label[] = readdirSync("research/eval")
   .flatMap((f) => JSON.parse(readFileSync(`research/eval/${f}`, "utf8")));
 
 // sitios recapturados después de etiquetar: sus índices de sección pudieron moverse
-const stale = new Set<string>(existsSync("research/eval/stale-hosts.json") ? JSON.parse(readFileSync("research/eval/stale-hosts.json", "utf8")) : []);
+const stale = new Set<string>(existsSync("research/eval/stale-sites.json") ? JSON.parse(readFileSync("research/eval/stale-sites.json", "utf8")) : []);
 const rows: Array<{ ref: string; gold: string; second: string | null; pred: string }> = [];
 let unclear = 0;
 let missing = 0;
@@ -24,7 +24,7 @@ for (const l of labels) {
   }
   const [id, idx] = l.ref_id.split("#");
   const site = getSite(id);
-  if (site && stale.has(site.host ?? "")) {
+  if (site && stale.has(site.id)) {
     missing++;
     continue;
   }

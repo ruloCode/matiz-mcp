@@ -6,7 +6,12 @@ import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { allSites } from "../src/db.js";
-import { fontAvailability } from "../src/analysis/fonts.js";
+import { fontAvailability, freeFont } from "../src/analysis/fonts.js";
+import { homeSites } from "../src/db.js";
+import { distinctiveTraits } from "../src/analysis/uniqueness.js";
+import { toCssVariables, toTailwindTheme } from "../src/analysis/exports.js";
+import { toDesignMd } from "../src/analysis/designmd.js";
+import { contrastRatio, parseColor, tonalScale } from "../src/analysis/color.js";
 import { CHALLENGE } from "../src/capture/capture.js";
 import type { SiteRecord } from "../src/types.js";
 
@@ -18,6 +23,7 @@ const MAX_PRICING_SECTIONS = 6;
 const SKIP = new Set(["banner"]);
 
 if (existsSync(IMG)) rmSync(IMG, { recursive: true });
+if (existsSync(join(OUT, "brands"))) rmSync(join(OUT, "brands"), { recursive: true });
 mkdirSync(IMG, { recursive: true });
 
 const jobs: Array<{ src: string; dst: string; w: number }> = [];
@@ -38,6 +44,7 @@ for (const s of desktop) {
   byHost.set(s.host ?? s.id, l);
 }
 
+const corpusDna = homeSites().filter((h) => !h.tags.includes("referencia-matiz")).map((h) => h.dna);
 const ORDER = ["home", "pricing", "features", "customers", "about", "signup", "login", "changelog", "blog", "integrations", "enterprise", "security", "careers", "contact", "docs"];
 const brands = [];
 for (const [host, pages] of byHost) {
@@ -65,7 +72,67 @@ for (const [host, pages] of byHost) {
       .filter((x) => x.img);
     outPages.push({ page, url: p.url, hero, sections });
   }
+  // ---------- ADN completo de la marca (archivo propio, se carga al abrir la ficha) ----------
+  const sys = d.system;
+  const bgRgb = parseColor(d.palette.background);
+  const cr = (hex?: string) => (hex && bgRgb && parseColor(hex) ? +contrastRatio(parseColor(hex)!, bgRgb).toFixed(2) : null);
+  const acc = d.palette.accent ? parseColor(d.palette.accent) : null;
+  // el logo SVG viaja como data URI para <img>: así no puede ejecutar nada en nuestra página
+  let logo: unknown = null;
+  if (sys?.logo?.type === "svg") {
+    const color = parseColor(sys.logo.color);
+    const svg = sys.logo.svg.replace(/currentColor/g, color ? `rgb(${color.r},${color.g},${color.b})` : "#111").replace(/<script[\s\S]*?<\/script>/gi, "");
+    logo = { type: "svg", src: `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`, w: sys.logo.w, h: sys.logo.h };
+  } else if (sys?.logo?.type === "img") logo = { type: "img", src: sys.logo.src, w: sys.logo.w, h: sys.logo.h };
+  const freeName = (family: string) => {
+    const av = fontAvailability(family);
+    const name = av.free ? av.freeAs : av.alternatives?.[0];
+    return name && freeFont(name)?.c ? name : name;
+  };
+  const dnaOut = {
+    host,
+    name: home.name,
+    url: home.url,
+    captured: home.capturedAt.slice(0, 10),
+    theme: d.theme,
+    traits: distinctiveTraits(d, corpusDna).map((t) => ({ kind: t.kind, value: t.value, text: t.text })),
+    logo,
+    favicon: sys?.favicon ?? null,
+    roles: [
+      ["Fondo", d.palette.background], ["Superficie", d.palette.surface], ["Texto", d.palette.text], ["Secundario", d.palette.mutedText],
+      ["Acento", d.palette.accent], ["Acento 2", d.palette.accent2], ["Borde", d.palette.border],
+    ].filter((x) => x[1]).map(([role, hex]) => ({
+      role,
+      hex,
+      contrast: role === "Fondo" ? null : cr(hex as string),
+      // procedencia: las variables declaradas que resuelven a este mismo color
+      vars: (sys?.tokens.colors ?? []).filter((c) => c.hex === hex).map((c) => c.name).slice(0, 2),
+    })),
+    accentScale: acc ? tonalScale(acc) : null,
+    gradients: sys?.gradients ?? [],
+    tokens: sys ? { total: sys.tokens.total, colors: sys.tokens.colors.slice(0, 32), scales: sys.tokens.scales.slice(0, 6), sizes: sys.tokens.sizes.slice(0, 30), fonts: sys.tokens.fonts.slice(0, 6), shadows: sys.tokens.shadows.slice(0, 6) } : null,
+    fonts: (sys?.fonts ?? d.typography.families.map((f) => ({ family: f.family, class: f.class, share: f.share, weights: [], free: false }))).map((f) => ({ ...f, use: freeName(f.family) })),
+    typeScale: sys?.typeScale ?? [],
+    weights: sys?.weights ?? [],
+    base: d.typography.baseSize,
+    ratio: d.typography.scaleRatio,
+    radius: { typical: d.shape.radius, scale: d.shape.scale, pill: d.shape.pill },
+    shadows: d.shape.shadowSamples,
+    spacing: d.spacing,
+    borderWidth: sys?.borderWidth ?? null,
+    buttons: d.buttons,
+    card: sys?.card ?? null,
+    input: sys?.input ?? null,
+    link: sys?.link ?? null,
+    motion: sys?.motion ?? null,
+    layout: { width: d.layout.contentWidth, density: d.layout.density, sequence: d.sequence, sections: d.sections.map((x) => ({ type: x.type, h: x.height, dark: x.dark, bg: x.bg })) },
+    exports: { css: toCssVariables(home.name, d), tailwind: toTailwindTheme(home.name, d), designmd: toDesignMd(home.name, home.url, d) },
+  };
+  mkdirSync(join(OUT, "brands"), { recursive: true });
+  writeFileSync(join(OUT, "brands", `${hs}.json`), JSON.stringify(dnaOut));
+
   brands.push({
+    slug: hs,
     host,
     name: home.name,
     url: home.url,

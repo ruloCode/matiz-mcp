@@ -18,7 +18,9 @@ import { aggregateComposition } from "./analysis/composition.js";
 import { critique } from "./analysis/critique.js";
 import { blueprint, type TreeNode } from "./analysis/blueprint.js";
 import { toDesignMd, toDtcg } from "./analysis/designmd.js";
-import { parseColor, tonalScale } from "./analysis/color.js";
+import { contrastRatio, parseColor, tonalScale } from "./analysis/color.js";
+import { distinctiveTraits } from "./analysis/uniqueness.js";
+import { toCssVariables, toTailwindTheme } from "./analysis/exports.js";
 import { SECTION_TYPES } from "./analysis/sections.js";
 import { remember, forget, tasteProfile } from "./taste.js";
 import type { Dna, SectionType, SiteRecord } from "./types.js";
@@ -232,6 +234,73 @@ server.registerTool(
     const out: Content[] = [];
     if (a.format !== "dtcg") out.push(text(toDesignMd(name, site.url, site.dna)));
     if (a.format !== "design.md") out.push(text(toDtcg(name, site.dna)));
+    return ok(out);
+  }),
+);
+
+server.registerTool(
+  "get_brand_kit",
+  {
+    title: "Kit de marca para replicar",
+    description:
+      "Todo lo necesario para replicar la identidad visual de un sitio: tokens que el sitio DECLARA (variables CSS con sus " +
+      "nombres, escalas de color, espaciado, radios, sombras) + lo MEDIDO (roles de color con contraste, escala tipográfica " +
+      "real, pesos, fuentes con alternativa libre, logo, botones, tarjeta, input, link, movimiento) + qué la hace única " +
+      "frente al corpus. format: summary | css (variables) | tailwind (@theme v4) | dtcg | design.md | all.",
+    inputSchema: {
+      ref_id: z.string().describe("Sitio del corpus (p. ej. 'stripe.com') o URL ya capturada"),
+      format: z.enum(["summary", "css", "tailwind", "dtcg", "design.md", "all"]).default("summary"),
+    },
+    annotations: { readOnlyHint: true },
+  },
+  guard(async (a) => {
+    const site = findSite(a.ref_id.split("#")[0]);
+    if (!site) return fail(`No está en el corpus: ${a.ref_id}. Captúralo con capture_site.`);
+    const d = site.dna;
+    const sys = d.system;
+    const corpus = homeSites().map((s) => s.dna);
+    const bg = parseColor(d.palette.background);
+    const contrast = (hex?: string) => (hex && bg ? +contrastRatio(parseColor(hex)!, bg).toFixed(2) : undefined);
+    const summary = {
+      ref_id: site.id,
+      site: site.name,
+      url: site.url,
+      measured_at: site.capturedAt.slice(0, 10),
+      unique: distinctiveTraits(d, corpus).map((t) => t.text),
+      identity: {
+        logo: sys?.logo ? (sys.logo.type === "svg" ? { type: "svg", size: `${sys.logo.w}×${sys.logo.h}`, color: sys.logo.color } : { type: "img", src: sys.logo.src }) : null,
+        favicon: sys?.favicon,
+        fonts: sys?.fonts.map((f) => ({ family: f.family, class: f.class, weights: f.weights, share: f.share, free: f.free ? f.freeAs : undefined, alternative: f.free ? undefined : f.alternatives?.[0], source: f.source })),
+      },
+      color: {
+        theme: d.theme,
+        roles: { background: d.palette.background, surface: d.palette.surface, text: d.palette.text, muted: d.palette.mutedText, accent: d.palette.accent, accent2: d.palette.accent2, border: d.palette.border },
+        contrast_vs_background: { text: contrast(d.palette.text), muted: contrast(d.palette.mutedText), accent: contrast(d.palette.accent) },
+        gradients: sys?.gradients,
+      },
+      typography: { scale: sys?.typeScale, weights: sys?.weights, base: d.typography.baseSize, ratio: d.typography.scaleRatio, pairing: d.typography.pairing },
+      shape: { radius: d.shape.radius >= 999 ? "pill" : d.shape.radius, radius_scale: d.shape.scale, pill: d.shape.pill, shadows: d.shape.shadowSamples, border_width: sys?.borderWidth },
+      spacing: d.spacing,
+      layout: { content_width: d.layout.contentWidth, density: d.layout.density, sequence: d.sequence },
+      components: { buttons: d.buttons, card: sys?.card, input: sys?.input, link: sys?.link },
+      motion: sys?.motion,
+      declared_tokens: sys
+        ? {
+            total: sys.tokens.total,
+            semantic_colors: sys.tokens.colors.filter((c) => c.role).slice(0, 24),
+            scales: sys.tokens.scales.map((s) => ({ name: s.name, steps: s.steps.length, from: s.steps[0]?.hex, to: s.steps.at(-1)?.hex })),
+            sizes: sys.tokens.sizes.slice(0, 24),
+            fonts: sys.tokens.fonts,
+            shadows: sys.tokens.shadows,
+          }
+        : "Captura anterior al extractor de marca: recaptura con capture_site para ver los tokens declarados.",
+    };
+    const out: Content[] = [];
+    if (a.format === "summary" || a.format === "all") out.push(text(summary));
+    if (a.format === "css" || a.format === "all") out.push(text(toCssVariables(site.name, d)));
+    if (a.format === "tailwind" || a.format === "all") out.push(text(toTailwindTheme(site.name, d)));
+    if (a.format === "dtcg" || a.format === "all") out.push(text(toDtcg(site.name, d)));
+    if (a.format === "design.md" || a.format === "all") out.push(text(toDesignMd(site.name, site.url, d)));
     return ok(out);
   }),
 );

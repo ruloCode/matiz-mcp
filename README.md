@@ -60,7 +60,7 @@ npx -y github:ruloCode/matiz-mcp seed --pages --mobile   # páginas internas y v
 
 ```bash
 pnpm install && pnpm test
-pnpm smoke                 # las 15 tools por MCP real
+pnpm smoke                 # las 16 tools por MCP real
 pnpm eval                  # exactitud del clasificador contra research/eval
 pnpm ask <tool> '<json>'   # llama una tool y guarda sus imágenes en .ask/
 pnpm export-pack           # empaqueta el corpus actual para distribuir
@@ -73,6 +73,7 @@ pnpm build:site            # regenera la landing con las cifras reales del corpu
 |---|---|
 | `search_references` | Busca sitios o secciones (hero, pricing, faq…) en español o inglés. Trae tokens, secuencia y miniatura. Filtra por tema, industria y gusto del proyecto, con máximo 2 resultados por sitio. |
 | `get_reference` | Todo lo medido de un sitio o sección: paleta con roles, niveles tipográficos, escalas y el porqué de cada sección. |
+| `get_brand_kit` | Todo para replicar una marca: variables CSS que el sitio declara (con su nombre), roles de color con contraste y su variable de origen, escala tipográfica real, fuentes con alternativa libre, logo, botones, tarjeta, input, link, movimiento y qué la hace única frente al corpus. Exporta a CSS, Tailwind v4, DTCG o DESIGN.md. Ver [docs/brand-dna.md](docs/brand-dna.md). |
 | `get_section_blueprint` | El esqueleto de una sección (rejilla, columnas, gaps, padding, jerarquía tipográfica, bloques repetidos) + un componente React/Tailwind con las medidas reales. Texto de relleno: toma la estructura, no el copy. |
 | `open_gallery` | Abre la galería local (estilo Mobbin) en el navegador. |
 | `get_design_md` | Exporta el sistema visual como DESIGN.md (spec de `google-labs-code/design.md`) o tokens W3C DTCG. |

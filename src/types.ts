@@ -75,6 +75,22 @@ export interface RawSection {
   position: string;
 }
 
+export interface RawBrand {
+  cssVars: Array<{ name: string; raw: string; value: string; source?: string }>;
+  blockedSheets: string[];
+  fonts: Array<{ family: string; weights: string[]; styles: string[] }>;
+  googleFonts: string[];
+  logo: { type: "svg"; svg: string; color: string; w: number; h: number } | { type: "img"; src: string; w: number; h: number } | null;
+  favicon: string;
+  gradients: string[];
+  borders: Array<{ value: string; count: number }>;
+  motion: { durations: Array<{ value: string; count: number }>; easings: Array<{ value: string; count: number }> };
+  cards: Array<{ bg: string; border: string; radius: number; shadow: string; padding: string; count: number }>;
+  link: { color: string; decoration: string; weight: number; underlineOffset: string } | null;
+  input: { bg: string; color: string; border: string; radius: number; height: number; paddingX: number; fontSize: number; placeholder: string } | null;
+  icons: number;
+}
+
 export interface RawPage {
   url: string;
   finalUrl: string;
@@ -106,6 +122,7 @@ export interface RawPage {
     animations: number;
   };
   fontFaces: string[];
+  brand?: RawBrand;
 }
 
 export type SectionType =
@@ -171,6 +188,8 @@ export interface TypeLevel {
 
 export interface Dna {
   version: 1;
+  /** sistema de diseño (tokens declarados + escala tipográfica + componentes); ver analysis/system.ts */
+  system?: import("./analysis/system.js").DesignSystem;
   theme: "light" | "dark";
   palette: {
     background: string;

@@ -5,9 +5,10 @@ import { captureSite, closeBrowser } from "../src/capture/capture.js";
 import { homeSites, hostOf } from "../src/db.js";
 
 const args = process.argv.slice(2);
-const urls: string[] = args.flatMap((a) => (a.endsWith(".json") ? JSON.parse(readFileSync(a, "utf8")).sites.map((s: { url: string }) => s.url) : [a]));
+const urls: string[] = args.filter((a) => !a.startsWith("--")).flatMap((a) => (a.endsWith(".json") ? JSON.parse(readFileSync(a, "utf8")).sites.map((s: { url: string }) => s.url) : [a]));
+const all = args.includes("--all");
 const hosts = new Set(urls.map(hostOf));
-const targets = homeSites().filter((h) => hosts.has(h.host ?? ""));
+const targets = homeSites().filter((h) => all ? !h.tags.includes("referencia-matiz") : hosts.has(h.host ?? ""));
 let ok = 0;
 const queue = [...targets];
 await Promise.all(
@@ -24,8 +25,8 @@ await Promise.all(
   }),
 );
 await closeBrowser();
-const f = "research/eval/stale-hosts.json";
+const f = "research/eval/stale-sites.json";
 const prev: string[] = existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : [];
-writeFileSync(f, JSON.stringify([...new Set([...prev, ...targets.map((t) => t.host)])].sort(), null, 1));
+writeFileSync(f, JSON.stringify([...new Set([...prev, ...targets.map((t) => t.id)])].sort(), null, 1));
 console.log(`${ok}/${targets.length} portadas recapturadas`);
 process.exit(0);

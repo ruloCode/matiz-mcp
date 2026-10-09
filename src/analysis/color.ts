@@ -107,10 +107,22 @@ function p3ToLinearSrgb(r: number, g: number, b: number): [number, number, numbe
   ];
 }
 
-/** Parsea un color CSS computado. Devuelve null si no se reconoce. */
+function hslToRgb(h: number, s: number, l: number): Omit<Rgb, "a"> {
+  const sat = clamp(s, 0, 1);
+  const lig = clamp(l, 0, 1);
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = sat * Math.min(lig, 1 - lig);
+  const f = (n: number) => lig - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return { r: Math.round(f(0) * 255), g: Math.round(f(8) * 255), b: Math.round(f(4) * 255) };
+}
+
+/** Parsea un color CSS computado o un token. Devuelve null si no se reconoce. */
 export function parseColor(input: string): Rgb | null {
   if (!input) return null;
   const s = input.trim().toLowerCase();
+  // canales HSL sueltos, el formato de las variables de shadcn/ui: "220 14% 96%"
+  const bare = s.match(/^(-?\d+(?:\.\d+)?)(?:deg)?\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%(?:\s*\/\s*([\d.]+%?))?$/);
+  if (bare) return { ...hslToRgb(+bare[1], +bare[2] / 100, +bare[3] / 100), a: bare[4] ? num(bare[4], 1) : 1 };
   if (s === "transparent") return { r: 0, g: 0, b: 0, a: 0 };
   if (s.startsWith("#")) {
     let h = s.slice(1);
@@ -128,6 +140,11 @@ export function parseColor(input: string): Rgb | null {
     if (parts.length < 3) return null;
     const [r, g, b] = parts.slice(0, 3).map((p) => clamp(num(p, 255), 0, 255));
     return { r: Math.round(r), g: Math.round(g), b: Math.round(b), a: alpha };
+  }
+  if (fn === "hsl" || fn === "hsla") {
+    const { parts, alpha } = splitArgs(inner);
+    if (parts.length < 3) return null;
+    return { ...hslToRgb(parseFloat(parts[0]), num(parts[1], 1), num(parts[2], 1)), a: alpha };
   }
   if (fn === "oklch") {
     const { parts, alpha } = splitArgs(inner);

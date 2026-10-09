@@ -43,3 +43,10 @@ test("escala tonal: 11 pasos de claro a oscuro", () => {
   const L = (h: string) => contrastRatio(parseColor(h)!, parseColor("#000")!);
   assert.ok(L(s["50"]) > L(s["500"]) && L(s["500"]) > L(s["950"]));
 });
+
+test("entiende hsl() y los canales HSL sueltos de shadcn/ui", () => {
+  assert.equal(toHex(parseColor("hsl(0 100% 50%)")!), "#FF0000");
+  assert.equal(toHex(parseColor("hsl(210, 40%, 96%)")!), "#F1F5F9");
+  assert.equal(toHex(parseColor("222.2 84% 4.9%")!), "#020817");
+  assert.equal(parseColor("12px"), null);
+});

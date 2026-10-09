@@ -106,6 +106,81 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
   .site, .tile { animation: up .55s cubic-bezier(.16,.84,.24,1) both; animation-delay: calc(var(--k, 0) * 28ms); }
   @keyframes up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 }
+
+/* ---------- ficha de sistema (ADN de marca) ---------- */
+.sys { display: grid; gap: 56px; }
+.sys h3 { margin: 0 0 6px; font-size: 22px; letter-spacing: -0.03em; }
+.sys .lead { margin: 0 0 18px; color: var(--muted); font-size: 14px; max-width: 70ch; }
+.ident { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; align-items: stretch; }
+@media (max-width: 860px) { .ident { grid-template-columns: minmax(0, 1fr); } }
+.logo-tile { border-radius: 20px; min-height: 180px; display: grid; place-items: center; padding: 28px; border: 1px solid var(--line); position: relative; }
+.logo-tile img { max-height: 64px; max-width: 80%; }
+.logo-tile .fav { position: absolute; left: 14px; bottom: 12px; display: flex; gap: 8px; align-items: center; font: 11px var(--mono); opacity: .75; }
+.logo-tile .fav img { width: 16px; height: 16px; }
+.traits { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.trait { background: var(--soft); border-radius: 16px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.trait b { font-size: 26px; letter-spacing: -0.035em; line-height: 1; }
+.trait span { font-size: 13px; color: var(--muted); }
+.roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.role { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: var(--bg); cursor: pointer; text-align: left; padding: 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; }
+.role .rc { height: 108px; display: flex; align-items: flex-end; padding: 10px 12px; font-weight: 600; font-size: 14px; }
+.role .meta2 { padding: 10px 12px; display: grid; gap: 3px; font: 12px var(--mono); }
+.role .meta2 small { color: var(--muted); overflow-wrap: anywhere; }
+.badge { display: inline-block; font: 500 10.5px var(--mono); padding: 2px 7px; border-radius: 999px; background: var(--soft); }
+.badge.ok { background: #dcfce7; color: #14532d; } .badge.no { background: #fee2e2; color: #7f1d1d; }
+.scale { display: flex; border-radius: 12px; overflow: hidden; margin-top: 12px; }
+.scale button { flex: 1; border: 0; height: 56px; cursor: pointer; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font: 10px var(--mono); }
+.tok-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px; margin-top: 12px; }
+.tok { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 10px; background: var(--soft); font: 11.5px var(--mono); min-width: 0; cursor: pointer; border: 0; text-align: left; }
+.tok i { width: 22px; height: 22px; border-radius: 6px; flex: none; border: 1px solid var(--line); }
+.tok span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tok em { margin-left: auto; font-style: normal; color: var(--muted); }
+.scales { display: grid; gap: 8px; margin-top: 12px; }
+.scales .row { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 10px; align-items: center; font: 12px var(--mono); }
+.scales .row div { display: flex; border-radius: 8px; overflow: hidden; height: 28px; }
+.scales .row div i { flex: 1; }
+.grads { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+.grads div { height: 80px; border-radius: 14px; border: 1px solid var(--line); }
+.canvas { border-radius: 22px; padding: clamp(18px, 3vw, 36px); border: 1px solid var(--line); }
+.fonts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.fcard { border-radius: 16px; background: var(--soft); padding: 18px; display: grid; gap: 6px; }
+.fcard .aa { font-size: 64px; line-height: 1; letter-spacing: -0.03em; }
+.fcard b { font-size: 15px; } .fcard small { color: var(--muted); font-size: 12.5px; }
+.ladder { display: grid; gap: 0; }
+.rung { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 18px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid color-mix(in oklab, currentColor 14%, transparent); }
+.rung:last-child { border-bottom: 0; }
+.rung .m { font: 11.5px/1.5 var(--mono); opacity: .75; }
+.rung .m .bar { display: block; height: 4px; border-radius: 2px; background: currentColor; opacity: .35; margin-top: 6px; }
+.rung .sample { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 700px) { .rung { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+.shape { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.shape .s { height: 96px; border: 1.5px solid currentColor; display: grid; place-items: center; font: 12px var(--mono); }
+.shadows { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 22px; }
+.shadows .s { height: 110px; border-radius: 14px; display: grid; place-items: end start; padding: 10px; font: 10.5px var(--mono); overflow: hidden; }
+.spacing { display: grid; gap: 6px; margin-top: 14px; }
+.spacing div { display: flex; align-items: center; gap: 10px; font: 11.5px var(--mono); }
+.spacing i { height: 12px; border-radius: 3px; background: currentColor; opacity: .55; }
+.comps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; align-items: start; }
+.comp { display: grid; gap: 10px; align-content: start; }
+.comp > span { font: 11px var(--mono); opacity: .65; }
+.comp .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.mdemo { position: relative; height: 44px; border-radius: 999px; border: 1px dashed currentColor; opacity: .9; cursor: pointer; }
+.mdemo i { position: absolute; top: 8px; left: 8px; width: 26px; height: 26px; border-radius: 50%; }
+.mdemo:hover i { left: calc(100% - 34px); }
+.comp-seq { display: flex; flex-direction: column; gap: 3px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.comp-seq div { font: 10.5px var(--mono); padding: 0 10px; display: flex; align-items: center; min-height: 18px; }
+.width-ruler { position: relative; height: 34px; border-radius: 8px; background: var(--soft); margin-top: 12px; }
+.width-ruler i { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); background: var(--ink); opacity: .12; border-radius: 8px; }
+.width-ruler span { position: absolute; inset: 0; display: grid; place-items: center; font: 12px var(--mono); }
+.export { border-radius: 18px; background: #0d0d0f; color: #ededee; overflow: hidden; }
+.export .bar2 { display: flex; gap: 6px; padding: 10px; border-bottom: 1px solid #2a2a2e; align-items: center; flex-wrap: wrap; }
+.export .bar2 button { border: 0; background: transparent; color: #a1a1a7; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; }
+.export .bar2 button[aria-pressed="true"] { background: #fff; color: #111; }
+.export .bar2 .cp { margin-left: auto; background: #222225; color: #ededee; }
+.export pre { margin: 0; padding: 16px; max-height: 420px; overflow: auto; font: 12px/1.6 var(--mono); }
+.sys-nav { display: flex; gap: 6px; flex-wrap: wrap; position: sticky; top: 64px; z-index: 1; background: color-mix(in oklab, var(--bg) 92%, transparent); padding: 6px 0; }
+.sys-nav a { font-size: 13px; color: var(--muted); padding: 5px 10px; border-radius: 999px; }
+.sys-nav a:hover { background: var(--soft); color: var(--ink); }
 </style>
 </head>
 <body>
@@ -254,35 +329,132 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
   });
 
   // ---------- ficha ----------
-  function openBrand(host) {
+  const loadedFonts = new Set();
+  function loadFont(name) {
+    if (!name || loadedFonts.has(name)) return;
+    loadedFonts.add(name);
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name).replace(/%20/g, "+")}:wght@300;400;500;600;700;800&display=swap`;
+    document.head.appendChild(l);
+  }
+  const lum = (hex) => { const n = parseInt(String(hex).slice(1, 7), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
+  const on = (hex) => (lum(hex) > 0.58 ? "#111" : "#fff");
+  const copy = async (t, el) => { try { await navigator.clipboard.writeText(t); const o = el.textContent; el.textContent = "Copiado"; setTimeout(() => (el.textContent = o), 1200); } catch {} };
+
+  function systemHtml(D) {
+    const bg = D.roles.find((r) => r.role === "Fondo")?.hex || "#fff";
+    const fg = D.roles.find((r) => r.role === "Texto")?.hex || "#111";
+    const muted = D.roles.find((r) => r.role === "Secundario")?.hex || fg;
+    const accent = D.roles.find((r) => r.role === "Acento")?.hex;
+    // comillas simples: este valor va dentro de style="…"
+    const fontFor = (family) => { const f = D.fonts.find((x) => x.family === family) || D.fonts[0]; return f ? `'${(f.use || f.family).replace(/'/g, "")}', system-ui, sans-serif` : "system-ui"; };
+    D.fonts.forEach((f) => loadFont(f.use));
+    const heading = D.typeScale[0];
+    const pb = D.buttons.find((b) => b.kind === "primary");
+    const sb = D.buttons.find((b) => b.kind === "secondary");
+    // "Sign in Sign in": el texto oculto para lectores de pantalla duplica la etiqueta
+    const clean = (t) => { const w = String(t || "").trim().split(/\s+/); const h = w.length / 2; return w.length % 2 === 0 && w.slice(0, h).join(" ") === w.slice(h).join(" ") ? w.slice(0, h).join(" ") : t; };
+    const btn = (b, label) => b ? `<a style="display:inline-flex;align-items:center;justify-content:center;background:${b.bg === "transparent" ? "transparent" : b.bg};color:${b.text};border:${b.border ? `1px solid ${b.border}` : "0"};border-radius:${b.radius >= 999 ? "999px" : b.radius + "px"};padding:${Math.max(b.paddingY, 10)}px ${Math.max(b.paddingX, 14)}px;font:${b.weight} 15px ${fontFor(D.fonts[0]?.family)}">${esc(clean(b.label) || label)}</a>` : "";
+    const sec = (id, title, lead, body) => `<section id="${id}"><h3>${title}</h3>${lead ? `<p class="lead">${lead}</p>` : ""}${body}</section>`;
+
+    const ident = `<div class="ident">
+      <div class="logo-tile" style="background:${bg};color:${fg}">${D.logo ? `<img src="${D.logo.src}" alt="Logo de ${esc(D.name)}" referrerpolicy="no-referrer">` : `<b style="font:700 34px ${fontFor(D.fonts[0]?.family)};letter-spacing:-.03em">${esc(D.name)}</b>`}
+        <span class="fav">${D.favicon ? `<img src="${esc(D.favicon)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}${esc(D.host)} · ${D.theme === "dark" ? "tema oscuro" : "tema claro"}</span></div>
+      <div><h3>Lo que la hace única</h3><p class="lead">Rasgos medidos frente a las ${esc(String(B.length))} marcas del catálogo.</p>
+        <div class="traits">${(D.traits.length ? D.traits : [{ value: "—", text: "Ningún rasgo extremo: es una marca muy en la media del catálogo." }]).map((t) => `<div class="trait"><b>${esc(t.value)}</b><span>${esc(t.text)}</span></div>`).join("")}</div></div>
+    </div>`;
+
+    const roles = `<div class="roles">${D.roles.map((r) => `<button class="role" type="button" data-copy="${r.hex}"><div class="rc" style="background:${r.hex};color:${on(r.hex)}">${esc(r.role)}</div><div class="meta2">${r.hex}${r.contrast != null ? ` <span><span class="badge ${r.contrast >= 4.5 ? "ok" : r.contrast >= 3 ? "" : "no"}">${r.contrast >= 4.5 ? "AA" : r.contrast >= 3 ? "AA grande" : "bajo"} ${r.contrast}:1</span></span>` : ""}${r.vars && r.vars.length ? `<small>${r.vars.map(esc).join(" · ")}</small>` : ""}</div></button>`).join("")}</div>`;
+    const accScale = D.accentScale ? `<div class="scale">${Object.entries(D.accentScale).map(([k, h]) => `<button type="button" data-copy="${h}" style="background:${h};color:${on(h)}" title="${h}">${k}</button>`).join("")}</div><p class="lead" style="margin-top:8px">Escala 50–950 del acento, calculada en OKLCH para usar en estados y fondos.</p>` : "";
+    const tk = D.tokens;
+    // prefijo común de los nombres (p. ej. --hds-color-): se muestra una vez y cada token sin él
+    const names = tk ? tk.colors.map((c) => c.name) : [];
+    let prefix = names[0] || "";
+    for (const n of names) while (prefix && !n.startsWith(prefix)) prefix = prefix.slice(0, -1);
+    prefix = prefix.slice(0, prefix.lastIndexOf("-") + 1);
+    if (prefix.length < 4) prefix = "";
+    const declared = tk && tk.total >= 3 && (tk.colors.length || tk.scales.length) ? `<p class="lead" style="margin-top:18px">El sitio declara <b>${tk.total}</b> variables CSS. Estas son las de color, con su nombre original:</p>
+        ${prefix ? `<p class="lead" style="margin:0">Prefijo común: <code>${esc(prefix)}</code></p>` : ""}
+        <div class="tok-grid">${tk.colors.map((c) => `<button class="tok" type="button" data-copy="${c.name}: ${c.hex};" title="${esc(c.name)} · ${c.hex}"><i style="background:${c.hex}"></i><span>${esc(prefix ? c.name.slice(prefix.length) : c.name)}</span><em>${c.role ? esc(c.role) : c.hex}</em></button>`).join("")}</div>
+        ${tk.scales.length ? `<div class="scales">${tk.scales.map((sc) => `<div class="row"><span>--${esc(sc.name)}</span><div>${sc.steps.map((st) => `<i style="background:${st.hex}" title="${st.step} ${st.hex}"></i>`).join("")}</div></div>`).join("")}</div>` : ""}`
+      : `<p class="lead" style="margin-top:18px">${tk && tk.total ? `El sitio declara solo ${tk.total} variable${tk.total === 1 ? "" : "s"} CSS y ninguna de color` : "Este sitio no expone variables CSS en :root"}: los colores de arriba salen de medir lo que pinta.</p>`;
+    const grads = D.gradients.length ? `<p class="lead" style="margin-top:18px">Degradados en uso:</p><div class="grads">${D.gradients.map((g) => `<div style="background:${g.replace(/"/g, "'")}" title="${esc(g)}"></div>`).join("")}</div>` : "";
+
+    const fonts = `<div class="fonts-grid">${D.fonts.map((f) => `<div class="fcard"><div class="aa" style="font-family:${fontFor(f.family)}">Aa</div><b>${esc(f.family)}</b><small>${esc(f.class)} · ${Math.round(f.share * 100)}% del texto${f.weights && f.weights.length ? ` · pesos ${esc(f.weights.join(", "))}` : ""}</small><small>${f.free ? `Libre: ${esc(f.freeAs || f.use)} (Google Fonts)` : `Comercial o propia → usa <b>${esc(f.use || "Inter")}</b>`}</small></div>`).join("")}</div>`;
+    const ladder = `<div class="canvas" style="background:${bg};color:${fg}"><div class="ladder">${D.typeScale.map((t) => {
+      const shown = Math.min(t.size, 88);
+      return `<div class="rung"><div class="m">${t.size}px · ${t.weight} · lh ${t.lh}${t.ls ? ` · ${t.ls}em` : ""}<br>${t.role}${shown < t.size ? " · reducido" : ""} · ${Math.round(t.share * 100)}%<span class="bar" style="width:${Math.max(4, t.share * 100)}%"></span></div><div class="sample" style="font-family:${fontFor(t.family)};font-size:${shown}px;font-weight:${t.weight};line-height:${Math.min(t.lh || 1.2, 1.4)};letter-spacing:${t.ls || 0}em;color:${t.role === "small" ? muted : fg}">${t.role === "display" || t.role === "heading" ? esc(D.name) + " en " + t.size + "px" : "Así se lee el texto de esta marca, medido en su sitio."}</div></div>`;
+    }).join("")}</div></div>`;
+
+    const radii = [...new Set([...(D.radius.scale || []), D.radius.typical].filter((r) => r > 0 && r < 999))].sort((a, b) => a - b);
+    const shape = `<div class="canvas" style="background:${bg};color:${fg}">
+      <div class="shape">${radii.map((r) => `<div class="s" style="border-radius:${r}px">${r}px</div>`).join("")}${D.radius.pill ? `<div class="s" style="border-radius:999px">pill</div>` : ""}</div>
+      ${D.shadows.length ? `<div class="shadows" style="margin-top:26px">${D.shadows.map((sh) => `<div class="s" style="box-shadow:${sh};background:${bg}">${esc(sh.slice(0, 60))}</div>`).join("")}</div>` : ""}
+      <div class="spacing">${(D.spacing.scale || []).filter((v) => v > 0 && v <= 160).map((v) => `<div><i style="width:${v * 2}px"></i>${v}px</div>`).join("")}</div>
+      <p class="lead" style="margin:14px 0 0;color:inherit;opacity:.7">Base de espaciado ${D.spacing.base}px${D.borderWidth ? ` · bordes de ${D.borderWidth}px` : ""}.</p></div>`;
+
+    const card = D.card ? `<div class="comp"><span>tarjeta</span><div style="background:${D.card.bg};border:${D.card.border || "0"};border-radius:${D.card.radius}px;box-shadow:${D.card.shadow || "none"};padding:22px;display:grid;gap:8px"><b style="font:600 18px ${fontFor(D.fonts[0]?.family)}">Título de tarjeta</b><span style="font:14px ${fontFor(D.fonts[0]?.family)};opacity:.75">Con el fondo, borde, radio y sombra que usa el sitio.</span></div></div>` : "";
+    const input = D.input ? `<div class="comp"><span>input</span><div style="background:${D.input.bg};color:${D.input.color};border:${D.input.border};border-radius:${D.input.radius}px;height:${D.input.height}px;padding:0 ${D.input.paddingX}px;display:flex;align-items:center;font:${D.input.fontSize}px ${fontFor(D.fonts[0]?.family)};opacity:.9">tu@email.com</div></div>` : "";
+    const link = D.link ? `<div class="comp"><span>link</span><a style="color:${D.link.color};text-decoration:${D.link.underline ? "underline" : "none"};font:${D.link.weight} 16px ${fontFor(D.fonts[0]?.family)}">Ver más detalles →</a></div>` : "";
+    const motion = D.motion ? `<div class="comp"><span>movimiento · ${esc(D.motion.duration)} · ${esc(D.motion.easing)}</span><div class="mdemo" title="Pasa el cursor"><i style="background:${accent || fg};transition:left ${D.motion.duration} ${D.motion.easing}"></i></div></div>` : "";
+    const comps = `<div class="canvas" style="background:${bg};color:${fg}"><div class="comps">
+      <div class="comp"><span>botones</span><div class="row">${btn(pb, "Empezar")}${btn(sb, "Ver más")}</div></div>${card}${input}${link}${motion}</div></div>`;
+
+    const totalH = D.layout.sections.reduce((n, x) => n + Math.min(x.h, 1400), 0) || 1;
+    const compo = `<div class="ident" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+      <div><p class="lead">Orden de secciones de la portada, a escala, con su fondo real:</p><div class="comp-seq">${D.layout.sections.slice(0, 16).map((x) => `<div style="height:${Math.max(18, (Math.min(x.h, 1400) / totalH) * 520)}px;background:${x.bg};color:${on(x.bg)}">${esc(x.type)}</div>`).join("")}</div></div>
+      <div><p class="lead">Ancho de contenido frente a una pantalla de 1440px:</p><div class="width-ruler"><i style="width:${Math.min(100, (D.layout.width / 1440) * 100)}%"></i><span>${D.layout.width}px · densidad ${esc(D.layout.density)}</span></div></div></div>`;
+
+    const exp = `<div class="export"><div class="bar2"><button type="button" data-fmt="css" aria-pressed="true">Variables CSS</button><button type="button" data-fmt="tailwind" aria-pressed="false">Tailwind v4</button><button type="button" data-fmt="designmd" aria-pressed="false">DESIGN.md</button><button class="cp" type="button" id="exp-copy">Copiar</button></div><pre id="exp-pre"></pre></div>`;
+
+    return `<div class="sys">
+      <nav class="sys-nav"><a href="#s-color">Color</a><a href="#s-type">Tipografía</a><a href="#s-shape">Forma y espacio</a><a href="#s-comp">Componentes</a><a href="#s-layout">Composición</a><a href="#s-export">Exportar</a></nav>
+      ${ident}
+      ${sec("s-color", "Color", "Cada rol con su contraste sobre el fondo y la variable CSS de la que sale, si el sitio la declara. Clic para copiar.", roles + accScale + declared + grads)}
+      ${sec("s-type", "Tipografía", `Base ${D.base}px · razón de escala ${D.ratio}. Los especímenes usan la alternativa libre cuando la fuente original es comercial.`, fonts + ladder)}
+      ${sec("s-shape", "Forma y espacio", "Radios, sombras y escala de espaciado medidos, aplicados sobre el fondo de la marca.", shape)}
+      ${sec("s-comp", "Componentes", "Renderizados con los estilos medidos en el sitio.", comps)}
+      ${sec("s-layout", "Composición", "", compo)}
+      ${sec("s-export", "Exportar", "Para replicar la marca en tu proyecto. También disponible para tu agente con get_brand_kit.", exp)}
+    </div>`;
+  }
+
+  async function openBrand(host) {
     const b = B.find((x) => x.host === host);
     if (!b) return;
     history.replaceState(null, "", "#" + encodeURIComponent(host));
-    let cur = 0;
+    let D = null;
+    try { D = await fetch(`brands/${b.slug}.json`).then((r) => (r.ok ? r.json() : null)); } catch {}
+    let cur = D ? -1 : 0; // -1 = pestaña Sistema
+    let fmt = "css";
     const sheet = $("#sheet");
     const draw = () => {
-      const p = b.pages[cur];
-      const shots = [{ img: p.hero, type: "Primer pantallazo" }, ...p.sections.map((s) => ({ img: s.img, type: TYPES[s.type] || s.type }))];
+      const p = cur >= 0 ? b.pages[cur] : b.pages[0];
+      const shots = cur >= 0 ? [{ img: p.hero, type: "Primer pantallazo" }, ...p.sections.map((s) => ({ img: s.img, type: TYPES[s.type] || s.type }))] : [];
       sheet.innerHTML = `
         <div class="top"><div class="in">
           <button class="btn" type="button" id="back">← Explorar</button>
           <h2 id="sheet-name">${esc(b.name)}</h2>
-          <div class="facts">
-            <span class="pal">${b.palette.map((h) => `<i style="background:${h}" title="${h}"></i>`).join("")}</span>
-            ${b.font ? `<span>${esc(b.font)}${b.free && b.free !== b.font ? ` → ${esc(b.free)} libre` : ""}</span>` : ""}
-            <span>${esc(b.industry.map((i) => IND[i] || i).join(" · "))}</span>
-            <span>medido el ${esc(b.captured)}</span>
-          </div>
-          <div class="r" style="margin-left:auto;display:flex;gap:8px"><a class="btn" href="${esc(p.url)}" target="_blank" rel="noopener">Ver sitio ↗</a></div>
+          <div class="facts"><span class="pal">${b.palette.map((h) => `<i style="background:${h}" title="${h}"></i>`).join("")}</span><span>${esc(b.industry.map((i) => IND[i] || i).join(" · "))}</span><span>medido el ${esc(b.captured)}</span></div>
+          <div class="r" style="margin-left:auto;display:flex;gap:8px"><a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener">Ver sitio ↗</a></div>
         </div></div>
         <div class="body">
-          <div class="tabs">${b.pages.map((x, i) => `<button class="chip" type="button" data-tab="${i}" aria-pressed="${i === cur}">${PAGES[x.page] || x.page}</button>`).join("")}</div>
-          <div class="wall" style="margin-top:0">${shots.map((s, k) => `<div class="tile" style="--k:${k}" data-img="${s.img}"><div class="frame"><img loading="lazy" src="${s.img}" alt="${esc(s.type)} de ${esc(b.name)}"></div><div class="cap"><b>${esc(s.type)}</b><span>${esc(PAGES[p.page] || p.page)}</span></div></div>`).join("")}</div>
-          <p class="notice">Orden de secciones medido en la portada: ${b.sequence.map((t) => TYPES[t] || t).join(" → ")}.</p>
+          <div class="tabs">${D ? `<button class="chip" type="button" data-tab="-1" aria-pressed="${cur === -1}">Sistema</button>` : ""}${b.pages.map((x, i) => `<button class="chip" type="button" data-tab="${i}" aria-pressed="${i === cur}">${PAGES[x.page] || x.page}</button>`).join("")}</div>
+          ${cur === -1 ? systemHtml(D) : `<div class="wall" style="margin-top:0">${shots.map((s, k) => `<div class="tile" style="--k:${k}" data-img="${s.img}"><div class="frame"><img loading="lazy" src="${s.img}" alt="${esc(s.type)} de ${esc(b.name)}"></div><div class="cap"><b>${esc(s.type)}</b><span>${esc(PAGES[p.page] || p.page)}</span></div></div>`).join("")}</div>`}
         </div>`;
       $("#back").onclick = closeBrand;
-      sheet.querySelectorAll("[data-tab]").forEach((t) => (t.onclick = () => { cur = +t.dataset.tab; draw(); }));
+      sheet.querySelectorAll("[data-tab]").forEach((t) => (t.onclick = () => { cur = +t.dataset.tab; draw(); sheet.scrollTop = 0; }));
       sheet.querySelectorAll(".tile").forEach((t) => (t.onclick = () => zoom(t.dataset.img)));
+      sheet.querySelectorAll("[data-copy]").forEach((el) => (el.onclick = () => copy(el.dataset.copy, el.querySelector("span, .meta2") || el)));
+      sheet.querySelectorAll(".sys-nav a").forEach((a) => (a.onclick = (e) => { e.preventDefault(); sheet.querySelector(a.getAttribute("href")).scrollIntoView({ behavior: "smooth", block: "start" }); }));
+      const pre = $("#exp-pre");
+      if (pre && D) {
+        const setFmt = () => { pre.textContent = D.exports[fmt]; sheet.querySelectorAll("[data-fmt]").forEach((x) => x.setAttribute("aria-pressed", x.dataset.fmt === fmt)); };
+        sheet.querySelectorAll("[data-fmt]").forEach((x) => (x.onclick = () => { fmt = x.dataset.fmt; setFmt(); }));
+        $("#exp-copy").onclick = (e) => copy(D.exports[fmt], e.currentTarget);
+        setFmt();
+      }
     };
     draw();
     sheet.hidden = false;

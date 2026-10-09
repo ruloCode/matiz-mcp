@@ -14,6 +14,47 @@ import { installChromium, isMissingBrowser } from "../browser-install.js";
 const here = dirname(fileURLToPath(import.meta.url));
 const EXTRACT = readFileSync(join(here, "extract.browser.js"), "utf8");
 const TREE = readFileSync(join(here, "tree.browser.js"), "utf8").replace(/^\s*\/\/.*$/gm, "").trim();
+const BRAND = readFileSync(join(here, "brand.browser.js"), "utf8");
+
+/** Variables declaradas en :root/html dentro de un CSS (para hojas de otros dominios). */
+export function cssVarsFromText(css: string): Array<{ name: string; raw: string }> {
+  const out = new Map<string, string>();
+  const block = /([^{}]+)\{([^{}]*)\}/g;
+  let m: RegExpExecArray | null;
+  while ((m = block.exec(css))) {
+    const sel = m[1].trim().split(/[;}]/).pop()!.trim();
+    if (!sel.split(",").some((x) => /^(:root|html|body)(\[[^\]]*\]|\.[\w-]+|:not\([^)]*\))*$/i.test(x.trim()) || /^\[data-(theme|mode)/i.test(x.trim()))) continue;
+    for (const d of m[2].matchAll(/(--[\w-]+)\s*:\s*([^;]+)/g)) if (!out.has(d[1])) out.set(d[1], d[2].trim().slice(0, 240));
+  }
+  return [...out.entries()].map(([name, raw]) => ({ name, raw }));
+}
+
+async function brandOf(page: Page): Promise<RawPage["brand"]> {
+  const brand = (await page.evaluate(BRAND).catch(() => undefined)) as RawPage["brand"];
+  if (!brand) return undefined;
+  // hojas de otros dominios: el navegador no deja leerlas, Node sí
+  const have = new Set(brand.cssVars.map((v) => v.name));
+  const extra: Array<{ name: string; raw: string; source: string }> = [];
+  for (const href of brand.blockedSheets.slice(0, 8)) {
+    try {
+      const res = await page.request.get(href, { timeout: 8000 });
+      if (!res.ok()) continue;
+      for (const v of cssVarsFromText(await res.text())) if (!have.has(v.name)) {
+        have.add(v.name);
+        extra.push({ ...v, source: new URL(href).hostname });
+      }
+    } catch {}
+  }
+  if (extra.length) {
+    const resolved = (await page.evaluate(
+      (names) => names.map((n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim().slice(0, 240)),
+      extra.map((e) => e.name),
+    )) as string[];
+    extra.forEach((e, i) => brand.cssVars.push({ name: e.name, raw: e.raw, value: resolved[i] || e.raw, source: e.source }));
+  }
+  brand.cssVars = brand.cssVars.slice(0, 900);
+  return brand;
+}
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36";
@@ -272,6 +313,7 @@ export async function captureSite(input: string, opts: CaptureOptions = {}): Pro
     await page.evaluate(() => document.fonts?.ready).catch(() => {});
 
     const raw = (await page.evaluate(EXTRACT)) as RawPage;
+    raw.brand = await brandOf(page);
     if (!raw.sections.length) throw new Error("La página no tiene bloques medibles (¿bloqueo anti-bot o render vacío?)");
     const firstText = `${raw.title} ${raw.sections.slice(0, 3).map((x) => x.text).join(" ")}`;
     if (CHALLENGE.test(firstText) && raw.pageHeight < 2500) throw new Error("El sitio mostró una página de verificación anti-bot; no se guarda.");
