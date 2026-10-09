@@ -29,3 +29,4 @@ for (const url of args) {
   }
 }
 await closeBrowser();
+process.exit(process.exitCode ?? 0);

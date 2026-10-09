@@ -24,8 +24,10 @@ async function getBrowser(): Promise<Browser> {
 }
 
 export async function closeBrowser() {
-  await browser?.close().catch(() => {});
+  // un sitio colgado puede dejar a close() esperando para siempre: tope de 5 s
+  const b = browser;
   browser = undefined;
+  if (b) await Promise.race([b.close().catch(() => {}), new Promise((r) => setTimeout(r, 5000))]);
 }
 
 export interface CaptureOptions {

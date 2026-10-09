@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { captureSite, closeBrowser } from "../src/capture/capture.js";
-import { HOME, getSite, siteIdFromUrl } from "../src/db.js";
+import { HOME, allSites, getSite, siteIdFromUrl } from "../src/db.js";
 
 const args = process.argv.slice(2);
 const opt = (k: string, d?: string) => {
@@ -20,7 +20,10 @@ const force = args.includes("--force");
 type Seed = { url: string; industry?: string[]; tags?: string[]; name?: string };
 let sites: Seed[] = JSON.parse(readFileSync(file, "utf8")).sites;
 if (only) sites = sites.filter((s) => s.industry?.includes(only) || s.tags?.includes(only));
-if (!force) sites = sites.filter((s) => !getSite(siteIdFromUrl(s.url)));
+// un sitio que redirige (sentry.io → /welcome) queda con otro id: se compara también por dominio
+const host = (u: string) => new URL(/^https?:/.test(u) ? u : `https://${u}`).hostname.replace(/^www\./, "");
+const capturedHosts = new Set(allSites().map((s) => host(s.url)));
+if (!force) sites = sites.filter((s) => !getSite(siteIdFromUrl(s.url)) && !capturedHosts.has(host(s.url)));
 sites = sites.slice(0, limit);
 console.log(`Capturando ${sites.length} sitios (concurrencia ${concurrency})…`);
 
@@ -42,5 +45,6 @@ async function worker() {
 }
 await Promise.all(Array.from({ length: concurrency }, worker));
 await closeBrowser();
+process.exit(process.exitCode ?? 0);
 writeFileSync(join(HOME, "seed-failures.json"), JSON.stringify(failures, null, 1));
 console.log(`Listo: ${done} capturados, ${failures.length} fallidos en ${Math.round((Date.now() - t0) / 1000)}s`);
