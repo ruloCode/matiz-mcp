@@ -7,3 +7,5 @@ dist
 test/fixtures/
 .ask
 site/public/.vercel
+site/public/explorar/img/
+site/public/explorar/data.json

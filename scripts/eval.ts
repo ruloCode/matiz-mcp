@@ -1,7 +1,7 @@
 // Evalúa el clasificador de secciones contra research/eval/labels-*.json (etiquetas a ciegas).
 // pnpm eval  → exactitud estricta, exactitud con la etiqueta secundaria, precisión/recall por tipo
 // y las confusiones más frecuentes. Excluye "unclear" (capturas malas, no secciones ambiguas).
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { getSite } from "../src/db.js";
 
 type Label = { ref_id: string; label: string; secondary: string | null; note?: string };
@@ -12,6 +12,8 @@ const labels: Label[] = readdirSync("research/eval")
   .filter((f) => f.startsWith(prefix) && /-\d+\.json$/.test(f))
   .flatMap((f) => JSON.parse(readFileSync(`research/eval/${f}`, "utf8")));
 
+// sitios recapturados después de etiquetar: sus índices de sección pudieron moverse
+const stale = new Set<string>(existsSync("research/eval/stale-hosts.json") ? JSON.parse(readFileSync("research/eval/stale-hosts.json", "utf8")) : []);
 const rows: Array<{ ref: string; gold: string; second: string | null; pred: string }> = [];
 let unclear = 0;
 let missing = 0;
@@ -21,7 +23,12 @@ for (const l of labels) {
     continue;
   }
   const [id, idx] = l.ref_id.split("#");
-  const sec = getSite(id)?.dna.sections.find((s) => s.idx === +idx);
+  const site = getSite(id);
+  if (site && stale.has(site.host ?? "")) {
+    missing++;
+    continue;
+  }
+  const sec = site?.dna.sections.find((s) => s.idx === +idx);
   if (!sec) {
     missing++;
     continue;

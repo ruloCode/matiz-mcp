@@ -1,18 +1,18 @@
 {
  "set": "holdout",
  "date": "2026-10-09",
- "evaluated": 130,
+ "evaluated": 120,
  "excluded_unclear": 12,
- "missing": 0,
- "accuracy": 0.485,
- "accuracy_with_secondary": 0.538,
- "content_rate_predicted": 0.115,
+ "missing": 10,
+ "accuracy": 0.5,
+ "accuracy_with_secondary": 0.55,
+ "content_rate_predicted": 0.108,
  "per_type": [
   {
    "type": "banner",
    "gold": 6,
-   "predicted": 7,
-   "precision": 0.86,
+   "predicted": 6,
+   "precision": 1,
    "recall": 1
   },
   {
@@ -31,7 +31,7 @@
   },
   {
    "type": "comparison",
-   "gold": 9,
+   "gold": 8,
    "predicted": 0,
    "precision": null,
    "recall": 0
@@ -46,30 +46,30 @@
   {
    "type": "content",
    "gold": 3,
-   "predicted": 15,
+   "predicted": 13,
    "precision": 0,
    "recall": 0
   },
   {
    "type": "cta",
    "gold": 6,
-   "predicted": 15,
-   "precision": 0.27,
+   "predicted": 13,
+   "precision": 0.31,
    "recall": 0.67
   },
   {
    "type": "faq",
-   "gold": 8,
+   "gold": 6,
    "predicted": 7,
    "precision": 0.71,
-   "recall": 0.63
+   "recall": 0.83
   },
   {
    "type": "feature-split",
-   "gold": 3,
-   "predicted": 7,
-   "precision": 0.14,
-   "recall": 0.33
+   "gold": 2,
+   "predicted": 6,
+   "precision": 0,
+   "recall": 0
   },
   {
    "type": "features",
@@ -94,10 +94,10 @@
   },
   {
    "type": "hero",
-   "gold": 10,
+   "gold": 8,
    "predicted": 7,
    "precision": 0.86,
-   "recall": 0.6
+   "recall": 0.75
   },
   {
    "type": "integrations",
@@ -115,10 +115,10 @@
   },
   {
    "type": "navbar",
-   "gold": 8,
-   "predicted": 7,
+   "gold": 5,
+   "predicted": 5,
    "precision": 1,
-   "recall": 0.88
+   "recall": 1
   },
   {
    "type": "newsletter",
@@ -137,8 +137,8 @@
   {
    "type": "showcase",
    "gold": 6,
-   "predicted": 6,
-   "precision": 0.33,
+   "predicted": 4,
+   "precision": 0.5,
    "recall": 0.33
   },
   {
@@ -164,10 +164,10 @@
   },
   {
    "type": "testimonials",
-   "gold": 9,
+   "gold": 8,
    "predicted": 6,
    "precision": 0.67,
-   "recall": 0.44
+   "recall": 0.5
   },
   {
    "type": "video",
@@ -179,10 +179,6 @@
  ],
  "top_confusions": [
   {
-   "confusion": "comparison → content",
-   "n": 4
-  },
-  {
    "confusion": "blog → cta",
    "n": 4
   },
@@ -193,6 +189,10 @@
   {
    "confusion": "comparison → pricing",
    "n": 4
+  },
+  {
+   "confusion": "comparison → content",
+   "n": 3
   },
   {
    "confusion": "blog → team",

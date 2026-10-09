@@ -29,6 +29,8 @@
     "ask": "tsx scripts/ask.ts",
     "build:site": "tsx scripts/build-site.ts",
     "build:og": "tsx scripts/build-og.ts",
+    "build:explore": "tsx scripts/build-explore.ts",
+    "recapture": "tsx scripts/recapture.ts",
     "typecheck": "tsc -p . --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
     "capture": "tsx scripts/capture.ts",

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Explorar · Matiz</title>
+<meta name="description" content="Páginas reales de producto medidas por Matiz: portadas, precios, registro y más, con su paleta, tipografía y estructura.">
+<meta property="og:title" content="Explorar · Matiz">
+<meta property="og:description" content="Páginas reales de producto medidas por Matiz, con su paleta, tipografía y estructura.">
+<meta property="og:image" content="https://matiz-mcp.vercel.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #ffffff; --soft: #f3f3f4; --soft-2: #e9e9eb; --ink: #141414; --muted: #66666c; --line: #e4e4e7; --mark: #2f6bff;
+  --font: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --gutter: clamp(16px, 3vw, 32px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0b0b0c; --soft: #161618; --soft-2: #222225; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e; --mark: #86a6ff; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: 8px; }
+img { display: block; max-width: 100%; }
+
+.bar { position: sticky; top: 0; z-index: 20; background: color-mix(in oklab, var(--bg) 88%, transparent); backdrop-filter: blur(12px) saturate(1.3); border-bottom: 1px solid var(--line); }
+.bar .in { display: flex; align-items: center; gap: 26px; height: 60px; padding-inline: var(--gutter); max-width: 1480px; margin-inline: auto; }
+.logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 17px; letter-spacing: -0.03em; }
+.logo i { width: 19px; height: 19px; border-radius: 6px; background: conic-gradient(from 210deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
+.bar nav { display: flex; gap: 22px; font-size: 14.5px; font-weight: 500; color: var(--muted); }
+.bar nav a.on, .bar nav a:hover { color: var(--ink); }
+.bar .r { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 999px; padding: 9px 16px; font-weight: 500; font-size: 14px; cursor: pointer; background: var(--soft); }
+.btn:hover { background: var(--soft-2); }
+.btn.ink { background: var(--ink); color: var(--bg); }
+@media (max-width: 720px) { .bar nav { display: none; } }
+
+main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px; }
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; }
+.head h1 { margin: 0; font-size: clamp(2rem, 4vw, 2.75rem); letter-spacing: -0.045em; font-weight: 650; line-height: 1; }
+.head p { margin: 8px 0 0; color: var(--muted); }
+.seg { display: inline-flex; background: var(--soft); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: transparent; border-radius: 999px; padding: 7px 16px; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.controls select { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 7px 12px; font-size: 14px; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 22px 0 6px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-size: 13.5px; font-weight: 500; }
+.chip span { color: var(--muted); font-weight: 400; margin-left: 5px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] span { color: inherit; opacity: .65; }
+
+/* sitios */
+.sites { margin-top: 22px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 36px 24px; }
+.site { cursor: pointer; display: grid; gap: 12px; }
+.prev { position: relative; border-radius: 18px; background: var(--soft); padding: 10px; overflow: hidden; }
+.prev .frame { border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 10; background: var(--soft-2); border: 1px solid var(--line); }
+.prev img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: opacity .25s, transform .6s cubic-bezier(.2,.8,.2,1); }
+.site:hover .prev img { transform: scale(1.02); }
+.pages { position: absolute; left: 18px; bottom: 18px; right: 18px; display: flex; gap: 6px; flex-wrap: wrap; opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .25s; }
+.site:hover .pages, .site:focus-within .pages { opacity: 1; transform: none; }
+@media (hover: none) { .pages { opacity: 1; transform: none; } }
+.pages button { border: 0; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 500; cursor: pointer; background: color-mix(in oklab, #000 62%, transparent); color: #fff; backdrop-filter: blur(6px); }
+.pages button[aria-pressed="true"] { background: #fff; color: #111; }
+.meta { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.meta .sw { display: flex; flex: none; }
+.meta .sw i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -5px; box-shadow: 0 0 0 1px var(--line); }
+.meta .sw i:first-child { margin-left: 0; }
+.meta b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta span { color: var(--muted); font-size: 13.5px; white-space: nowrap; }
+.meta .n { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* secciones */
+.wall { margin-top: 22px; columns: 4 300px; column-gap: 18px; }
+.tile { break-inside: avoid; margin-bottom: 18px; cursor: zoom-in; display: grid; gap: 7px; }
+.tile .frame { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--soft); }
+.tile .cap { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.tile .cap b { font-weight: 600; }
+.tile .cap span { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.more { display: block; margin: 20px auto 0; }
+
+/* ficha de marca */
+.sheet { position: fixed; inset: 0; z-index: 40; background: var(--bg); overflow-y: auto; }
+.sheet .top { position: sticky; top: 0; z-index: 2; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.sheet .top .in { max-width: 1480px; margin-inline: auto; padding: 14px var(--gutter); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.sheet h2 { margin: 0; font-size: 26px; letter-spacing: -0.035em; }
+.sheet .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; font-size: 13.5px; color: var(--muted); }
+.sheet .facts .pal { display: flex; gap: 4px; }
+.sheet .facts .pal i { width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--line); }
+.sheet .body { max-width: 1480px; margin-inline: auto; padding: 22px var(--gutter) 60px; }
+.sheet .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.lightbox { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.82); display: grid; place-items: center; padding: 24px; cursor: zoom-out; }
+.lightbox img { max-height: 92vh; width: auto; border-radius: 10px; }
+.notice { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; max-width: 75ch; }
+.notice a { text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .site, .tile { animation: up .55s cubic-bezier(.16,.84,.24,1) both; animation-delay: calc(var(--k, 0) * 28ms); }
+  @keyframes up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="in">
+    <a class="logo" href="/"><i aria-hidden="true"></i>Matiz</a>
+    <nav aria-label="Secciones"><a class="on" href="/explorar/">Explorar</a><a href="/#demo">Cómo funciona</a><a href="/#instalar">Instalar</a><a href="/#preguntas">Preguntas</a></nav>
+    <div class="r"><a class="btn ink" href="/#instalar">Conectar MCP</a></div>
+  </div>
+</header>
+<main>
+  <div class="head">
+    <div><h1>Explorar</h1><p id="sub">Páginas reales de producto, medidas por Matiz.</p></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Vista"><button type="button" data-view="sites" aria-pressed="true">Sitios</button><button type="button" data-view="sections" aria-pressed="false">Secciones</button></div>
+      <select id="sort" aria-label="Orden"><option value="recent">Recientes</option><option value="az">A–Z</option></select>
+    </div>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="sites" id="sites"></div>
+  <div class="wall" id="wall" hidden></div>
+  <button class="btn more" id="more" type="button" hidden>Cargar más</button>
+  <p class="notice">Capturas de páginas públicas de marketing, en baja resolución, solo como referencia de diseño. Cada marca enlaza a su sitio original y las marcas pertenecen a sus dueños. ¿Es tu sitio y quieres que lo retiremos? Escríbenos en <a href="https://github.com/ruloCode" target="_blank" rel="noopener">github.com/ruloCode</a> y lo quitamos.</p>
+</main>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-name"></div>
+<div class="lightbox" id="lightbox" hidden></div>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const PAGES = { home: "Portada", pricing: "Precios", signup: "Registro", login: "Login", about: "Nosotros", customers: "Clientes", features: "Producto", changelog: "Changelog", blog: "Blog", integrations: "Integraciones", careers: "Empleos", contact: "Contacto", security: "Seguridad", enterprise: "Empresas", docs: "Docs" };
+  const TYPES = { hero: "Hero", navbar: "Navbar", logos: "Logos", features: "Features", "feature-split": "Imagen + texto", bento: "Bento", steps: "Pasos", stats: "Cifras", testimonials: "Testimonios", pricing: "Precios", comparison: "Comparativa", faq: "FAQ", cta: "CTA", newsletter: "Newsletter", integrations: "Integraciones", team: "Equipo", blog: "Blog", contact: "Contacto", gallery: "Galería", video: "Video", showcase: "Showcase", footer: "Footer", content: "Contenido" };
+  const IND = { ai: "IA", devtools: "Desarrolladores", fintech: "Fintech", productivity: "Productividad", design: "Diseño", ecommerce: "E-commerce", health: "Salud", education: "Educación", marketing: "Marketing", media: "Medios", travel: "Viajes", agency: "Agencias", hardware: "Hardware" };
+  const state = { view: "sites", industry: "", type: "", sort: "recent", shown: 0 };
+  let B = [];
+
+  fetch("data.json").then((r) => r.json()).then((d) => {
+    B = d.brands;
+    const pages = B.reduce((n, b) => n + b.pages.length, 0);
+    $("#sub").textContent = `${B.length} marcas · ${pages} páginas reales de producto, medidas por Matiz.`;
+    render();
+    if (location.hash.length > 1) openBrand(decodeURIComponent(location.hash.slice(1)));
+  });
+
+  function filtered() {
+    let l = B.filter((b) => !state.industry || b.industry.includes(state.industry));
+    if (state.sort === "az") l = [...l].sort((a, b) => a.name.localeCompare(b.name));
+    return l;
+  }
+
+  function renderChips() {
+    if (state.view === "sites") {
+      const count = {};
+      B.forEach((b) => b.industry.forEach((i) => (count[i] = (count[i] || 0) + 1)));
+      $("#chips").innerHTML = `<button class="chip" data-ind="" aria-pressed="${!state.industry}">Todas<span>${B.length}</span></button>` +
+        Object.entries(count).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<button class="chip" data-ind="${k}" aria-pressed="${state.industry === k}">${IND[k] || k}<span>${n}</span></button>`).join("");
+    } else {
+      const count = {};
+      filtered().forEach((b) => b.pages.forEach((p) => p.sections.forEach((s) => (count[s.type] = (count[s.type] || 0) + 1))));
+      $("#chips").innerHTML = `<button class="chip" data-type="" aria-pressed="${!state.type}">Todas</button>` +
+        Object.entries(count).filter(([k]) => k !== "content").sort((a, b) => b[1] - a[1]).map(([k, n]) => `<button class="chip" data-type="${k}" aria-pressed="${state.type === k}">${TYPES[k] || k}<span>${n}</span></button>`).join("");
+    }
+  }
+
+  function siteCard(b, k) {
+    const sw = b.palette.slice(0, 4).map((h) => `<i style="background:${h}"></i>`).join("");
+    const pills = b.pages.length > 1 ? `<div class="pages">${b.pages.slice(0, 6).map((p, i) => `<button type="button" data-pg="${i}" aria-pressed="${i === 0}">${PAGES[p.page] || p.page}</button>`).join("")}</div>` : "";
+    return `<article class="site" style="--k:${k % 24}" data-host="${esc(b.host)}" tabindex="0">
+      <div class="prev"><div class="frame"><img loading="lazy" src="${b.pages[0].hero}" alt="Portada de ${esc(b.name)}" width="720" height="450"></div>${pills}</div>
+      <div class="meta"><span class="sw" aria-hidden="true">${sw}</span><b>${esc(b.name)}</b><span>${esc(b.industry.map((i) => IND[i] || i).join(" · "))}</span><span class="n">${b.pages.length} ${b.pages.length === 1 ? "página" : "páginas"}</span></div>
+    </article>`;
+  }
+
+  function sectionList() {
+    const out = [];
+    filtered().forEach((b) => b.pages.forEach((p) => p.sections.forEach((s) => {
+      if (state.type ? s.type === state.type : s.type !== "content" && s.type !== "navbar" && s.type !== "footer") out.push({ b, p, s });
+    })));
+    // una marca por vuelta para que ninguna acapare el muro
+    const by = new Map();
+    out.forEach((x) => { const l = by.get(x.b.host) || []; l.push(x); by.set(x.b.host, l); });
+    const rounds = [];
+    for (let r = 0; rounds.length < out.length; r++) for (const l of by.values()) if (l[r]) rounds.push(l[r]);
+    return rounds;
+  }
+
+  function render(append) {
+    renderChips();
+    $("#sites").hidden = state.view !== "sites";
+    $("#wall").hidden = state.view !== "sections";
+    if (state.view === "sites") {
+      $("#sites").innerHTML = filtered().map(siteCard).join("");
+      $("#more").hidden = true;
+      return;
+    }
+    const list = sectionList();
+    if (!append) state.shown = 0;
+    const next = list.slice(state.shown, state.shown + 60);
+    const html = next.map(({ b, p, s }, k) => `<div class="tile" style="--k:${k % 30}" data-img="${s.img}"><div class="frame"><img loading="lazy" src="${s.img}" alt="${esc(TYPES[s.type] || s.type)} de ${esc(b.name)}" width="560"></div><div class="cap"><b data-host="${esc(b.host)}">${esc(b.name)}</b><span>${esc(TYPES[s.type] || s.type)}${p.page !== "home" ? " · " + esc(PAGES[p.page] || p.page) : ""}</span></div></div>`).join("");
+    if (append) $("#wall").insertAdjacentHTML("beforeend", html); else $("#wall").innerHTML = html;
+    state.shown += next.length;
+    $("#more").hidden = state.shown >= list.length;
+  }
+
+  // ---------- eventos ----------
+  document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => {
+    state.view = b.dataset.view; state.type = "";
+    document.querySelectorAll("[data-view]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    render();
+  }));
+  $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+  $("#chips").addEventListener("click", (e) => {
+    const c = e.target.closest(".chip");
+    if (!c) return;
+    if ("ind" in c.dataset) state.industry = c.dataset.ind;
+    if ("type" in c.dataset) state.type = c.dataset.type;
+    render();
+  });
+  $("#more").addEventListener("click", () => render(true));
+  new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && !$("#more").hidden && render(true)), { rootMargin: "800px" }).observe($("#more"));
+
+  $("#sites").addEventListener("click", (e) => {
+    const pg = e.target.closest("[data-pg]");
+    const card = e.target.closest(".site");
+    if (!card) return;
+    const b = B.find((x) => x.host === card.dataset.host);
+    if (pg) {
+      e.stopPropagation();
+      const p = b.pages[+pg.dataset.pg];
+      const im = card.querySelector("img");
+      im.style.opacity = 0.2;
+      im.onload = () => (im.style.opacity = 1);
+      im.src = p.hero;
+      card.querySelectorAll("[data-pg]").forEach((x) => x.setAttribute("aria-pressed", x === pg));
+      return;
+    }
+    openBrand(b.host);
+  });
+  $("#sites").addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.classList.contains("site")) openBrand(e.target.dataset.host); });
+  $("#wall").addEventListener("click", (e) => {
+    const h = e.target.closest("[data-host]");
+    if (h) return openBrand(h.dataset.host);
+    const t = e.target.closest(".tile");
+    if (t) zoom(t.dataset.img);
+  });
+
+  // ---------- ficha ----------
+  function openBrand(host) {
+    const b = B.find((x) => x.host === host);
+    if (!b) return;
+    history.replaceState(null, "", "#" + encodeURIComponent(host));
+    let cur = 0;
+    const sheet = $("#sheet");
+    const draw = () => {
+      const p = b.pages[cur];
+      const shots = [{ img: p.hero, type: "Primer pantallazo" }, ...p.sections.map((s) => ({ img: s.img, type: TYPES[s.type] || s.type }))];
+      sheet.innerHTML = `
+        <div class="top"><div class="in">
+          <button class="btn" type="button" id="back">← Explorar</button>
+          <h2 id="sheet-name">${esc(b.name)}</h2>
+          <div class="facts">
+            <span class="pal">${b.palette.map((h) => `<i style="background:${h}" title="${h}"></i>`).join("")}</span>
+            ${b.font ? `<span>${esc(b.font)}${b.free && b.free !== b.font ? ` → ${esc(b.free)} libre` : ""}</span>` : ""}
+            <span>${esc(b.industry.map((i) => IND[i] || i).join(" · "))}</span>
+            <span>medido el ${esc(b.captured)}</span>
+          </div>
+          <div class="r" style="margin-left:auto;display:flex;gap:8px"><a class="btn" href="${esc(p.url)}" target="_blank" rel="noopener">Ver sitio ↗</a></div>
+        </div></div>
+        <div class="body">
+          <div class="tabs">${b.pages.map((x, i) => `<button class="chip" type="button" data-tab="${i}" aria-pressed="${i === cur}">${PAGES[x.page] || x.page}</button>`).join("")}</div>
+          <div class="wall" style="margin-top:0">${shots.map((s, k) => `<div class="tile" style="--k:${k}" data-img="${s.img}"><div class="frame"><img loading="lazy" src="${s.img}" alt="${esc(s.type)} de ${esc(b.name)}"></div><div class="cap"><b>${esc(s.type)}</b><span>${esc(PAGES[p.page] || p.page)}</span></div></div>`).join("")}</div>
+          <p class="notice">Orden de secciones medido en la portada: ${b.sequence.map((t) => TYPES[t] || t).join(" → ")}.</p>
+        </div>`;
+      $("#back").onclick = closeBrand;
+      sheet.querySelectorAll("[data-tab]").forEach((t) => (t.onclick = () => { cur = +t.dataset.tab; draw(); }));
+      sheet.querySelectorAll(".tile").forEach((t) => (t.onclick = () => zoom(t.dataset.img)));
+    };
+    draw();
+    sheet.hidden = false;
+    document.body.style.overflow = "hidden";
+    sheet.scrollTop = 0;
+  }
+  function closeBrand() {
+    $("#sheet").hidden = true;
+    document.body.style.overflow = "";
+    history.replaceState(null, "", location.pathname);
+  }
+  function zoom(src) {
+    const lb = $("#lightbox");
+    lb.innerHTML = `<img src="${src}" alt="">`;
+    lb.hidden = false;
+  }
+  $("#lightbox").addEventListener("click", () => ($("#lightbox").hidden = true));
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!$("#lightbox").hidden) $("#lightbox").hidden = true;
+    else if (!$("#sheet").hidden) closeBrand();
+  });
+})();
+</script>
+</body>
+</html>

@@ -118,7 +118,25 @@ const COOKIE_BUTTONS = [
   "button:has-text('OK')",
 ];
 
+// gestores de consentimiento conocidos (varios viven en shadow DOM o se inyectan tarde)
+const CONSENT_CSS = `
+#onetrust-consent-sdk, #onetrust-banner-sdk, .onetrust-pc-dark-filter, #CybotCookiebotDialog, #CybotCookiebotDialogBodyUnderlay,
+#usercentrics-root, #usercentrics-cmp-ui, .osano-cm-window, .osano-cm-dialog, #truste-consent-track, .truste_box_overlay,
+#didomi-host, .didomi-popup-backdrop, #qc-cmp2-container, .qc-cmp2-container, #cmpbox, #cmpbox2, .cky-consent-container, .cky-overlay,
+#iubenda-cs-banner, .iubenda-cs-container, #cookie-law-info-bar, .cc-window, .cc-banner, .cookie-consent, .cookieconsent,
+[id*="cookie-banner" i], [class*="cookie-banner" i], [id*="cookiebanner" i], [class*="cookiebanner" i], [id*="consent-banner" i],
+[class*="consent-banner" i], [aria-label*="cookie" i][role="dialog"], [aria-label*="consent" i], [data-testid*="cookie" i],
+[class*="consent-root" i], [class*="consent-card" i], [class*="consent-modal" i], [class*="cookie-notice" i], [id*="cookie-notice" i],
+[class*="cookie-bar" i], [id*="cookie-bar" i], [class*="cookie-consent" i], [class*="cookies-banner" i], [class*="gdpr" i],
+#hubspot-messages-iframe-container, #intercom-container, .intercom-lightweight-app, #crisp-chatbox, .drift-frame-controller
+{ display: none !important; visibility: hidden !important; }
+html, body { overflow: auto !important; }`;
+
+/** Páginas de desafío anti-bot (Cloudflare, "verifica que eres humano"…): no se guardan como si fueran el sitio. */
+export const CHALLENGE = /performing security verification|verify you are (a )?human|checking (if the site connection is secure|your browser)|just a moment\.\.\.|attention required|access denied|are you a robot|enable javascript and cookies to continue|pardon our interruption/i;
+
 async function clearOverlays(page: Page) {
+  await page.addStyleTag({ content: CONSENT_CSS }).catch(() => {});
   for (const sel of COOKIE_BUTTONS) {
     const b = page.locator(sel).first();
     if (await b.isVisible({ timeout: 150 }).catch(() => false)) {
@@ -255,6 +273,9 @@ export async function captureSite(input: string, opts: CaptureOptions = {}): Pro
 
     const raw = (await page.evaluate(EXTRACT)) as RawPage;
     if (!raw.sections.length) throw new Error("La página no tiene bloques medibles (¿bloqueo anti-bot o render vacío?)");
+    const firstText = `${raw.title} ${raw.sections.slice(0, 3).map((x) => x.text).join(" ")}`;
+    if (CHALLENGE.test(firstText) && raw.pageHeight < 2500) throw new Error("El sitio mostró una página de verificación anti-bot; no se guarda.");
+    await clearOverlays(page);
     const finalUrl = page.url();
     const id = siteIdFromUrl(finalUrl.split("?")[0]) + (mobile ? "@m" : "");
     const dna = buildDna(raw, { industry: opts.industry });
@@ -296,7 +317,8 @@ export async function captureSite(input: string, opts: CaptureOptions = {}): Pro
       industry: dna.industry,
       dna,
       shots,
-      page: opts.page ?? pageTypeFromUrl(url) ?? "home",
+      // una ruta que no es la raíz ni un tipo conocido (/mcp, /welcome…) es "other", nunca "home"
+      page: opts.page ?? pageTypeFromUrl(url) ?? "other",
       host: hostOf(finalUrl),
       viewport: mobile ? "mobile" : "desktop",
     };
