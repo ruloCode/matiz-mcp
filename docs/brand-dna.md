@@ -27,6 +27,36 @@ Objetivo: que Matiz pueda **replicar el branding de cualquier sitio** y que cada
 
 Criterio: todo valor visible sale de la página medida. Lo que no se midió no aparece.
 
+## Análisis profundo (`pnpm deep`, `capture --deep`, `capture_site { deep: true }`)
+
+Una segunda pasada con Playwright, con el movimiento ACTIVADO (`reducedMotion: no-preference`), que mide lo
+que una captura estática no ve. Código: `src/capture/deep.browser.js` (en la página), `src/capture/deep.ts`
+(orquestación) y `src/analysis/deep.ts` (resumen para el agente). Sale `<shots>/<id>/deep.json` y los recortes en `deep/`.
+
+1. **Entrada al hacer scroll.** Antes de bajar se anotan los elementos ocultos bajo el pliegue (opacidad, transform,
+   blur, clip-path); se recorre la página de 320 en 320 px y se mide cuáles aparecen y cómo: patrón (sube + fundido,
+   zoom, máscara…), distancia, opacidad inicial, duración, curva y escalonado entre hermanos. En el mismo recorrido
+   se muestrean `document.getAnimations()`: las animaciones de JS no viven en el CSS.
+2. **Componentes reales**, agrupados por firma de estilo: variantes de botón (la primaria es la sólida más arriba y
+   más repetida), barra de navegación (alto, vidrio, sticky, enlaces y su separación), tarjetas (padding de los
+   cuatro lados, separación interna, sombra, título), pills, input, link y encabezado de sección (antetítulo + título + subtítulo).
+3. **Estados medidos interactuando**: a cada componente se le hace hover (al input, focus), se espera su
+   transición y se compara el estilo calculado del elemento y de sus hijos (la flecha que se mueve). Recorte antes y después.
+4. **Espaciado**: histogramas de padding, gap y márgenes; unidad base (cuántas medidas son múltiplos de 8 o de 4);
+   ritmo vertical (el aire real arriba y abajo de cada sección y el ancho de su contenido); contenedor y margen lateral.
+5. **Profundidad**: sombras con su tipo (caída, anillo, interior), elevación y en qué elementos se usan; radio por tipo
+   de elemento; bordes; efectos (vidrio, texto con degradado, máscaras, blur, grano).
+6. **Movimiento**: elementos con transición, propiedades, duraciones, curvas, `@keyframes`, animaciones vivas e
+   infinitas, scroll-driven, View Transitions y librerías (GSAP, Framer Motion, Lenis, Lottie…).
+7. **Imágenes, rejilla, breakpoints, stack y accesibilidad** (foco visible, prefers-reduced-motion, variante oscura).
+
+En la ficha pública cada número se compara con el catálogo (`metrics` en data.json): tiras con todas las marcas,
+percentil y comparación contra otra marca. Los extremos (≥ p90 o ≤ p10) entran en "Lo que la hace única".
+
+Lección: la limpieza de banners hacía clic en `button:has-text('Accept')` y en Stripe encontró "Accept and optimize
+payments", abrió un modal y así quedó la captura. Ahora el texto debe ser EXACTO (`text-is`), y el análisis profundo
+avisa (`legacyClick`) qué capturas viejas se contaminaron para recapturarlas.
+
 Código: `src/capture/brand.browser.js` (extracción), `src/analysis/system.ts` (tokens, escala, fuentes),
 `src/analysis/uniqueness.ts`, `src/analysis/exports.ts`, `scripts/build-explore.ts` → `brands/<host>.json`.
 
@@ -50,9 +80,9 @@ Formatos que conviene emitir: **DTCG 2025.10** (con `$extensions` para la proced
 1. **Procedencia por token**: área en pantalla, elementos y la variable de origen. ✓ La variable ya está.
 2. **Cadena de alias**: computado ← semántico ← primitivo (`#d97757` ← `--color-accent` ← `--orange-500`).
 3. **Modos reales**: detectar claro/oscuro solo y emparejar roles (modos DTCG/Figma).
-4. **Estados medidos interactuando**: hover, focus-visible y active forzados en Playwright, con el delta.
+4. **Estados medidos interactuando**: ✓ hover y focus con su delta y recorte (falta active y focus-visible por teclado).
 5. **Escala fluida**: `clamp()` medido en 3–4 viewports, ejes variables y font-feature.
-6. **Tokens por sección**: la paleta del hero oscuro, del footer… Matiz ya clasifica secciones.
+6. **Tokens por sección** (✓ parcial: el ritmo ya trae el fondo y el aire de cada sección): la paleta del hero oscuro, del footer… Matiz ya clasifica secciones.
 7. **Verificación de la réplica**: renderizar un espécimen con los tokens y compararlo con la captura.
 8. **Estilo de iconos e imagen** como parte del ADN.
 

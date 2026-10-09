@@ -2,4 +2,4 @@
 import { statSync } from "node:fs";
 import { exportPack } from "../src/pack.js";
 const r = exportPack();
-console.log(`${r.sites} sitios → ${r.path} (${(statSync(r.path).size / 1024).toFixed(0)} KB)`);
+console.log(`${r.sites} sitios · ${r.deep} con análisis profundo → ${r.path} (${(statSync(r.path).size / 1024).toFixed(0)} KB)`);

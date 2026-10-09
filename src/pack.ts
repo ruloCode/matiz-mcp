@@ -5,7 +5,9 @@ import { gunzipSync, gzipSync } from "node:zlib";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { allSites, openDb, saveSite } from "./db.js";
+import { mkdirSync } from "node:fs";
+import { SHOTS, allSites, openDb, saveSite } from "./db.js";
+import { type DeepJson, loadDeep, packableDeep } from "./analysis/deep.js";
 import type { SiteRecord } from "./types.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -16,6 +18,8 @@ interface Pack {
   version: 1;
   exportedAt: string;
   sites: SiteRecord[];
+  /** Análisis profundo por sitio (componentes, hover, ritmo, movimiento), si se corrió `pnpm deep`. */
+  deep?: Record<string, DeepJson>;
 }
 
 export function exportPack(path = BUNDLED_PACK) {
@@ -28,9 +32,14 @@ export function exportPack(path = BUNDLED_PACK) {
       sections: s.dna.sections.map(({ shot: _s, thumb: _t, ...sec }) => ({ ...sec, text: sec.text.slice(0, 200) })),
     },
   }));
-  const pack: Pack = { version: 1, exportedAt: new Date().toISOString(), sites };
+  const deep: Record<string, DeepJson> = {};
+  for (const s of sites) {
+    const d = loadDeep(s.id);
+    if (d) deep[s.id] = packableDeep(d);
+  }
+  const pack: Pack = { version: 1, exportedAt: new Date().toISOString(), sites, deep };
   writeFileSync(path, gzipSync(JSON.stringify(pack), { level: 9 }));
-  return { sites: sites.length, path };
+  return { sites: sites.length, deep: Object.keys(deep).length, path };
 }
 
 /** Importa lo que falte. Nunca pisa un sitio ya capturado en esta máquina. */
@@ -43,6 +52,13 @@ export function importPack(path = BUNDLED_PACK): { imported: number; skipped: nu
     if (have.has(s.id)) continue;
     saveSite(s);
     imported++;
+  }
+  // el análisis profundo se deja donde lo busca get_brand_kit, sin pisar uno local
+  for (const [id, d] of Object.entries(pack.deep ?? {})) {
+    const f = join(SHOTS, id, "deep.json");
+    if (existsSync(f)) continue;
+    mkdirSync(join(SHOTS, id), { recursive: true });
+    writeFileSync(f, JSON.stringify(d));
   }
   return { imported, skipped: pack.sites.length - imported };
 }

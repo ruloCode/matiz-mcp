@@ -56,14 +56,14 @@ async function brandOf(page: Page): Promise<RawPage["brand"]> {
   return brand;
 }
 
-const UA =
+export const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36";
 
 let browser: Browser | undefined;
 
 const launch = () => chromium.launch({ headless: true, args: ["--disable-blink-features=AutomationControlled"] });
 
-async function getBrowser(): Promise<Browser> {
+export async function getBrowser(): Promise<Browser> {
   if (browser?.isConnected()) return browser;
   try {
     browser = await launch();
@@ -140,23 +140,15 @@ export function normalizeUrl(url: string): string {
   return `https://${u}`;
 }
 
+// texto EXACTO (text-is): con has-text, "Accept" encontraba "Accept and optimize payments" en Stripe,
+// le hacía clic y la captura salía con un modal del producto abierto
+const COOKIE_TEXTS = ["Accept all cookies", "Allow all cookies", "Accept all", "Accept All", "Allow all", "Accept", "Accept cookies", "I agree", "Agree", "Got it", "Aceptar todo", "Aceptar todas", "Aceptar", "Acepto", "OK", "Ok"];
 const COOKIE_BUTTONS = [
   "#onetrust-accept-btn-handler",
   "button#accept-cookies",
   "[data-testid*=cookie] button",
   "#didomi-notice-agree-button",
-  "[id*=cookie i] button:has-text('Accept')",
-  "button:has-text('Accept all cookies')",
-  "button:has-text('Allow all cookies')",
-  "button:has-text('Accept all')",
-  "button:has-text('Accept All')",
-  "button:has-text('Allow all')",
-  "button:has-text('Accept')",
-  "button:has-text('I agree')",
-  "button:has-text('Got it')",
-  "button:has-text('Aceptar todo')",
-  "button:has-text('Aceptar')",
-  "button:has-text('OK')",
+  ...COOKIE_TEXTS.map((t) => `button:text-is("${t}")`),
 ];
 
 // gestores de consentimiento conocidos (varios viven en shadow DOM o se inyectan tarde)
@@ -176,7 +168,7 @@ html, body { overflow: auto !important; }`;
 /** Páginas de desafío anti-bot (Cloudflare, "verifica que eres humano"…): no se guardan como si fueran el sitio. */
 export const CHALLENGE = /performing security verification|verify you are (a )?human|checking (if the site connection is secure|your browser)|just a moment\.\.\.|attention required|access denied|are you a robot|enable javascript and cookies to continue|pardon our interruption/i;
 
-async function clearOverlays(page: Page) {
+export async function clearOverlays(page: Page) {
   await page.addStyleTag({ content: CONSENT_CSS }).catch(() => {});
   for (const sel of COOKIE_BUTTONS) {
     const b = page.locator(sel).first();

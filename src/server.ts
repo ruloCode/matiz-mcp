@@ -21,6 +21,8 @@ import { toDesignMd, toDtcg } from "./analysis/designmd.js";
 import { contrastRatio, parseColor, tonalScale } from "./analysis/color.js";
 import { distinctiveTraits } from "./analysis/uniqueness.js";
 import { toCssVariables, toTailwindTheme } from "./analysis/exports.js";
+import { deepForAgent, loadDeep } from "./analysis/deep.js";
+import { deepAnalyze } from "./capture/deep.js";
 import { SECTION_TYPES } from "./analysis/sections.js";
 import { remember, forget, tasteProfile } from "./taste.js";
 import type { Dna, SectionType, SiteRecord } from "./types.js";
@@ -246,7 +248,10 @@ server.registerTool(
       "Todo lo necesario para replicar la identidad visual de un sitio: tokens que el sitio DECLARA (variables CSS con sus " +
       "nombres, escalas de color, espaciado, radios, sombras) + lo MEDIDO (roles de color con contraste, escala tipográfica " +
       "real, pesos, fuentes con alternativa libre, logo, botones, tarjeta, input, link, movimiento) + qué la hace única " +
-      "frente al corpus. format: summary | css (variables) | tailwind (@theme v4) | dtcg | design.md | all.",
+      "frente al corpus. Con el análisis profundo (deep) suma: cada variante de botón/tarjeta/pill/input con su CSS y su " +
+      "HOVER o FOCUS medido de verdad, jerarquía h1–h4 real, unidad base y ritmo de secciones, escalera de sombras, " +
+      "curvas y duraciones, qué aparece al hacer scroll, imágenes, breakpoints y stack. " +
+      "format: summary | css (variables) | tailwind (@theme v4) | dtcg | design.md | all.",
     inputSchema: {
       ref_id: z.string().describe("Sitio del corpus (p. ej. 'stripe.com') o URL ya capturada"),
       format: z.enum(["summary", "css", "tailwind", "dtcg", "design.md", "all"]).default("summary"),
@@ -294,6 +299,10 @@ server.registerTool(
             shadows: sys.tokens.shadows,
           }
         : "Captura anterior al extractor de marca: recaptura con capture_site para ver los tokens declarados.",
+      deep: (() => {
+        const dp = loadDeep(site.id);
+        return dp ? deepForAgent(dp) : "Sin análisis profundo para este sitio: capture_site con deep: true lo mide (componentes con hover real, ritmo, movimiento).";
+      })(),
     };
     const out: Content[] = [];
     if (a.format === "summary" || a.format === "all") out.push(text(summary));
@@ -558,13 +567,19 @@ server.registerTool(
       name: z.string().optional(),
       tags: z.array(z.string()).optional(),
       industry: z.array(z.string()).optional(),
+      deep: z.boolean().default(false).describe("Además, análisis profundo (~20 s más): hover real de cada componente, ritmo de espaciado, sombras, movimiento y scroll. Luego se lee con get_brand_kit."),
     },
     annotations: { readOnlyHint: false, openWorldHint: true },
   },
   guard(async (a) => {
     const { record, ms } = await serial(() => captureSite(a.url, { name: a.name, tags: a.tags, industry: a.industry }));
+    let deep: string | undefined;
+    if (a.deep) {
+      const dr = await serial(() => deepAnalyze(record.url, record.id)).catch((e: Error) => e);
+      deep = dr instanceof Error ? `falló: ${dr.message.split("\n")[0]}` : `${(dr.buttons as unknown[])?.length ?? 0} variantes de botón, ${dr.states.length} estados medidos, ${dr.reveal.revealed} entradas al hacer scroll · léelo con get_brand_kit`;
+    }
     return ok([
-      text({ ref_id: record.id, site: record.name, url: record.url, seconds: +(ms / 1000).toFixed(1), tokens: tokens(record.dna), sequence: record.dna.sequence }),
+      text({ ref_id: record.id, site: record.name, url: record.url, seconds: +(ms / 1000).toFixed(1), tokens: tokens(record.dna), sequence: record.dna.sequence, deep }),
       ...image(record.shots.heroThumb),
     ]);
   }),

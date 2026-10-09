@@ -3,7 +3,7 @@
 //   matiz-mcp                 servidor MCP por stdio (lo que configuras en Claude, Codex, Cursor…)
 //   matiz-mcp init [--images] prepara esta máquina: corpus, Chromium y DESIGN.md abiertos
 //   matiz-mcp doctor          diagnóstico
-//   matiz-mcp capture <url…>  agrega sitios al corpus
+//   matiz-mcp capture <url…> [--deep]  agrega sitios al corpus (y su análisis profundo)
 //   matiz-mcp seed [--limit N] [--only industria] [--images]
 //   matiz-mcp stats
 
@@ -41,7 +41,7 @@ async function main() {
         "  npx -y matiz-mcp                 servidor MCP (stdio)",
         "  npx -y matiz-mcp init [--images] prepara la máquina (corpus + Chromium + DESIGN.md)",
         "  npx -y matiz-mcp doctor          diagnóstico",
-        "  npx -y matiz-mcp capture <url>   agrega un sitio",
+        "  npx -y matiz-mcp capture <url> [--deep]   agrega un sitio (--deep: componentes con hover real, ritmo, movimiento)",
         "  npx -y matiz-mcp seed [--limit N] [--only fintech] [--images] [--pages] [--mobile]",
         "  npx -y matiz-mcp gallery [--port 4040] [--no-open]   galería local estilo Mobbin",
         "  npx -y matiz-mcp stats",
@@ -100,6 +100,11 @@ async function main() {
       try {
         const { record, ms } = await captureSite(url, { tags: opt("tags")?.split(","), industry: opt("industry")?.split(",") });
         say(`✓ ${record.name} (${record.id}) ${(ms / 1000).toFixed(1)}s · ${record.dna.sequence.join(" → ")}`);
+        if (flag("deep")) {
+          const { deepAnalyze } = await import("./capture/deep.js");
+          const d = await deepAnalyze(record.url, record.id);
+          say(`  análisis profundo: ${(d.buttons as unknown[])?.length ?? 0} botones · ${d.states.length} estados medidos · ${d.reveal.revealed} entradas al hacer scroll`);
+        }
       } catch (e) {
         say(`✗ ${url}: ${(e as Error).message.split("\n")[0]}`);
         process.exitCode = 1;

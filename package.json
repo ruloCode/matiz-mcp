@@ -13,15 +13,29 @@
     "data/seed-sites.json",
     "data/free-fonts.json"
   ],
-  "keywords": ["mcp", "mcp-server", "design", "design-tokens", "design-md", "ui", "references", "claude", "codex", "cursor"],
-  "repository": { "type": "git", "url": "git+https://github.com/ruloCode/matiz-mcp.git" },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "design",
+    "design-tokens",
+    "design-md",
+    "ui",
+    "references",
+    "claude",
+    "codex",
+    "cursor"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruloCode/matiz-mcp.git"
+  },
   "homepage": "https://github.com/ruloCode/matiz-mcp#readme",
   "engines": {
     "node": ">=22.13"
   },
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree','brand'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html')\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree','brand','deep'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html')\"",
     "prepare": "npm run build",
     "export-pack": "tsx scripts/export-pack.ts",
     "build:fonts": "tsx scripts/build-fonts.ts",
@@ -39,7 +53,8 @@
     "smoke": "tsx scripts/smoke.ts",
     "gallery": "tsx src/cli.ts gallery",
     "reanalyze": "tsx scripts/reanalyze.ts",
-    "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts"
+    "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts",
+    "deep": "tsx scripts/deep.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
