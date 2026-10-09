@@ -26,6 +26,8 @@
     "export-pack": "tsx scripts/export-pack.ts",
     "build:fonts": "tsx scripts/build-fonts.ts",
     "eval": "tsx scripts/eval.ts",
+    "ask": "tsx scripts/ask.ts",
+    "build:site": "tsx scripts/build-site.ts",
     "typecheck": "tsc -p . --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
     "capture": "tsx scripts/capture.ts",

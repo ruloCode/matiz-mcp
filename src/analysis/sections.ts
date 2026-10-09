@@ -109,7 +109,8 @@ export function classifySection(s: RawSection, ctx: Ctx): { type: SectionType; c
 
   if (c.blockquote >= 1) add("testimonials", 0.35, "<blockquote>");
   if (has(t, /testimonial|what (our )?(customers|users|people|clients) (say|are saying)|\bloved by\b|wall of love|lo que dicen|customer reviews|reseñas|opiniones de|★|⭐/)) add("testimonials", 0.5, "lenguaje de testimonios");
-  const quotes = count(t, /[“”"«»]/g);
+  // las comillas dentro de código (JSON, snippets) no son citas de clientes
+  const quotes = c.code > 0 ? count(t, /[“”«»]/g) : count(t, /[“”"«»]/g);
   if (quotes >= 2) add("testimonials", quotes >= 4 && s.columns >= 2 ? 0.45 : 0.3, `${quotes} comillas de cita`);
   if (has(t, /customer stories|customer love|real stories|success stories|historias de (clientes|éxito)|casos de éxito/)) add("testimonials", 0.35, "historias de clientes");
 

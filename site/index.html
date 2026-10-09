@@ -1,0 +1,534 @@
+<title>Matiz</title>
+<meta name="description" content="Matiz es un servidor MCP que le da a tu agente referencias de diseño medidas: colores con rol, tipografía, composición y DESIGN.md.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Schibsted+Grotesk:wght@400..700&family=Martian+Mono:wdth,wght@87.5,400;87.5,500&display=swap">
+<style>
+/* Layout: hoja de especificaciones. Columna de lectura de ~68ch, una sola pieza a todo el ancho
+   (la franja de acentos medidos) y el resto en silencio. El color de la página lo ponen los datos. */
+:root {
+  --paper: #f5f6f8;      /* papel frío, no crema */
+  --sheet: #ffffff;      /* superficie de las fichas */
+  --ink: #12141a;        /* texto y botones */
+  --ink-2: #4c5262;      /* texto secundario (AA sobre papel y ficha) */
+  --rule: #dcdfe6;       /* líneas de la hoja */
+  --mark: #3730d9;       /* foco y enlaces: el único acento propio */
+  --code-bg: #12141a;
+  --code-fg: #e7e9ef;
+  --code-dim: #9aa1b2;
+  --font-display: "Bricolage Grotesque", "Avenir Next Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Schibsted Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.1875rem;
+  --step-2: 1.5rem;
+  --step-3: 2.25rem;
+  --step-4: clamp(2.6rem, 6.4vw, 5.25rem);
+  --gutter: clamp(16px, 4vw, 40px);
+  --measure: 68ch;
+  --wide: 1180px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d0f14; --sheet: #151821; --ink: #eceef3; --ink-2: #a7adbc; --rule: #2a2f3b;
+    --mark: #9d98ff; --code-bg: #07080b; --code-fg: #e7e9ef; --code-dim: #8a91a3; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d0f14; --sheet: #151821; --ink: #eceef3; --ink-2: #a7adbc; --rule: #2a2f3b;
+  --mark: #9d98ff; --code-bg: #07080b; --code-fg: #e7e9ef; --code-dim: #8a91a3; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 var(--step-0)/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration-color: color-mix(in oklab, var(--ink) 35%, transparent); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; border-radius: 4px; }
+code, pre, .mono { font-family: var(--font-mono); font-variation-settings: "wdth" 87.5; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+p { margin: 0; }
+
+.wrap { width: min(var(--wide), 100%); margin-inline: auto; padding-inline: var(--gutter); }
+.label {
+  font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ---------- barra ---------- */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in oklab, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--rule);
+}
+.bar .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+.wordmark { display: flex; align-items: center; gap: 10px; font: 700 1.25rem/1 var(--font-display); letter-spacing: -0.03em; text-decoration: none; }
+.wordmark i { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: conic-gradient(from 200deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
+.bar nav { display: flex; gap: 22px; margin-left: auto; font-size: var(--step--1); }
+.bar nav a { text-decoration: none; color: var(--ink-2); }
+.bar nav a:hover { color: var(--ink); }
+@media (max-width: 640px) { .bar nav a:not(.keep) { display: none; } }
+
+/* ---------- hero ---------- */
+.hero { padding-block: clamp(48px, 8vw, 96px) clamp(32px, 5vw, 56px); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: end; }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1fr); } }
+.hero h1 {
+  font-size: var(--step-4); line-height: 0.95; font-weight: 700;
+  font-variation-settings: "wdth" 78, "opsz" 96; letter-spacing: -0.035em;
+}
+.hero h1 em { font-style: normal; font-variation-settings: "wdth" 100, "opsz" 96; font-weight: 400; }
+.lede { margin-top: 22px; font-size: var(--step-1); color: var(--ink-2); max-width: 46ch; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; align-items: center; }
+.cmd {
+  display: inline-flex; align-items: center; gap: 12px; max-width: 100%;
+  background: var(--code-bg); color: var(--code-fg); border-radius: 999px; padding: 10px 10px 10px 18px;
+  font-family: var(--font-mono); font-size: 0.8125rem; min-width: 0;
+}
+.cmd span { overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+.cmd span::-webkit-scrollbar { display: none; }
+.cmd span b { color: var(--code-dim); font-weight: 400; }
+.copy {
+  flex: none; border: 0; cursor: pointer; border-radius: 999px; padding: 6px 12px;
+  background: color-mix(in oklab, var(--code-fg) 14%, transparent); color: var(--code-fg);
+  font: 500 0.75rem/1 var(--font-body);
+}
+.copy:hover { background: color-mix(in oklab, var(--code-fg) 24%, transparent); }
+.ghost { text-decoration: none; font-weight: 500; padding: 10px 6px; }
+.note { margin-top: 14px; font-size: var(--step--1); color: var(--ink-2); }
+
+/* ficha de especificación (salida real de Matiz) */
+.spec {
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px;
+  font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.55; overflow: hidden;
+}
+.spec header { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+.spec .chips { display: flex; height: 64px; }
+.spec .chips div { flex: 1; display: flex; align-items: flex-end; padding: 8px 10px; font-size: 0.6875rem; }
+.spec dl { margin: 0; padding: 14px 16px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 18px; }
+.spec dt { color: var(--ink-2); }
+.spec dd { margin: 0; overflow-wrap: anywhere; }
+.spec footer { padding: 10px 16px; border-top: 1px dashed var(--rule); color: var(--ink-2); }
+
+/* ---------- franja de acentos ---------- */
+.spectrum { border-block: 1px solid var(--rule); background: var(--sheet); }
+.spectrum .wrap { padding-block: 28px; display: grid; gap: 14px; }
+.spectrum .head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; align-items: baseline; }
+.spectrum .head p { font-size: var(--step--1); color: var(--ink-2); max-width: 60ch; }
+.strip { display: flex; height: 120px; border-radius: 10px; overflow: hidden; }
+.strip button { flex: 1 1 0; min-width: 0; border: 0; padding: 0; cursor: crosshair; transition: flex-grow .25s ease; }
+.strip button:hover, .strip button:focus-visible { flex-grow: 7; outline: none; }
+.readout { font-family: var(--font-mono); font-size: 0.75rem; min-height: 1.6em; color: var(--ink-2); }
+.readout b { color: var(--ink); font-weight: 500; }
+
+/* ---------- secciones ---------- */
+section.block { padding-block: clamp(56px, 8vw, 104px); }
+.block h2 { font-size: var(--step-3); line-height: 1.02; font-weight: 700; font-variation-settings: "wdth" 82, "opsz" 72; letter-spacing: -0.03em; }
+.block .intro { margin-top: 14px; color: var(--ink-2); max-width: 60ch; font-size: var(--step-1); }
+
+/* comparación */
+.compare { margin-top: 36px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--sheet); }
+@media (max-width: 720px) { .compare { grid-template-columns: minmax(0, 1fr); } }
+.compare > div { padding: 24px; display: grid; gap: 14px; align-content: start; }
+.compare > div + div { border-left: 1px solid var(--rule); }
+@media (max-width: 720px) { .compare > div + div { border-left: 0; border-top: 1px solid var(--rule); } }
+.compare h3 { font-size: var(--step-1); font-weight: 600; font-variation-settings: "wdth" 90; }
+.compare pre { margin: 0; padding: 14px; border-radius: 10px; background: var(--paper); font-size: 0.6875rem; line-height: 1.6; overflow-x: auto; }
+.compare ul { margin: 0; padding-left: 1.1em; color: var(--ink-2); font-size: var(--step--1); display: grid; gap: 4px; }
+
+/* tools */
+.jobs { margin-top: 40px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--ink); }
+@media (max-width: 980px) { .jobs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .jobs { grid-template-columns: minmax(0, 1fr); } }
+.job { padding: 18px 18px 22px 0; display: grid; gap: 14px; align-content: start; }
+.job + .job { padding-left: 18px; border-left: 1px solid var(--rule); }
+@media (max-width: 980px) { .job:nth-child(3) { border-left: 0; padding-left: 0; } .job { border-bottom: 1px solid var(--rule); } }
+@media (max-width: 560px) { .job + .job { border-left: 0; padding-left: 0; } }
+.job h3 { font-size: var(--step-2); font-weight: 600; font-variation-settings: "wdth" 85; }
+.tool { display: grid; gap: 2px; }
+.tool code { font-size: 0.75rem; font-weight: 500; }
+.tool span { font-size: var(--step--1); color: var(--ink-2); line-height: 1.45; }
+
+/* cómo se diseñó */
+.log { margin-top: 40px; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.call { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; padding-block: 22px; border-bottom: 1px solid var(--rule); }
+@media (max-width: 820px) { .call { grid-template-columns: 2.4rem minmax(0, 1fr); } .call .ans { grid-column: 2; } }
+.call .n { font: 700 var(--step-2)/1 var(--font-display); font-variation-settings: "wdth" 75; color: var(--ink-2); }
+.call code { font-size: 0.75rem; display: block; margin-bottom: 6px; overflow-wrap: anywhere; }
+.call p { font-size: var(--step--1); color: var(--ink-2); }
+.ans { font-size: var(--step--1); }
+.ans .seq { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.ans .seq span { font-family: var(--font-mono); font-size: 0.6875rem; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 9px; background: var(--sheet); }
+
+/* instalar */
+.install { margin-top: 36px; border: 1px solid var(--rule); border-radius: 14px; background: var(--sheet); overflow: hidden; }
+.tabs { display: flex; gap: 2px; padding: 8px; border-bottom: 1px solid var(--rule); overflow-x: auto; scrollbar-width: thin; }
+.tabs button {
+  flex: none; border: 0; background: transparent; color: var(--ink-2); cursor: pointer;
+  font: 500 var(--step--1)/1 var(--font-body); padding: 9px 13px; border-radius: 8px;
+}
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.tabs button:not([aria-selected="true"]):hover { color: var(--ink); background: var(--paper); }
+.panel { padding: 22px; display: grid; gap: 16px; }
+.panel p { color: var(--ink-2); font-size: var(--step--1); max-width: 72ch; }
+.panel p code { font-size: 0.75em; background: var(--paper); padding: 1px 5px; border-radius: 4px; color: var(--ink); }
+.snippet { position: relative; background: var(--code-bg); color: var(--code-fg); border-radius: 10px; }
+.snippet pre { margin: 0; padding: 16px 92px 16px 16px; overflow-x: auto; font-size: 0.75rem; line-height: 1.65; }
+.snippet .copy { position: absolute; top: 10px; right: 10px; }
+.snippet .file { display: block; padding: 10px 16px 0; font: 400 0.6875rem/1.4 var(--font-mono); color: var(--code-dim); }
+.reqs { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: var(--step--1); color: var(--ink-2); }
+.reqs b { color: var(--ink); font-weight: 600; }
+
+/* faq */
+.faq { margin-top: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+@media (max-width: 760px) { .faq { grid-template-columns: minmax(0, 1fr); } }
+.faq details { border-top: 1px solid var(--rule); padding-block: 16px; }
+.faq summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-2); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { margin-top: 10px; color: var(--ink-2); font-size: var(--step--1); max-width: 60ch; }
+
+/* cierre */
+.closing { border-top: 1px solid var(--rule); background: var(--sheet); }
+.closing .wrap { padding-block: clamp(56px, 8vw, 96px); display: grid; gap: 22px; justify-items: start; }
+.closing h2 { font-size: var(--step-3); font-weight: 700; font-variation-settings: "wdth" 80, "opsz" 72; letter-spacing: -0.03em; line-height: 1; max-width: 18ch; }
+footer.site { border-top: 1px solid var(--rule); }
+footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; font-size: var(--step--1); color: var(--ink-2); }
+.num { font-variant-numeric: tabular-nums; }
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="Matiz, inicio"><i aria-hidden="true"></i>Matiz</a>
+    <nav aria-label="Secciones">
+      <a href="#que-hace">Qué hace</a>
+      <a href="#herramientas">Herramientas</a>
+      <a href="#como-se-diseno">Cómo se diseñó</a>
+      <a class="keep" href="#instalar">Instalar</a>
+      <a class="keep" href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label">Servidor MCP · referencias de diseño</p>
+        <h1 style="margin-top:16px">Deja de diseñar <em>desde cero.</em></h1>
+        <p class="lede">Matiz le da a tu agente referencias que puede medir: colores con su rol, tipografía, radios y el orden de las secciones de sitios reales, listos para construir en Claude, Codex o Cursor. La imagen viene incluida.</p>
+        <div class="actions">
+          <div class="cmd"><span id="hero-cmd"><b>$</b> npx -y <span data-pkg></span></span><button class="copy" type="button" data-copy-from="hero-cmd">Copiar</button></div>
+          <a class="ghost" href="#instalar">Instalar en tu cliente →</a>
+        </div>
+        <p class="note">Sin cuenta ni API key. Node 22.13 o superior.</p>
+      </div>
+      <figure class="spec" id="spec" style="margin:0" aria-label="Ejemplo de lo que devuelve Matiz">
+        <header><span>get_reference</span><span id="spec-host"></span></header>
+        <div class="chips" id="spec-chips"></div>
+        <dl id="spec-dl"></dl>
+        <footer id="spec-foot"></footer>
+      </figure>
+    </div>
+  </section>
+
+  <section class="spectrum" aria-labelledby="spectrum-title">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="spectrum-title" class="label" style="font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.08em">El acento de cada marca del corpus, medido y ordenado por tono</h2>
+        <p>Cada franja es el color de acción de un sitio real, leído de sus estilos calculados en el navegador. Pasa el cursor para ver cuál.</p>
+      </div>
+      <div class="strip" id="strip" role="group" aria-label="Acentos medidos"></div>
+      <p class="readout" id="readout" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="block" id="que-hace">
+    <div class="wrap">
+      <p class="label">Qué hace distinto</p>
+      <h2 style="margin-top:12px">Una galería te da una imagen.<br>Matiz te da el diseño.</h2>
+      <p class="intro">Las galerías de referencias muestran capturas. Tu agente tiene que adivinar los valores mirando un JPEG. Matiz los mide en el sitio en vivo y te dice por qué clasificó cada sección como la clasificó.</p>
+      <div class="compare">
+        <div>
+          <h3>Lo que devuelve una galería</h3>
+<pre>{
+  "id": "5892cb8f-…",
+  "image_url": "https://…/short/ThAe5vpo",
+  "site_name": "Homerun"
+}</pre>
+          <ul><li>Imagen y nombre.</li><li>El link a la imagen vence.</li><li>Colores, tipografía y estructura: a ojo.</li></ul>
+        </div>
+        <div>
+          <h3>Lo que devuelve Matiz</h3>
+<pre id="matiz-json"></pre>
+          <ul><li>Paleta con rol, tipografía real y equivalente libre.</li><li>Cada sección con su tipo y su motivo.</li><li>Exportable a DESIGN.md y a tokens W3C.</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="herramientas" style="padding-top:0">
+    <div class="wrap">
+      <p class="label">13 herramientas</p>
+      <h2 style="margin-top:12px">Para buscar, decidir, construir y revisar.</h2>
+      <div class="jobs">
+        <div class="job">
+          <h3>Buscar</h3>
+          <div class="tool"><code>search_references</code><span>Sitios o secciones (hero, pricing, faq…) en español o inglés, filtrables por tema, industria, página y móvil.</span></div>
+          <div class="tool"><code>get_reference</code><span>Todo lo medido de un sitio o sección, con su imagen.</span></div>
+          <div class="tool"><code>find_similar</code><span>Sitios parecidos y en qué se parecen.</span></div>
+          <div class="tool"><code>search_design_md</code><span>DESIGN.md abiertos de sistemas de marca.</span></div>
+        </div>
+        <div class="job">
+          <h3>Decidir</h3>
+          <div class="tool"><code>get_composition</code><span>Qué secciones lleva una página de tu industria y en qué orden, con la frecuencia real.</span></div>
+          <div class="tool"><code>suggest_palettes</code><span>Paletas reales con roles y escala 50–950.</span></div>
+          <div class="tool"><code>suggest_type_pairings</code><span>Pares tipográficos en uso y su alternativa libre.</span></div>
+        </div>
+        <div class="job">
+          <h3>Construir</h3>
+          <div class="tool"><code>get_design_md</code><span>El sistema visual de una referencia como DESIGN.md o tokens DTCG.</span></div>
+          <div class="tool"><code>capture_site</code><span>Agrega cualquier sitio público al corpus en unos segundos.</span></div>
+          <div class="tool"><code>corpus_stats</code><span>Qué hay disponible para pedir.</span></div>
+        </div>
+        <div class="job">
+          <h3>Revisar</h3>
+          <div class="tool"><code>critique_against_reference</code><span>Mide tu página (también en localhost) contra la referencia: contraste, tipografía, forma y secciones que faltan.</span></div>
+          <div class="tool"><code>remember_taste</code><span>Guarda lo que te gustó y tus reglas por proyecto.</span></div>
+          <div class="tool"><code>get_taste</code><span>El perfil de gusto que reordena las búsquedas.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="como-se-diseno" style="border-top:1px solid var(--rule)">
+    <div class="wrap">
+      <p class="label">Esta página la diseñó Matiz</p>
+      <h2 style="margin-top:12px">Cinco llamadas antes de escribir una línea de CSS.</h2>
+      <p class="intro">Estas son las consultas reales que se hicieron para decidir la estructura, la tipografía y el tono de esta página, en este orden.</p>
+      <div class="log" id="log"></div>
+    </div>
+  </section>
+
+  <section class="block" id="instalar" style="border-top:1px solid var(--rule)">
+    <div class="wrap">
+      <p class="label">Instalar</p>
+      <h2 style="margin-top:12px">Elige tu cliente y pega una línea.</h2>
+      <p class="intro">La primera vez, Matiz trae su corpus y lo deja listo en tu máquina. Chromium se descarga solo cuando haga falta capturar un sitio.</p>
+      <div class="install">
+        <div class="tabs" role="tablist" aria-label="Cliente" id="tabs"></div>
+        <div class="panel" role="tabpanel" id="panel" tabindex="0"></div>
+      </div>
+      <div class="reqs">
+        <span><b>Node.js 22.13+</b> (usa SQLite nativo)</span>
+        <span><b>Datos</b> en <code class="mono">~/.matiz</code>, cámbialo con <code class="mono">MATIZ_HOME</code></span>
+        <span><b>Opcional:</b> <code class="mono">npx -y <span data-pkg></span> init --images</code> baja todas las capturas</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="border-top:1px solid var(--rule)">
+    <div class="wrap">
+      <p class="label">Preguntas</p>
+      <h2 style="margin-top:12px">Lo que se pregunta antes de instalar.</h2>
+      <div class="faq">
+        <details><summary>¿De dónde salen las referencias?</summary><p>De sitios públicos que Matiz abre con un navegador y mide. No copia catálogos de servicios de pago. Las capturas viven solo en tu máquina, y cada resultado cita la URL original.</p></details>
+        <details><summary>¿Necesito cuenta o API key?</summary><p>No. Matiz corre local. Tu cliente (Claude, Codex, Cursor…) es el que usa su propio modelo.</p></details>
+        <details><summary>¿Qué tan exacto es?</summary><p id="faq-acc">Los colores, tamaños y tracking se leen directo del navegador, así que son exactos. El tipo de cada sección es una clasificación, y medimos su exactitud contra secciones etiquetadas a ciegas.</p></details>
+        <details><summary>¿Puedo agregar los sitios que me gustan?</summary><p>Sí. Pídele a tu agente <code class="mono">capture_site</code> con la URL, o corre <code class="mono">npx -y <span data-pkg></span> capture https://…</code>.</p></details>
+        <details><summary>¿Funciona sin internet?</summary><p>Buscar, comparar y exportar funcionan offline. Capturar sitios nuevos y criticar una URL necesitan red.</p></details>
+        <details><summary>¿Y en Windows?</summary><p>Funciona con Node 22.13+. Si tu cliente no encuentra <code class="mono">npx</code>, usa <code class="mono">cmd</code> como comando y <code class="mono">/c npx -y …</code> como argumentos.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="wrap">
+      <h2>Tu próxima página empieza con referencias medidas.</h2>
+      <div class="cmd"><span id="close-cmd"><b>$</b> claude mcp add matiz -s user -- npx -y <span data-pkg></span></span><button class="copy" type="button" data-copy-from="close-cmd">Copiar</button></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Matiz · MIT · hecho por <a href="https://github.com/ruloCode" target="_blank" rel="noopener">RuloCode</a></span>
+    <span class="num" id="foot-stats"></span>
+    <a href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">github.com/ruloCode/matiz-mcp</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // Datos reales del corpus, inyectados por `pnpm build:site`.
+  const D = {"generated":"2026-10-09","brands":158,"pages":216,"mobile":152,"sections":5179,"designDocs":141,"accuracy":64.3,"evalN":140,"spectrum":[{"hex":"#D11F68","host":"wellfound.com"},{"hex":"#A3004C","host":"huggingface.co"},{"hex":"#F8375A","host":"airbnb.com"},{"hex":"#F56565","host":"raggededge.com"},{"hex":"#C42121","host":"givingli.com"},{"hex":"#F65C4F","host":"inngest.com"},{"hex":"#4A0A05","host":"incommonwith.com"},{"hex":"#FA4028","host":"jasper.ai"},{"hex":"#EA2804","host":"replicate.com"},{"hex":"#FF3008","host":"merchants.doordash.com"},{"hex":"#78392B","host":"assemblycoffee.co.uk"},{"hex":"#F25533","host":"incident.io"},{"hex":"#FF3D00","host":"brex.com"},{"hex":"#FF5229","host":"mistral.ai"},{"hex":"#E8400D","host":"amplemarket.com"},{"hex":"#FF4C00","host":"firecrawl.dev"},{"hex":"#FF4D00","host":"basement.studio"},{"hex":"#F35815","host":"planetscale.com"},{"hex":"#DE4C00","host":"aboard.com"},{"hex":"#863D1C","host":"customer.io"},{"hex":"#FDC298","host":"coda.io"},{"hex":"#945C26","host":"aesop.com"},{"hex":"#FFBB74","host":"beside.com"},{"hex":"#CD8407","host":"posthog.com"},{"hex":"#FFAA00","host":"rivian.com"},{"hex":"#F3B01C","host":"convex.dev"},{"hex":"#E7C878","host":"charma.io"},{"hex":"#FFD863","host":"gofundme.com"},{"hex":"#FFF2B7","host":"maximatherapy.com"},{"hex":"#FFDD00","host":"freitag.ch"},{"hex":"#FFF65D","host":"robot.com"},{"hex":"#FFFA56","host":"honeybook.com"},{"hex":"#EEF17C","host":"warp.dev"},{"hex":"#ECF956","host":"theleap.co"},{"hex":"#E4F222","host":"ramp.com"},{"hex":"#E4F222","host":"linear.app"},{"hex":"#E6FF32","host":"teachable.com"},{"hex":"#5B6F00","host":"granola.ai"},{"hex":"#4F6814","host":"komoot.com"},{"hex":"#C1FF00","host":"lusion.co"},{"hex":"#C4EE87","host":"pitch.com"},{"hex":"#9FE870","host":"wise.com"},{"hex":"#D3FFC3","host":"trawelt.com"},{"hex":"#58CC02","host":"duolingo.com"},{"hex":"#71FF19","host":"rive.app"},{"hex":"#86EA63","host":"clara.com"},{"hex":"#ABE3AA","host":"oysterhr.com"},{"hex":"#297A3A","host":"vercel.com"},{"hex":"#29CC57","host":"brilliant.org"},{"hex":"#349E54","host":"oku.club"},{"hex":"#9BD8A9","host":"craft.do"},{"hex":"#09E989","host":"platzi.com"},{"hex":"#0B7443","host":"fruitful.com"},{"hex":"#009959","host":"grain.com"},{"hex":"#70FFAF","host":"deno.com"},{"hex":"#0E7E4E","host":"supabase.com"},{"hex":"#00C27A","host":"mural.co"},{"hex":"#36F4A4","host":"shopify.com"},{"hex":"#34D59A","host":"neon.com"},{"hex":"#34785C","host":"cursor.com"},{"hex":"#00FCC1","host":"kushkipagos.com"},{"hex":"#ADEEDA","host":"maze.co"},{"hex":"#61DAFB","host":"astro.build"},{"hex":"#8CD6FF","host":"raycast.com"},{"hex":"#265974","host":"nothing.tech"},{"hex":"#005F86","host":"current.com"},{"hex":"#006399","host":"plane.so"},{"hex":"#00A3FF","host":"resend.com"},{"hex":"#5C85A8","host":"structured.app"},{"hex":"#0071BB","host":"teenage.engineering"},{"hex":"#0099FF","host":"framer.com"},{"hex":"#0099FF","host":"cal.com"},{"hex":"#91BEEB","host":"paraform.com"},{"hex":"#9ECBFF","host":"sentry.io"},{"hex":"#518DD2","host":"retool.com"},{"hex":"#0C2D54","host":"calendly.com"},{"hex":"#4586DA","host":"vizcom.com"},{"hex":"#0071E3","host":"apple.com"},{"hex":"#0071EB","host":"getyourguide.com"},{"hex":"#0077FF","host":"shuttle.zip"},{"hex":"#0550AE","host":"twenty.com"},{"hex":"#1F7CFF","host":"clickup.com"},{"hex":"#3483FA","host":"mercadopago.com.co"},{"hex":"#2A72DE","host":"ouraring.com"},{"hex":"#1868DB","host":"atlassian.com"},{"hex":"#1868DB","host":"loom.com"},{"hex":"#4F91FB","host":"culturedcode.com"},{"hex":"#052F70","host":"elevenlabs.io"},{"hex":"#146EF5","host":"webflow.com"},{"hex":"#1F65D6","host":"xero.com"},{"hex":"#0056D2","host":"coursera.org"},{"hex":"#006AFF","host":"squareup.com"},{"hex":"#0061EF","host":"headspace.com"},{"hex":"#145FE4","host":"1password.com"},{"hex":"#0062FF","host":"spline.design"},{"hex":"#266DF0","host":"attio.com"},{"hex":"#0061FE","host":"dropbox.com"},{"hex":"#0057FF","host":"laravel.com"},{"hex":"#0055FF","host":"sanalabs.com"},{"hex":"#2563EB","host":"dub.co"},{"hex":"#002991","host":"paypal.com"},{"hex":"#71A0FF","host":"patreon.com"},{"hex":"#0044FF","host":"dovetail.com"},{"hex":"#0000FF","host":"base.org"},{"hex":"#0000EE","host":"classpass.com"},{"hex":"#0000EE","host":"sketch.com"},{"hex":"#0600FF","host":"glossier.com"},{"hex":"#1E52F1","host":"lovable.dev"},{"hex":"#1644FF","host":"belvo.com"},{"hex":"#4B72F3","host":"pampam.city"},{"hex":"#3859FF","host":"miro.com"},{"hex":"#121E6C","host":"bold.co"},{"hex":"#2B22FA","host":"runway.com"},{"hex":"#3950E6","host":"base44.com"},{"hex":"#090C43","host":"allbirds.com"},{"hex":"#2F39BA","host":"beehiiv.com"},{"hex":"#2702C2","host":"arc.net"},{"hex":"#5266EB","host":"mercury.com"},{"hex":"#4823FF","host":"cakeequity.com"},{"hex":"#6161FF","host":"monday.com"},{"hex":"#533AFD","host":"stripe.com"},{"hex":"#6363F1","host":"workos.com"},{"hex":"#4B47A7","host":"sequencehq.com"},{"hex":"#6248F6","host":"clerk.com"},{"hex":"#5423E7","host":"lemonsqueezy.com"},{"hex":"#7064F2","host":"featurebase.app"},{"hex":"#473982","host":"hex.tech"},{"hex":"#201148","host":"deel.com"},{"hex":"#7C3AED","host":"fly.io"},{"hex":"#542F9C","host":"tines.com"},{"hex":"#423763","host":"phantom.com"},{"hex":"#D4C7FF","host":"superhuman.com"},{"hex":"#A981FF","host":"jitter.video"},{"hex":"#553F83","host":"railway.com"},{"hex":"#8A05FF","host":"render.com"},{"hex":"#8D0DE3","host":"nubank.com.br"},{"hex":"#B26BF5","host":"passionfroot.me"},{"hex":"#CB9FD2","host":"figma.com"},{"hex":"#FF00F4","host":"relume.ai"},{"hex":"#FF37C7","host":"app.uniswap.org"},{"hex":"#33001F","host":"mixpanel.com"},{"hex":"#FF82C2","host":"epidemicsound.com"},{"hex":"#F6339A","host":"tailwindcss.com"},{"hex":"#772A4D","host":"descript.com"},{"hex":"#FF1F8F","host":"bun.sh"}],"sample":{"url":"https://incident.io/","host":"incident.io","theme":"light","background":"#F1EBE2","text":"#000000","accent":"#F25533","accent2":"#FEBC2E","display":{"family":"STKBureauSerif","size":80,"ls":-0.04,"lh":1},"body":{"family":"STKBureauSans","size":18},"freeDisplay":"Fraunces","radius":6,"pill":true,"sequence":["banner","navbar","cta","feature-split","testimonials","content","features","content","features","cta","features","cta","footer"]}} || { spectrum: [], brands: 0, pages: 0, mobile: 0, sections: 0, designDocs: 0 };
+  const PKG = "github:ruloCode/matiz-mcp";
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fmt = (n) => Number(n).toLocaleString("es-CO");
+  document.querySelectorAll("[data-pkg]").forEach((el) => (el.textContent = PKG));
+
+  // ---------- copiar ----------
+  function copyText(text, btn) {
+    const done = () => { const t = btn.textContent; btn.textContent = "Copiado"; setTimeout(() => (btn.textContent = t), 1400); };
+    const fallback = () => {
+      const src = btn.previousElementSibling || btn.parentElement;
+      const r = document.createRange(); r.selectNodeContents(src);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = "Selecciona y copia";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  }
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-copy-from], [data-copy]");
+    if (!btn) return;
+    const text = btn.dataset.copy ?? document.getElementById(btn.dataset.copyFrom).textContent.replace(/^\$\s*/, "");
+    copyText(text.trim(), btn);
+  });
+
+  // ---------- ficha de ejemplo ----------
+  const S = D.sample;
+  if (S) {
+    $("#spec-host").textContent = S.host;
+    const chips = [["fondo", S.background], ["texto", S.text], ["acento", S.accent], ["acento 2", S.accent2]].filter((c) => c[1]);
+    $("#spec-chips").innerHTML = chips
+      .map(([k, hex]) => {
+        const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+        const light = (0.299 * r + 0.587 * g + 0.114 * b) > 150;
+        return `<div style="background:${hex};color:${light ? "#12141a" : "#ffffff"}">${k}<br>${hex}</div>`;
+      })
+      .join("");
+    const rows = [
+      ["tema", S.theme === "dark" ? "oscuro" : "claro"],
+      S.display && ["display", `${S.display.family} ${S.display.size}px · ${S.display.ls}em · lh ${S.display.lh}`],
+      S.freeDisplay && ["libre", `${S.freeDisplay} (equivalente)`],
+      S.body && ["texto", `${S.body.family} ${S.body.size}px`],
+      ["radio", S.pill ? `${S.radius}px · botones pill` : `${S.radius}px`],
+      ["orden", S.sequence.join(" → ")],
+    ].filter(Boolean);
+    $("#spec-dl").innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+    $("#spec-foot").textContent = "Medido del sitio en vivo · la referencia de esta página";
+    $("#matiz-json").textContent = JSON.stringify(
+      {
+        ref_id: S.host,
+        colors: { background: S.background, text: S.text, accent: S.accent },
+        type: S.display ? { display: `${S.display.family} ${S.display.size}px`, free_alternative: S.freeDisplay } : undefined,
+        radius: S.pill ? "pill" : S.radius,
+        sequence: S.sequence.slice(0, 5),
+        section: { type: "hero", reasons: ["primer bloque de contenido", `titular de ${S.display ? S.display.size : "?"}px`] },
+      },
+      null,
+      2,
+    );
+  } else $("#spec").hidden = true;
+
+  // ---------- franja de acentos ----------
+  const strip = $("#strip"), readout = $("#readout");
+  const show = (s) => (readout.innerHTML = s ? `<b>${esc(s.hex)}</b> · ${esc(s.host)}` : `${D.spectrum.length} acentos de ${fmt(D.brands)} marcas`);
+  D.spectrum.forEach((s) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.style.background = s.hex;
+    b.setAttribute("aria-label", `${s.hex}, ${s.host}`);
+    b.addEventListener("mouseenter", () => show(s));
+    b.addEventListener("focus", () => show(s));
+    b.addEventListener("click", () => copyText(s.hex, { textContent: "", previousElementSibling: null, parentElement: readout }));
+    strip.appendChild(b);
+  });
+  strip.addEventListener("mouseleave", () => show());
+  show();
+
+  // ---------- cómo se diseñó (consultas reales, en orden) ----------
+  const calls = [
+    { tool: 'get_composition { industry: "devtools" }', why: "¿Qué estructura usan las herramientas para desarrolladores?", ans: "26 sitios. Orden típico:", seq: ["navbar", "hero", "logos", "feature-split", "features", "showcase", "testimonials", "cta", "footer"] },
+    { tool: 'search_references { section_type: "hero", industry: "devtools" }', why: "Referencias de hero con comando de instalación.", ans: "Replicate: titular grande y código con pestañas. Incident: serif centrado de 80px, botones pill." },
+    { tool: 'suggest_type_pairings { pairing: "display+sans" }', why: "¿Qué pares display + sans se usan de verdad, y cuáles son libres?", ans: "Bricolage Grotesque + Plus Jakarta Sans (Platzi), ambas libres. Los demás pares eran comerciales." },
+    { tool: 'suggest_palettes { theme: "light" }', why: "¿Cómo resuelven el color los sitios claros del corpus?", ans: "Neutros con un solo acento fuerte. Aquí el acento lo ponen los datos: la franja de arriba." },
+    { tool: 'get_design_md { ref_id: "incident.io" }', why: "Calibrar escala, tracking y radios con una referencia completa.", ans: "Display 80px · −0,04em · interlineado 1 · radios 6/8/12px y pill." },
+  ];
+  $("#log").innerHTML = calls
+    .map(
+      (c, i) => `<div class="call"><span class="n">${i + 1}</span><div><code>${esc(c.tool)}</code><p>${esc(c.why)}</p></div><div class="ans">${esc(c.ans)}${
+        c.seq ? `<div class="seq">${c.seq.map((s) => `<span>${esc(s)}</span>`).join("")}</div>` : ""
+      }</div></div>`,
+    )
+    .join("");
+
+  // ---------- instalar ----------
+  const json = (o) => JSON.stringify(o, null, 2);
+  const server = { command: "npx", args: ["-y", PKG] };
+  const clients = [
+    { id: "claude-code", name: "Claude Code", blocks: [
+      { cmd: `claude mcp add matiz --scope user -- npx -y ${PKG}` },
+    ], notes: [
+      "Con <code>--scope user</code> queda en todos tus proyectos. Usa <code>--scope project</code> para compartirlo por git en <code>.mcp.json</code>.",
+      "La primera vez npx descarga el paquete. Si el arranque se corta, abre Claude Code con <code>MCP_TIMEOUT=60000 claude</code>.",
+    ] },
+    { id: "claude-desktop", name: "Claude Desktop", blocks: [
+      { file: "macOS: ~/Library/Application Support/Claude/claude_desktop_config.json · Windows: %APPDATA%\\Claude\\claude_desktop_config.json", cmd: json({ mcpServers: { matiz: server } }) },
+    ], notes: ["Ábrelo desde Settings → Developer → Edit Config. Cierra Claude Desktop por completo y vuelve a abrirlo."] },
+    { id: "codex", name: "Codex", blocks: [
+      { cmd: `codex mcp add matiz -- npx -y ${PKG}` },
+      { file: "o a mano en ~/.codex/config.toml", cmd: `[mcp_servers.matiz]\ncommand = "npx"\nargs = ["-y", "${PKG}"]\nstartup_timeout_sec = 60` },
+    ], notes: ["Sube <code>startup_timeout_sec</code>: el primer arranque descarga el paquete y el valor por defecto es 10 s. Dentro de Codex, <code>/mcp</code> muestra los servidores activos."] },
+    { id: "cursor", name: "Cursor", blocks: [
+      { file: "~/.cursor/mcp.json (global) o .cursor/mcp.json (proyecto)", cmd: json({ mcpServers: { matiz: { type: "stdio", ...server } } }) },
+    ], notes: ["Actívalo en Settings → MCP."] },
+    { id: "vscode", name: "VS Code", blocks: [
+      { cmd: `code --add-mcp '${JSON.stringify({ name: "matiz", ...server })}'` },
+      { file: "o en .vscode/mcp.json (la clave es servers)", cmd: json({ servers: { matiz: { type: "stdio", ...server } } }) },
+    ], notes: ["Para GitHub Copilot en modo agente."] },
+    { id: "gemini", name: "Gemini CLI", blocks: [
+      { file: "~/.gemini/settings.json (usuario) o .gemini/settings.json (proyecto)", cmd: json({ mcpServers: { matiz: server } }) },
+    ], notes: ["También existe <code>gemini mcp add</code>. Editar el JSON evita que el CLI confunda <code>-y</code> con una opción suya."] },
+    { id: "windsurf", name: "Windsurf", blocks: [
+      { file: "mcp_config.json (Cascade → … → Open MCP config file)", cmd: json({ mcpServers: { matiz: server } }) },
+    ], notes: ["El botón de Cascade abre el archivo que tu instalación usa de verdad."] },
+    { id: "zed", name: "Zed", blocks: [
+      { file: "settings.json (comando: zed: open settings file)", cmd: json({ context_servers: { matiz: server } }) },
+    ], notes: [] },
+  ];
+  const tabs = $("#tabs"), panel = $("#panel");
+  let current = 0;
+  try { const saved = localStorage.getItem("matiz-client"); const i = clients.findIndex((c) => c.id === saved); if (i >= 0) current = i; } catch (e) {}
+  function render() {
+    tabs.innerHTML = clients
+      .map((c, i) => `<button type="button" role="tab" id="tab-${c.id}" aria-selected="${i === current}" aria-controls="panel" tabindex="${i === current ? 0 : -1}">${c.name}</button>`)
+      .join("");
+    const c = clients[current];
+    panel.setAttribute("aria-labelledby", `tab-${c.id}`);
+    panel.innerHTML =
+      c.blocks
+        .map((b, j) => `<div class="snippet">${b.file ? `<span class="file">${esc(b.file)}</span>` : ""}<pre id="snip-${j}">${esc(b.cmd)}</pre><button class="copy" type="button" data-copy-from="snip-${j}">Copiar</button></div>`)
+        .join("") + c.notes.map((n) => `<p>${n}</p>`).join("");
+  }
+  tabs.addEventListener("click", (e) => {
+    const b = e.target.closest("[role=tab]");
+    if (!b) return;
+    current = [...tabs.children].indexOf(b);
+    try { localStorage.setItem("matiz-client", clients[current].id); } catch (e) {}
+    render();
+    tabs.children[current].focus();
+  });
+  tabs.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    current = (current + (e.key === "ArrowRight" ? 1 : clients.length - 1)) % clients.length;
+    render();
+    tabs.children[current].focus();
+  });
+  render();
+
+  // ---------- cifras ----------
+  if (D.accuracy != null)
+    $("#faq-acc").textContent += ` Hoy: ${String(D.accuracy).replace(".", ",")}% sobre ${D.evalN} secciones, y la cifra se publica en el repo con cada cambio.`;
+  $("#foot-stats").textContent = `${fmt(D.brands)} marcas · ${fmt(D.pages)} páginas · ${fmt(D.mobile)} versiones móviles · ${fmt(D.sections)} secciones · datos del ${D.generated ?? ""}`;
+})();
+</script>

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildDna } from "../src/analysis/dna.js";
+import { buildDna, cleanShadow } from "../src/analysis/dna.js";
 import { classifySections, sectionTypeFromQuery } from "../src/analysis/sections.js";
 import { classifyFamily } from "../src/analysis/typography.js";
 import { aggregateComposition } from "../src/analysis/composition.js";
@@ -149,4 +149,18 @@ test("DESIGN.md: front matter YAML válido con las secciones en el orden del spe
   assert.deepEqual([...pos].sort((a, b) => a - b), pos);
   const dt = toDtcg("Example", buildDna(page()));
   assert.deepEqual((dt.color as any).primary, { $type: "color", $value: "#2563EB" });
+});
+
+test("sombras: se descartan las capas transparentes", () => {
+  const s = "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(22, 22, 24, 0.16) 0px 20px 50px -12px";
+  assert.equal(cleanShadow(s), "rgba(22, 22, 24, 0.16) 0px 20px 50px -12px");
+});
+
+test("comillas dentro de código no convierten una sección en testimonios", () => {
+  const [r] = classifySections(
+    [sec({ top: 3000, text: '{ "id": "a", "url": "b", "name": "c" } Lo que devuelve una galería', columns: 2, counts: { code: 2 } })],
+    900,
+    5000,
+  );
+  assert.notEqual(r.type, "testimonials");
 });

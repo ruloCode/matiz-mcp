@@ -5,3 +5,4 @@ dist
 # El corpus (DB + screenshots de sitios de terceros) vive en ~/.matiz, nunca en el repo.
 .matiz
 test/fixtures/
+.ask

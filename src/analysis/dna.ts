@@ -268,7 +268,11 @@ export function buildDna(raw: RawPage, opts: { industry?: string[] } = {}): Dna 
       scale: radiusScale,
       pill: (raw.radii["9999"] ?? 0) >= 3,
       shadows: shadowsKind(raw.shadows, raw.sections.length * 40),
-      shadowSamples: Object.entries(raw.shadows).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([s]) => s),
+      shadowSamples: Object.entries(raw.shadows)
+        .sort((a, b) => b[1] - a[1])
+        .map(([s]) => cleanShadow(s))
+        .filter((s, i, all) => s && all.indexOf(s) === i)
+        .slice(0, 3),
     },
     spacing: { base: spacingBase, scale: spacingScale },
     layout: {
@@ -286,6 +290,15 @@ export function buildDna(raw: RawPage, opts: { industry?: string[] } = {}): Dna 
     industry,
     keywords: [...new Set(keywords.map((k) => k.toLowerCase()))],
   };
+}
+
+/** Quita de un box-shadow las capas invisibles (alfa 0) que dejan Tailwind y similares. */
+export function cleanShadow(s: string): string {
+  return s
+    .split(/,(?![^(]*\))/)
+    .map((x) => x.trim())
+    .filter((x) => !/rgba\([^)]*,\s*0\)/.test(x) && !/^(0px\s*){3,4}/.test(x.replace(/^[a-z]+\([^)]*\)\s*/, "")))
+    .join(", ");
 }
 
 /** Une repeticiones consecutivas (features, features, features → features). */

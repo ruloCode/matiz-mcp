@@ -322,10 +322,16 @@ server.registerTool(
     description:
       "Combinaciones títulos/texto que se usan de verdad en el corpus (filtrable), con cuántos sitios las usan, " +
       "tamaños y tracking medidos y los sitios de ejemplo. No es una lista curada: es uso real.",
-    inputSchema: { ...filterShape, limit: z.number().int().min(1).max(20).default(8) },
+    inputSchema: {
+      ...filterShape,
+      pairing: z.string().optional().describe("Solo esta combinación de clases, p. ej. 'serif+sans', 'sans+mono', 'display+sans' o 'sans'"),
+      free_only: z.boolean().default(false).describe("Solo pares cuyas dos familias son libres (Google Fonts/Fontsource)"),
+      limit: z.number().int().min(1).max(20).default(8),
+    },
   },
   guard(async (a) => {
-    const sites = pickSites(a);
+    let sites = pickSites(a);
+    if (a.pairing) sites = sites.filter((s) => s.dna.typography.pairing === a.pairing!.toLowerCase().replace(/\s+/g, ""));
     const pairs = new Map<string, { heading: string; body: string; pairing: string; sites: string[]; display: number[]; tracking: number[]; base: number[] }>();
     for (const s of sites) {
       const t = s.dna.typography;
@@ -350,6 +356,7 @@ server.registerTool(
         sites: sites.length,
         pairing_classes: [...classes.entries()].sort((x, y) => y[1] - x[1]).map(([pairing, n]) => ({ pairing, sites: n })),
         pairs: [...pairs.values()]
+          .filter((p) => !a.free_only || (fontAvailability(p.heading).free && fontAvailability(p.body).free))
           .sort((x, y) => y.sites.length - x.sites.length)
           .slice(0, a.limit)
           .map((p) => ({

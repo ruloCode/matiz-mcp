@@ -17,23 +17,46 @@ Además responde preguntas que ninguna galería responde:
 
 El corpus se arma con **sitios públicos que capturas tú** (Playwright) y con **DESIGN.md de repos con licencia MIT**. No copia catálogos de servicios pagos.
 
-## Uso rápido
+## Instalar
+
+Requisitos: **Node.js 22.13 o superior**. No hace falta cuenta ni API key.
+
+| Cliente | Cómo |
+|---|---|
+| Claude Code | `claude mcp add matiz --scope user -- npx -y github:ruloCode/matiz-mcp` |
+| Codex | `codex mcp add matiz -- npx -y github:ruloCode/matiz-mcp` (en `~/.codex/config.toml` sube `startup_timeout_sec = 60`) |
+| VS Code (Copilot) | `code --add-mcp '{"name":"matiz","command":"npx","args":["-y","github:ruloCode/matiz-mcp"]}'` |
+| Claude Desktop, Cursor, Gemini CLI, Windsurf | `{"mcpServers":{"matiz":{"command":"npx","args":["-y","github:ruloCode/matiz-mcp"]}}}` en su archivo de configuración |
+| Zed | `{"context_servers":{"matiz":{"command":"npx","args":["-y","github:ruloCode/matiz-mcp"]}}}` en `settings.json` |
+
+La landing (`site/`) trae las rutas exactas de cada archivo. Cuando el paquete esté en npm, `github:ruloCode/matiz-mcp` pasa a ser solo `matiz-mcp`.
+
+**Qué pasa la primera vez:**
+- El servidor importa el corpus empaquetado (DNA de las marcas, sin imágenes) en `~/.matiz`, en menos de un segundo.
+- La primera imagen que pidas instala Chromium solo (~100 MB, una vez) y captura ese sitio.
+- La primera búsqueda en DESIGN.md los indexa (~5 s, necesita `git`).
+
+### CLI
 
 ```bash
-pnpm install
-npx playwright install chromium
-pnpm seed                 # captura data/seed-sites.json (~170 sitios, ~15 min)
-pnpm seed:design-md       # indexa ~140 DESIGN.md abiertos (MIT)
-pnpm smoke                # prueba de punta a punta de las 13 tools
+npx -y github:ruloCode/matiz-mcp            # servidor MCP (stdio)
+npx -y github:ruloCode/matiz-mcp init       # prepara todo de una vez (corpus, Chromium, DESIGN.md)
+npx -y github:ruloCode/matiz-mcp init --images   # además baja las capturas de todo el corpus (~15 min)
+npx -y github:ruloCode/matiz-mcp doctor     # diagnóstico
+npx -y github:ruloCode/matiz-mcp capture https://ejemplo.com
+npx -y github:ruloCode/matiz-mcp seed --pages --mobile   # páginas internas y versión móvil
 ```
 
-Para agregarlo a Claude Code (en este repo ya está `.mcp.json`; para usarlo en cualquier proyecto):
+### Desarrollo
 
 ```bash
-claude mcp add matiz -s user -- npx tsx /ruta/a/matiz-mcp/src/server.ts
+pnpm install && pnpm test
+pnpm smoke                 # las 13 tools por MCP real
+pnpm eval                  # exactitud del clasificador contra research/eval
+pnpm ask <tool> '<json>'   # llama una tool y guarda sus imágenes en .ask/
+pnpm export-pack           # empaqueta el corpus actual para distribuir
+pnpm build:site            # regenera la landing con las cifras reales del corpus
 ```
-
-Para inspeccionarlo a mano: `pnpm inspect`.
 
 ## Tools
 
