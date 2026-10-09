@@ -11,7 +11,8 @@
     "dist",
     "data/corpus-pack.json.gz",
     "data/seed-sites.json",
-    "data/free-fonts.json"
+    "data/free-fonts.json",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "mcp",
@@ -23,13 +24,18 @@
     "references",
     "claude",
     "codex",
-    "cursor"
+    "cursor",
+    "design-system",
+    "brand",
+    "tailwind",
+    "playwright",
+    "mobbin-alternative"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ruloCode/matiz-mcp.git"
   },
-  "homepage": "https://github.com/ruloCode/matiz-mcp#readme",
+  "homepage": "https://matiz-mcp.vercel.app",
   "engines": {
     "node": ">=22.13"
   },
@@ -54,7 +60,8 @@
     "gallery": "tsx src/cli.ts gallery",
     "reanalyze": "tsx scripts/reanalyze.ts",
     "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts",
-    "deep": "tsx scripts/deep.ts"
+    "deep": "tsx scripts/deep.ts",
+    "prepublishOnly": "npm run typecheck && npm test"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
@@ -66,5 +73,7 @@
     "@types/node": "^22.20.5",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
-  }
+  },
+  "mcpName": "io.github.ruloCode/matiz-mcp",
+  "author": "Rulo (https://github.com/ruloCode)"
 }

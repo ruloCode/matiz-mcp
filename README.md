@@ -23,13 +23,13 @@ Requisitos: **Node.js 22.13 o superior**. No hace falta cuenta ni API key.
 
 | Cliente | Cómo |
 |---|---|
-| Claude Code | `claude mcp add matiz --scope user -- npx -y github:ruloCode/matiz-mcp` |
-| Codex | `codex mcp add matiz -- npx -y github:ruloCode/matiz-mcp` (en `~/.codex/config.toml` sube `startup_timeout_sec = 60`) |
-| VS Code (Copilot) | `code --add-mcp '{"name":"matiz","command":"npx","args":["-y","github:ruloCode/matiz-mcp"]}'` |
-| Claude Desktop, Cursor, Gemini CLI, Windsurf | `{"mcpServers":{"matiz":{"command":"npx","args":["-y","github:ruloCode/matiz-mcp"]}}}` en su archivo de configuración |
-| Zed | `{"context_servers":{"matiz":{"command":"npx","args":["-y","github:ruloCode/matiz-mcp"]}}}` en `settings.json` |
+| Claude Code | `claude mcp add matiz --scope user -- npx -y matiz-mcp` |
+| Codex | `codex mcp add matiz -- npx -y matiz-mcp` (en `~/.codex/config.toml` sube `startup_timeout_sec = 60`) |
+| VS Code (Copilot) | `code --add-mcp '{"name":"matiz","command":"npx","args":["-y","matiz-mcp"]}'` |
+| Claude Desktop, Cursor, Gemini CLI, Windsurf | `{"mcpServers":{"matiz":{"command":"npx","args":["-y","matiz-mcp"]}}}` en su archivo de configuración |
+| Zed | `{"context_servers":{"matiz":{"command":"npx","args":["-y","matiz-mcp"]}}}` en `settings.json` |
 
-La landing (`site/`) trae las rutas exactas de cada archivo. Cuando el paquete esté en npm, `github:ruloCode/matiz-mcp` pasa a ser solo `matiz-mcp`.
+Las rutas exactas de cada archivo de configuración están en [matiz-mcp.vercel.app](https://matiz-mcp.vercel.app/#instalar). El catálogo completo, con el ADN de cada marca, se puede recorrer en [matiz-mcp.vercel.app/explorar](https://matiz-mcp.vercel.app/explorar/).
 
 **Qué pasa la primera vez:**
 - El servidor importa el corpus empaquetado (DNA de las marcas, sin imágenes) en `~/.matiz`, en menos de un segundo.
@@ -38,7 +38,7 @@ La landing (`site/`) trae las rutas exactas de cada archivo. Cuando el paquete e
 
 ### Galería
 
-`npx -y github:ruloCode/matiz-mcp gallery` abre `http://localhost:4040` con el corpus de tu máquina:
+`npx -y matiz-mcp gallery` abre `http://localhost:4040` con el corpus de tu máquina:
 - "Destacadas" ordena por tipo de sección, calidad y marcas curadas, una marca por vuelta.
 - Filtros por sección, página, industria, tema y escritorio/móvil.
 - Ficha con paleta por rol, tipografía y alternativa libre, motivos, la página completa y similares.
@@ -48,12 +48,13 @@ La landing (`site/`) trae las rutas exactas de cada archivo. Cuando el paquete e
 ### CLI
 
 ```bash
-npx -y github:ruloCode/matiz-mcp            # servidor MCP (stdio)
-npx -y github:ruloCode/matiz-mcp init       # prepara todo de una vez (corpus, Chromium, DESIGN.md)
-npx -y github:ruloCode/matiz-mcp init --images   # además baja las capturas de todo el corpus (~15 min)
-npx -y github:ruloCode/matiz-mcp doctor     # diagnóstico
-npx -y github:ruloCode/matiz-mcp capture https://ejemplo.com
-npx -y github:ruloCode/matiz-mcp seed --pages --mobile   # páginas internas y versión móvil
+npx -y matiz-mcp            # servidor MCP (stdio)
+npx -y matiz-mcp init       # prepara todo de una vez (corpus, Chromium, DESIGN.md)
+npx -y matiz-mcp init --images   # además baja las capturas de todo el corpus (~15 min)
+npx -y matiz-mcp doctor     # diagnóstico
+npx -y matiz-mcp capture https://ejemplo.com
+npx -y matiz-mcp capture https://ejemplo.com --deep   # + componentes con hover real, ritmo y movimiento
+npx -y matiz-mcp seed --pages --mobile   # páginas internas y versión móvil
 ```
 
 ### Desarrollo
@@ -73,7 +74,7 @@ pnpm build:site            # regenera la landing con las cifras reales del corpu
 |---|---|
 | `search_references` | Busca sitios o secciones (hero, pricing, faq…) en español o inglés. Trae tokens, secuencia y miniatura. Filtra por tema, industria y gusto del proyecto, con máximo 2 resultados por sitio. |
 | `get_reference` | Todo lo medido de un sitio o sección: paleta con roles, niveles tipográficos, escalas y el porqué de cada sección. |
-| `get_brand_kit` | Todo para replicar una marca: variables CSS que el sitio declara (con su nombre), roles de color con contraste y su variable de origen, escala tipográfica real, fuentes con alternativa libre, logo, botones, tarjeta, input, link, movimiento y qué la hace única frente al corpus. Exporta a CSS, Tailwind v4, DTCG o DESIGN.md. Ver [docs/brand-dna.md](docs/brand-dna.md). |
+| `get_brand_kit` | Todo para replicar una marca: variables CSS que el sitio declara (con su nombre), roles de color con contraste y su variable de origen, escala tipográfica real, fuentes con alternativa libre, logo, botones, tarjeta, input, link, movimiento y qué la hace única frente al corpus. Con el análisis profundo suma cada variante de botón, tarjeta, pill e input con su CSS y su **hover medido en vivo**, la jerarquía h1–h4, la unidad base y el ritmo de secciones, las sombras, las curvas y lo que entra al hacer scroll. Exporta a CSS, Tailwind v4, DTCG o DESIGN.md. Ver [docs/brand-dna.md](docs/brand-dna.md). |
 | `get_section_blueprint` | El esqueleto de una sección (rejilla, columnas, gaps, padding, jerarquía tipográfica, bloques repetidos) + un componente React/Tailwind con las medidas reales. Texto de relleno: toma la estructura, no el copy. |
 | `open_gallery` | Abre la galería local (estilo Mobbin) en el navegador. |
 | `get_design_md` | Exporta el sistema visual como DESIGN.md (spec de `google-labs-code/design.md`) o tokens W3C DTCG. |
@@ -82,7 +83,7 @@ pnpm build:site            # regenera la landing con las cifras reales del corpu
 | `suggest_type_pairings` | Pares de títulos y texto que se usan de verdad, con tamaños, tracking y los sitios que los usan. |
 | `suggest_palettes` | Paletas reales con roles y la escala 50–950 del acento. |
 | `search_design_md` | Busca en los DESIGN.md abiertos indexados. |
-| `capture_site` | Agrega cualquier sitio público al corpus (~10 s). |
+| `capture_site` | Agrega cualquier sitio público al corpus (~10 s). Con `deep: true` hace además el análisis profundo (~20 s más). |
 | `critique_against_reference` | Mide tu página, incluso en localhost, contra una referencia: contraste WCAG, paleta, tipografía, forma, layout y secciones faltantes. |
 | `remember_taste` / `get_taste` | Memoria de gusto por proyecto: like, dislike y reglas propias. |
 | `corpus_stats` | Qué hay en el corpus. |
@@ -124,5 +125,6 @@ Más detalle en [docs/arquitectura.md](docs/arquitectura.md). El estudio de qué
 - Las respuestas citan siempre la URL original.
 - Los DESIGN.md indexados vienen de repos con licencia MIT y se cita la fuente de cada uno.
 - Mobbin se estudió solo a través de su MCP oficial, para entender su contrato. Ver [research/mobbin-contract.md](research/mobbin-contract.md).
+- El corpus empaquetado trae medidas (tokens, estructura, textos cortos de títulos y botones), nunca capturas. ¿Es tu sitio y quieres que lo retiremos? Escríbenos en [github.com/ruloCode](https://github.com/ruloCode) y lo quitamos en la siguiente versión.
 
 Licencia MIT.

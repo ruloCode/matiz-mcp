@@ -23,7 +23,8 @@ interface Pack {
 }
 
 export function exportPack(path = BUNDLED_PACK) {
-  const sites = allSites().map((s) => ({
+  // lo etiquetado referencia-matiz (páginas de la competencia capturadas para estudiar) no se distribuye
+  const sites = allSites().filter((s) => !s.tags.includes("referencia-matiz")).map((s) => ({
     ...s,
     shots: {},
     dna: {
