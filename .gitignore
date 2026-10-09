@@ -6,3 +6,4 @@ dist
 .matiz
 test/fixtures/
 .ask
+site/public/.vercel

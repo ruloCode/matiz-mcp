@@ -162,6 +162,7 @@ const data = {
   pricingPages,
   scene,
 };
+const SITE_URL = (process.env.SITE_URL ?? "https://matiz-mcp.vercel.app").replace(/\/$/, "");
 const tpl = readFileSync("site/template.html", "utf8");
 const page = tpl.replace("/*__MATIZ_DATA__*/null", JSON.stringify(data));
 // fragmento (vista previa como artifact) + página completa para hosting estático (Vercel)
@@ -169,7 +170,7 @@ writeFileSync("site/index.html", page);
 mkdirSync("site/public", { recursive: true });
 writeFileSync(
   "site/public/index.html",
-  `<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta property="og:title" content="Matiz">\n<meta property="og:description" content="Referencias de diseño medidas para tu agente: colores con rol, tipografía, composición y DESIGN.md.">\n<meta property="og:image" content="/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="/og.png">\n${page.replace(/(<\/style>)/, "$1").replace(/^(<title>.*?<\/title>)/s, "$1")}\n</html>\n`
+  `<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta property="og:title" content="Matiz">\n<meta property="og:description" content="Referencias de diseño medidas para tu agente: colores con rol, tipografía, composición y DESIGN.md.">\n<meta property="og:image" content="${SITE_URL}/og.png">\n<meta property="og:url" content="${SITE_URL}/">\n<meta property="og:type" content="website">\n<link rel="canonical" href="${SITE_URL}/">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="${SITE_URL}/og.png">\n${page.replace(/(<\/style>)/, "$1").replace(/^(<title>.*?<\/title>)/s, "$1")}\n</html>\n`
     .replace("<style>", "<style>\n" )
     .replace(/(<\/style>)/, "$1\n</head>\n<body>")
     .replace(/<\/html>\n$/, "</body>\n</html>\n"),
