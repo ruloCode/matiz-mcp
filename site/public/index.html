@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta property="og:title" content="Matiz">
 <meta property="og:description" content="Referencias de diseño medidas para tu agente: colores con rol, tipografía, composición y DESIGN.md.">
+<meta property="og:image" content="/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/og.png">
 <title>Matiz</title>
 <meta name="description" content="Matiz es un servidor MCP que le da a tu agente referencias de diseño medidas: colores con rol, tipografía, composición y DESIGN.md.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,6 +37,7 @@
   --sev-med-bg: #fdf0d8; --sev-med-fg: #7a4a00;
   --font: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --scan: #2f6bff;
   --r-card: 28px;
   --r-inner: 16px;
   --gutter: clamp(16px, 4vw, 32px);
@@ -40,13 +46,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0b0b0c; --soft: #161618; --soft-2: #222225; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e;
-    --mark: #86a6ff; --win: #111113; --code-bg: #050506; --code-fg: #ededee; --code-dim: #8d8d94;
+    --mark: #86a6ff; --scan: #8fb0ff; --win: #111113; --code-bg: #050506; --code-fg: #ededee; --code-dim: #8d8d94;
     --sev-high-bg: #3b1414; --sev-high-fg: #ffb3b3; --sev-med-bg: #33240a; --sev-med-fg: #ffd68a; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b0b0c; --soft: #161618; --soft-2: #222225; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e;
-  --mark: #86a6ff; --win: #111113; --code-bg: #050506; --code-fg: #ededee; --code-dim: #8d8d94;
+  --mark: #86a6ff; --scan: #8fb0ff; --win: #111113; --code-bg: #050506; --code-fg: #ededee; --code-dim: #8d8d94;
   --sev-high-bg: #3b1414; --sev-high-fg: #ffb3b3; --sev-med-bg: #33240a; --sev-med-fg: #ffd68a; color-scheme: dark;
 }
 
@@ -237,6 +243,80 @@ section.block { padding-block: clamp(56px, 9vw, 110px); }
 .closing .ctas { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 footer.site { border-top: 1px solid var(--line); }
 footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 28px; font-size: 0.875rem; color: var(--muted); }
+
+/* ---------- motion graphic: Matiz mide una página real ---------- */
+.scene-stage { margin-top: 56px; }
+.scene { position: relative; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; text-align: left; }
+@media (max-width: 860px) { .scene { grid-template-columns: minmax(0, 1fr); } }
+.scene-win { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--win); box-shadow: 0 30px 60px -30px rgba(0,0,0,.25); min-width: 0; }
+.scene-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.scene-bar b { width: 9px; height: 9px; border-radius: 50%; background: var(--soft-2); }
+.scene-bar .url { margin-left: 10px; font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--soft); border-radius: 999px; padding: 3px 12px; }
+.scene-page { position: relative; height: 460px; display: flex; flex-direction: column; overflow: hidden; }
+@media (max-width: 860px) { .scene-page { height: 380px; } }
+.blk { position: relative; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; padding: 6px 7%; gap: 6px; min-height: 0; }
+.blk .tag { position: absolute; top: 5px; left: 6px; z-index: 2; font-family: var(--mono); font-size: 10px; line-height: 1; padding: 4px 7px; border-radius: 999px; opacity: 0; transform: translateY(-3px) scale(.92); transition: opacity .3s, transform .35s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
+.blk::after { content: ""; position: absolute; inset: 2px; border-radius: 6px; border: 1.5px dashed transparent; transition: border-color .3s; pointer-events: none; }
+.blk.on .tag { opacity: 1; transform: none; }
+.blk.on::after { border-color: var(--scan); }
+.bar-l { height: 6px; border-radius: 3px; }
+.mk-col { display: flex; flex-direction: column; gap: 6px; align-items: center; width: 100%; }
+.mk-row { display: flex; gap: 8px; width: 100%; justify-content: center; align-items: stretch; }
+.mk-card { flex: 1; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 5px; min-height: 0; }
+.beam { position: absolute; left: 0; right: 0; height: 64px; top: -64px; pointer-events: none; z-index: 3;
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--scan) 22%, transparent) 70%, var(--scan) 98%, transparent); opacity: 0; }
+.scene-panel { border-radius: 18px; background: var(--soft); padding: 20px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+.sp-head { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; }
+.sp-head code { font-size: 12px; background: var(--ink); color: var(--bg); padding: 3px 9px; border-radius: 999px; }
+.sp-head span { font-family: var(--mono); color: var(--muted); }
+.sp-row { display: grid; gap: 6px; }
+.sp-row h5 { margin: 0; font: 500 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; }
+.sp-sw { display: flex; gap: 6px; flex-wrap: wrap; }
+.sp-sw i { width: 34px; height: 34px; border-radius: 9px; border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent); position: relative; }
+.sp-sw i span { position: absolute; left: 50%; top: calc(100% + 3px); transform: translateX(-50%); font: 9px/1 var(--mono); color: var(--muted); white-space: nowrap; }
+.sp-type { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; }
+.sp-type b { font-size: 40px; font-weight: 650; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.sp-type span { color: var(--muted); font-size: 14px; }
+.sp-type em { font-style: normal; margin-left: 8px; font-size: 13px; }
+.sp-sub, .sp-foot { font: 12px/1.4 var(--mono); color: var(--muted); }
+.sp-radius { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; }
+.sp-radius i { width: 34px; height: 22px; border: 1.5px solid var(--ink); border-top-color: transparent; border-right-color: transparent; }
+.sp-seq { display: flex; flex-wrap: wrap; gap: 5px; }
+.sp-seq span { font: 10.5px/1 var(--mono); padding: 5px 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); }
+.replay { position: absolute; right: 12px; bottom: -40px; border: 0; background: transparent; color: var(--muted); font: 500 12px/1 var(--font); cursor: pointer; padding: 8px; }
+.replay:hover { color: var(--ink); }
+
+/* ---------- entrada del hero ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1 .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+  .hero h1 .w > span { display: inline-block; animation: wordUp .95s cubic-bezier(.16,.84,.24,1) both; animation-delay: calc(var(--d) * 55ms + 80ms); }
+  .hero h1 .chip { animation: chipIn .9s cubic-bezier(.34,1.56,.64,1) both; animation-delay: calc(var(--d) * 55ms + 260ms); }
+  .hero .pill { animation: fadeUp .7s ease-out both; }
+  .hero .sub { animation: fadeUp .8s ease-out .45s both; }
+  .hero .ctas { animation: fadeUp .8s ease-out .58s both; }
+  .hero .works { animation: fadeUp .8s ease-out .7s both; }
+  .strip button { animation: barIn .9s cubic-bezier(.16,.84,.24,1) both; animation-delay: calc(var(--i) * 6ms + 200ms); transform-origin: bottom; }
+  .btn { transition: transform .2s ease, background-color .2s, opacity .2s; }
+  .btn:active { transform: scale(.97); }
+  .res, .prompt, .card { transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .2s; }
+  .res:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -22px rgba(0,0,0,.35); }
+  .prompt:hover { transform: translateY(-2px); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
+  .logo:hover i { animation: spin 1.2s cubic-bezier(.4,0,.2,1); }
+}
+@keyframes wordUp { from { transform: translateY(108%); } to { transform: none; } }
+@keyframes chipIn { from { transform: scale(.2) rotate(-35deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fadeUp { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes barIn { from { transform: scaleY(.12); opacity: .35; } to { transform: none; opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+/* al hacer scroll: suben suave; en reposo siempre se leen (opacidad mínima .45) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 22%; }
+    .fill { transform-origin: left; animation: grow linear both; animation-timeline: view(); animation-range: entry 15% cover 40%; }
+  }
+}
+@keyframes rise { from { opacity: .45; transform: translateY(36px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: none; } }
 </style>
 </head>
 <body>
@@ -271,7 +351,34 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
         <span>Funciona con</span><span>Claude Code</span><span>Codex</span><span>Cursor</span><span>VS Code</span><span>Gemini CLI</span><span>Windsurf</span><span>Zed</span>
       </div>
 
-      <div class="stage" id="demo">
+      <div class="scene-stage">
+        <div class="scene" id="scene" aria-label="Animación: Matiz mide una página real">
+          <div class="scene-win">
+            <div class="scene-bar" aria-hidden="true"><b></b><b></b><b></b><span class="url" id="scene-url"></span></div>
+            <div class="scene-page" id="scene-page"><div class="beam" id="beam"></div></div>
+          </div>
+          <div class="scene-panel" id="scene-panel">
+            <div class="sp-head"><code>get_reference</code><span id="sp-host"></span></div>
+            <div class="sp-row"><h5>Paleta por rol</h5><div class="sp-sw" id="sp-sw"></div></div>
+            <div class="sp-row"><h5>Display</h5><div class="sp-type"><b id="sp-size">0</b><span>px</span><em id="sp-fam"></em></div><div class="sp-sub" id="sp-ls"></div></div>
+            <div class="sp-row"><h5>Alternativa libre</h5><div id="sp-free"></div></div>
+            <div class="sp-row"><h5>Radio</h5><div class="sp-radius"><i id="sp-rbox"></i><span id="sp-r"></span></div></div>
+            <div class="sp-row"><h5>Secciones detectadas</h5><div class="sp-seq" id="sp-seq"></div></div>
+            <div class="sp-foot" id="sp-foot"></div>
+          </div>
+          <button class="replay" id="replay" type="button">↺ Repetir</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:clamp(40px,6vw,72px)">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Así lo usa tu agente</h2>
+        <p>Le pides una página y busca referencias reales antes de escribir una línea.</p>
+      </div>
+      <div class="stage" id="demo" style="margin-top:0">
         <div class="window">
           <div class="dots" aria-hidden="true"><b></b><b></b><b></b></div>
           <div class="chat">
@@ -403,7 +510,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
 <script>
 (() => {
   // Datos reales del corpus, inyectados por `pnpm build:site`.
-  const D = {"generated":"2026-10-09","brands":165,"pages":808,"mobile":152,"sections":12104,"designDocs":141,"accuracy":48.5,"evalN":130,"evalHoldout":true,"spectrum":[{"hex":"#D11F68","host":"wellfound.com"},{"hex":"#A3004C","host":"huggingface.co"},{"hex":"#F8375A","host":"airbnb.com"},{"hex":"#F56565","host":"raggededge.com"},{"hex":"#C42121","host":"givingli.com"},{"hex":"#F65C4F","host":"inngest.com"},{"hex":"#4A0A05","host":"incommonwith.com"},{"hex":"#FA4028","host":"jasper.ai"},{"hex":"#EA2804","host":"replicate.com"},{"hex":"#FF3008","host":"merchants.doordash.com"},{"hex":"#78392B","host":"assemblycoffee.co.uk"},{"hex":"#F25533","host":"incident.io"},{"hex":"#FF3D00","host":"brex.com"},{"hex":"#FF5229","host":"mistral.ai"},{"hex":"#E8400D","host":"amplemarket.com"},{"hex":"#FF4C00","host":"firecrawl.dev"},{"hex":"#FF4D00","host":"basement.studio"},{"hex":"#F35815","host":"planetscale.com"},{"hex":"#DE4C00","host":"aboard.com"},{"hex":"#863D1C","host":"customer.io"},{"hex":"#FDC298","host":"coda.io"},{"hex":"#945C26","host":"aesop.com"},{"hex":"#E49E58","host":"refero.design"},{"hex":"#FFBB74","host":"beside.com"},{"hex":"#CD8407","host":"posthog.com"},{"hex":"#FFAA00","host":"rivian.com"},{"hex":"#F3B01C","host":"convex.dev"},{"hex":"#E7C878","host":"charma.io"},{"hex":"#FFD863","host":"gofundme.com"},{"hex":"#FFF2B7","host":"maximatherapy.com"},{"hex":"#FFDD00","host":"freitag.ch"},{"hex":"#FFF65D","host":"robot.com"},{"hex":"#FFFA56","host":"honeybook.com"},{"hex":"#EEF17C","host":"warp.dev"},{"hex":"#ECF956","host":"theleap.co"},{"hex":"#E4F222","host":"ramp.com"},{"hex":"#E4F222","host":"linear.app"},{"hex":"#E6FF32","host":"teachable.com"},{"hex":"#5B6F00","host":"granola.ai"},{"hex":"#4F6814","host":"komoot.com"},{"hex":"#C1FF00","host":"lusion.co"},{"hex":"#C4EE87","host":"pitch.com"},{"hex":"#9FE870","host":"wise.com"},{"hex":"#D3FFC3","host":"trawelt.com"},{"hex":"#58CC02","host":"duolingo.com"},{"hex":"#71FF19","host":"rive.app"},{"hex":"#86EA63","host":"clara.com"},{"hex":"#ABE3AA","host":"oysterhr.com"},{"hex":"#297A3A","host":"vercel.com"},{"hex":"#29CC57","host":"brilliant.org"},{"hex":"#349E54","host":"oku.club"},{"hex":"#9BD8A9","host":"craft.do"},{"hex":"#09E989","host":"platzi.com"},{"hex":"#0B7443","host":"fruitful.com"},{"hex":"#009959","host":"grain.com"},{"hex":"#70FFAF","host":"deno.com"},{"hex":"#0E7E4E","host":"supabase.com"},{"hex":"#00C27A","host":"mural.co"},{"hex":"#36F4A4","host":"shopify.com"},{"hex":"#34D59A","host":"neon.com"},{"hex":"#34785C","host":"cursor.com"},{"hex":"#00FCC1","host":"kushkipagos.com"},{"hex":"#ADEEDA","host":"maze.co"},{"hex":"#61DAFB","host":"astro.build"},{"hex":"#8CD6FF","host":"raycast.com"},{"hex":"#265974","host":"nothing.tech"},{"hex":"#005F86","host":"current.com"},{"hex":"#006399","host":"plane.so"},{"hex":"#00A3FF","host":"resend.com"},{"hex":"#5C85A8","host":"structured.app"},{"hex":"#0071BB","host":"teenage.engineering"},{"hex":"#0099FF","host":"framer.com"},{"hex":"#0099FF","host":"cal.com"},{"hex":"#91BEEB","host":"paraform.com"},{"hex":"#9ECBFF","host":"sentry.io"},{"hex":"#518DD2","host":"retool.com"},{"hex":"#0C2D54","host":"calendly.com"},{"hex":"#4586DA","host":"vizcom.com"},{"hex":"#0071E3","host":"apple.com"},{"hex":"#0071EB","host":"getyourguide.com"},{"hex":"#0077FF","host":"shuttle.zip"},{"hex":"#0550AE","host":"twenty.com"},{"hex":"#1F7CFF","host":"clickup.com"},{"hex":"#3483FA","host":"mercadopago.com.co"},{"hex":"#2A72DE","host":"ouraring.com"},{"hex":"#1868DB","host":"atlassian.com"},{"hex":"#1868DB","host":"loom.com"},{"hex":"#4F91FB","host":"culturedcode.com"},{"hex":"#052F70","host":"elevenlabs.io"},{"hex":"#146EF5","host":"webflow.com"},{"hex":"#1F65D6","host":"xero.com"},{"hex":"#0056D2","host":"coursera.org"},{"hex":"#006AFF","host":"squareup.com"},{"hex":"#0061EF","host":"headspace.com"},{"hex":"#145FE4","host":"1password.com"},{"hex":"#0062FF","host":"spline.design"},{"hex":"#266DF0","host":"attio.com"},{"hex":"#0061FE","host":"dropbox.com"},{"hex":"#0057FF","host":"laravel.com"},{"hex":"#0055FF","host":"sanalabs.com"},{"hex":"#2563EB","host":"dub.co"},{"hex":"#002991","host":"paypal.com"},{"hex":"#71A0FF","host":"patreon.com"},{"hex":"#0044FF","host":"dovetail.com"},{"hex":"#0000FF","host":"base.org"},{"hex":"#0000EE","host":"classpass.com"},{"hex":"#0000EE","host":"sketch.com"},{"hex":"#0600FF","host":"glossier.com"},{"hex":"#1E52F1","host":"lovable.dev"},{"hex":"#1644FF","host":"belvo.com"},{"hex":"#4B72F3","host":"pampam.city"},{"hex":"#3859FF","host":"miro.com"},{"hex":"#121E6C","host":"bold.co"},{"hex":"#2B22FA","host":"runway.com"},{"hex":"#3950E6","host":"base44.com"},{"hex":"#090C43","host":"allbirds.com"},{"hex":"#2F39BA","host":"beehiiv.com"},{"hex":"#2702C2","host":"arc.net"},{"hex":"#5266EB","host":"mercury.com"},{"hex":"#4823FF","host":"cakeequity.com"},{"hex":"#6161FF","host":"monday.com"},{"hex":"#533AFD","host":"stripe.com"},{"hex":"#6363F1","host":"workos.com"},{"hex":"#4B47A7","host":"sequencehq.com"},{"hex":"#6248F6","host":"clerk.com"},{"hex":"#5423E7","host":"lemonsqueezy.com"},{"hex":"#7064F2","host":"featurebase.app"},{"hex":"#473982","host":"hex.tech"},{"hex":"#201148","host":"deel.com"},{"hex":"#7C3AED","host":"fly.io"},{"hex":"#542F9C","host":"tines.com"},{"hex":"#423763","host":"phantom.com"},{"hex":"#D4C7FF","host":"superhuman.com"},{"hex":"#A981FF","host":"jitter.video"},{"hex":"#553F83","host":"railway.com"},{"hex":"#8A05FF","host":"render.com"},{"hex":"#8D0DE3","host":"nubank.com.br"},{"hex":"#B26BF5","host":"passionfroot.me"},{"hex":"#CB9FD2","host":"figma.com"},{"hex":"#FF00F4","host":"relume.ai"},{"hex":"#FF37C7","host":"app.uniswap.org"},{"hex":"#33001F","host":"mixpanel.com"},{"hex":"#FF82C2","host":"epidemicsound.com"},{"hex":"#F6339A","host":"tailwindcss.com"},{"hex":"#772A4D","host":"descript.com"},{"hex":"#FF1F8F","host":"bun.sh"}],"sample":{"url":"https://incident.io/","host":"incident.io","theme":"light","background":"#F1EBE2","text":"#000000","accent":"#F25533","accent2":"#FEBC2E","display":{"family":"STKBureauSerif","size":80,"ls":-0.04,"lh":1},"body":{"family":"STKBureauSans","size":18},"freeDisplay":"Fraunces","radius":6,"pill":true,"sequence":["banner","navbar","cta","feature-split","testimonials","content","features","content","features","cta","features","cta","footer"]},"demo":[{"host":"shopify.com","url":"https://www.shopify.com/co/precios","theme":"dark","bg":"#02090A","text":"#FFFFFF","accent":"#95BF47","font":"Shopify-Inter","size":96,"ls":-0.025,"free":"Inter","isFree":true,"radius":"24px","heading":"Tienes planes. Nosotros también.","reasons":["4 precios con periodo (4)","título de planes + columnas"],"columns":4,"sequence":["navbar","pricing","team","feature-split","testimonials","content","features"]},{"host":"mural.co","url":"https://www.mural.co/pricing","theme":"light","bg":"#FFFFFF","text":"#000000","accent":"#00C27A","font":"STK Bureau","size":80,"ls":-0.04,"free":"Inter","isFree":false,"radius":"12px","heading":"Free","reasons":["5 precios con periodo (7)","título de planes + columnas"],"columns":4,"sequence":["hero","pricing","logos","content","features","content","features"]},{"host":"grain.com","url":"https://grain.com/pricing","theme":"light","bg":"#FAFAFA","text":"#000000","accent":"#009959","font":"Inter Variablefont Slnt Wght","size":48,"ls":-0.005,"free":"Inter","isFree":true,"radius":"2px","heading":"Pricing","reasons":["6 precios con periodo (4)","título de planes + columnas"],"columns":4,"sequence":["navbar","pricing","content","navbar","features","content","features"]}],"composition":{"sites":26,"types":[{"type":"navbar","presence":0.92},{"type":"features","presence":0.88},{"type":"footer","presence":0.88},{"type":"hero","presence":0.69},{"type":"feature-split","presence":0.62},{"type":"logos","presence":0.62},{"type":"cta","presence":0.54}],"typical":["navbar","banner","hero","logos","feature-split","features","showcase","cta","testimonials","footer"]},"fonts":[{"family":"saans","sites":3,"free":"Geist"},{"family":"UntitledSansFont","sites":2,"free":"Inter"},{"family":"Matter","sites":1,"free":"Plus Jakarta Sans"},{"family":"Apercu","sites":1,"free":"Work Sans"},{"family":"Monaco","sites":1,"free":"JetBrains Mono"}],"critiqueExample":{"target":"vercel.com","reference":"linear.app","summary":"6 hallazgos (1 altos). Composición parecida en 42%.","findings":[{"severity":"high","area":"color","message":"Tema claro contra referencia oscura.","fix":"Si buscas el look de linear.app, cambia la base a #08090A."},{"severity":"low","area":"color","message":"El acento es de otra familia de color que el de la referencia.","fix":"Está bien si es tu marca; si no, acércalo a la referencia."},{"severity":"low","area":"shape","message":"Sombras: subtle vs heavy.","fix":"Usa una sombra tipo: rgba(0, 0, 0, 0.2) 0px 0px 12px 0px inset"},{"severity":"low","area":"layout","message":"Ancho de contenido 1080px vs 1416px.","fix":"max-width ≈ 1416px."}]},"sectionExample":{"host":"linear.app","idx":1,"type":"hero","confidence":0.68,"reasons":["primer bloque de contenido en el primer pantallazo","titular de 64px"],"heading":"The product development system for teams and agents The product development system for teams and agents","columns":2,"bg":"#08090A","dark":true,"height":1024,"sequence":["navbar","hero","content","features","integrations","content","features","content","features"]},"pricingPages":97} || { spectrum: [], demo: [], brands: 0, pages: 0, mobile: 0, sections: 0 };
+  const D = {"generated":"2026-10-09","brands":165,"pages":808,"mobile":152,"sections":12104,"designDocs":141,"accuracy":48.5,"evalN":130,"evalHoldout":true,"spectrum":[{"hex":"#D11F68","host":"wellfound.com"},{"hex":"#A3004C","host":"huggingface.co"},{"hex":"#F8375A","host":"airbnb.com"},{"hex":"#F56565","host":"raggededge.com"},{"hex":"#C42121","host":"givingli.com"},{"hex":"#F65C4F","host":"inngest.com"},{"hex":"#4A0A05","host":"incommonwith.com"},{"hex":"#FA4028","host":"jasper.ai"},{"hex":"#EA2804","host":"replicate.com"},{"hex":"#FF3008","host":"merchants.doordash.com"},{"hex":"#78392B","host":"assemblycoffee.co.uk"},{"hex":"#F25533","host":"incident.io"},{"hex":"#FF3D00","host":"brex.com"},{"hex":"#FF5229","host":"mistral.ai"},{"hex":"#E8400D","host":"amplemarket.com"},{"hex":"#FF4C00","host":"firecrawl.dev"},{"hex":"#FF4D00","host":"basement.studio"},{"hex":"#F35815","host":"planetscale.com"},{"hex":"#DE4C00","host":"aboard.com"},{"hex":"#863D1C","host":"customer.io"},{"hex":"#FDC298","host":"coda.io"},{"hex":"#945C26","host":"aesop.com"},{"hex":"#E49E58","host":"refero.design"},{"hex":"#FFBB74","host":"beside.com"},{"hex":"#CD8407","host":"posthog.com"},{"hex":"#FFAA00","host":"rivian.com"},{"hex":"#F3B01C","host":"convex.dev"},{"hex":"#E7C878","host":"charma.io"},{"hex":"#FFD863","host":"gofundme.com"},{"hex":"#FFF2B7","host":"maximatherapy.com"},{"hex":"#FFDD00","host":"freitag.ch"},{"hex":"#FFF65D","host":"robot.com"},{"hex":"#FFFA56","host":"honeybook.com"},{"hex":"#EEF17C","host":"warp.dev"},{"hex":"#ECF956","host":"theleap.co"},{"hex":"#E4F222","host":"ramp.com"},{"hex":"#E4F222","host":"linear.app"},{"hex":"#E6FF32","host":"teachable.com"},{"hex":"#5B6F00","host":"granola.ai"},{"hex":"#4F6814","host":"komoot.com"},{"hex":"#C1FF00","host":"lusion.co"},{"hex":"#C4EE87","host":"pitch.com"},{"hex":"#9FE870","host":"wise.com"},{"hex":"#D3FFC3","host":"trawelt.com"},{"hex":"#58CC02","host":"duolingo.com"},{"hex":"#71FF19","host":"rive.app"},{"hex":"#86EA63","host":"clara.com"},{"hex":"#ABE3AA","host":"oysterhr.com"},{"hex":"#297A3A","host":"vercel.com"},{"hex":"#29CC57","host":"brilliant.org"},{"hex":"#349E54","host":"oku.club"},{"hex":"#9BD8A9","host":"craft.do"},{"hex":"#09E989","host":"platzi.com"},{"hex":"#0B7443","host":"fruitful.com"},{"hex":"#009959","host":"grain.com"},{"hex":"#70FFAF","host":"deno.com"},{"hex":"#0E7E4E","host":"supabase.com"},{"hex":"#00C27A","host":"mural.co"},{"hex":"#36F4A4","host":"shopify.com"},{"hex":"#34D59A","host":"neon.com"},{"hex":"#34785C","host":"cursor.com"},{"hex":"#00FCC1","host":"kushkipagos.com"},{"hex":"#ADEEDA","host":"maze.co"},{"hex":"#61DAFB","host":"astro.build"},{"hex":"#8CD6FF","host":"raycast.com"},{"hex":"#265974","host":"nothing.tech"},{"hex":"#005F86","host":"current.com"},{"hex":"#006399","host":"plane.so"},{"hex":"#00A3FF","host":"resend.com"},{"hex":"#5C85A8","host":"structured.app"},{"hex":"#0071BB","host":"teenage.engineering"},{"hex":"#0099FF","host":"framer.com"},{"hex":"#0099FF","host":"cal.com"},{"hex":"#91BEEB","host":"paraform.com"},{"hex":"#9ECBFF","host":"sentry.io"},{"hex":"#518DD2","host":"retool.com"},{"hex":"#0C2D54","host":"calendly.com"},{"hex":"#4586DA","host":"vizcom.com"},{"hex":"#0071E3","host":"apple.com"},{"hex":"#0071EB","host":"getyourguide.com"},{"hex":"#0077FF","host":"shuttle.zip"},{"hex":"#0550AE","host":"twenty.com"},{"hex":"#1F7CFF","host":"clickup.com"},{"hex":"#3483FA","host":"mercadopago.com.co"},{"hex":"#2A72DE","host":"ouraring.com"},{"hex":"#1868DB","host":"atlassian.com"},{"hex":"#1868DB","host":"loom.com"},{"hex":"#4F91FB","host":"culturedcode.com"},{"hex":"#052F70","host":"elevenlabs.io"},{"hex":"#146EF5","host":"webflow.com"},{"hex":"#1F65D6","host":"xero.com"},{"hex":"#0056D2","host":"coursera.org"},{"hex":"#006AFF","host":"squareup.com"},{"hex":"#0061EF","host":"headspace.com"},{"hex":"#145FE4","host":"1password.com"},{"hex":"#0062FF","host":"spline.design"},{"hex":"#266DF0","host":"attio.com"},{"hex":"#0061FE","host":"dropbox.com"},{"hex":"#0057FF","host":"laravel.com"},{"hex":"#0055FF","host":"sanalabs.com"},{"hex":"#2563EB","host":"dub.co"},{"hex":"#002991","host":"paypal.com"},{"hex":"#71A0FF","host":"patreon.com"},{"hex":"#0044FF","host":"dovetail.com"},{"hex":"#0000FF","host":"base.org"},{"hex":"#0000EE","host":"classpass.com"},{"hex":"#0000EE","host":"sketch.com"},{"hex":"#0600FF","host":"glossier.com"},{"hex":"#1E52F1","host":"lovable.dev"},{"hex":"#1644FF","host":"belvo.com"},{"hex":"#4B72F3","host":"pampam.city"},{"hex":"#3859FF","host":"miro.com"},{"hex":"#121E6C","host":"bold.co"},{"hex":"#2B22FA","host":"runway.com"},{"hex":"#3950E6","host":"base44.com"},{"hex":"#090C43","host":"allbirds.com"},{"hex":"#2F39BA","host":"beehiiv.com"},{"hex":"#2702C2","host":"arc.net"},{"hex":"#5266EB","host":"mercury.com"},{"hex":"#4823FF","host":"cakeequity.com"},{"hex":"#6161FF","host":"monday.com"},{"hex":"#533AFD","host":"stripe.com"},{"hex":"#6363F1","host":"workos.com"},{"hex":"#4B47A7","host":"sequencehq.com"},{"hex":"#6248F6","host":"clerk.com"},{"hex":"#5423E7","host":"lemonsqueezy.com"},{"hex":"#7064F2","host":"featurebase.app"},{"hex":"#473982","host":"hex.tech"},{"hex":"#201148","host":"deel.com"},{"hex":"#7C3AED","host":"fly.io"},{"hex":"#542F9C","host":"tines.com"},{"hex":"#423763","host":"phantom.com"},{"hex":"#D4C7FF","host":"superhuman.com"},{"hex":"#A981FF","host":"jitter.video"},{"hex":"#553F83","host":"railway.com"},{"hex":"#8A05FF","host":"render.com"},{"hex":"#8D0DE3","host":"nubank.com.br"},{"hex":"#B26BF5","host":"passionfroot.me"},{"hex":"#CB9FD2","host":"figma.com"},{"hex":"#FF00F4","host":"relume.ai"},{"hex":"#FF37C7","host":"app.uniswap.org"},{"hex":"#33001F","host":"mixpanel.com"},{"hex":"#FF82C2","host":"epidemicsound.com"},{"hex":"#F6339A","host":"tailwindcss.com"},{"hex":"#772A4D","host":"descript.com"},{"hex":"#FF1F8F","host":"bun.sh"}],"sample":{"url":"https://incident.io/","host":"incident.io","theme":"light","background":"#F1EBE2","text":"#000000","accent":"#F25533","accent2":"#FEBC2E","display":{"family":"STKBureauSerif","size":80,"ls":-0.04,"lh":1},"body":{"family":"STKBureauSans","size":18},"freeDisplay":"Fraunces","radius":6,"pill":true,"sequence":["banner","navbar","cta","feature-split","testimonials","content","features","content","features","cta","features","cta","footer"]},"demo":[{"host":"shopify.com","url":"https://www.shopify.com/co/precios","theme":"dark","bg":"#02090A","text":"#FFFFFF","accent":"#95BF47","font":"Shopify-Inter","size":96,"ls":-0.025,"free":"Inter","isFree":true,"radius":"24px","heading":"Tienes planes. Nosotros también.","reasons":["4 precios con periodo (4)","título de planes + columnas"],"columns":4,"sequence":["navbar","pricing","team","feature-split","testimonials","content","features"]},{"host":"mural.co","url":"https://www.mural.co/pricing","theme":"light","bg":"#FFFFFF","text":"#000000","accent":"#00C27A","font":"STK Bureau","size":80,"ls":-0.04,"free":"Inter","isFree":false,"radius":"12px","heading":"Free","reasons":["5 precios con periodo (7)","título de planes + columnas"],"columns":4,"sequence":["hero","pricing","logos","content","features","content","features"]},{"host":"grain.com","url":"https://grain.com/pricing","theme":"light","bg":"#FAFAFA","text":"#000000","accent":"#009959","font":"Inter Variablefont Slnt Wght","size":48,"ls":-0.005,"free":"Inter","isFree":true,"radius":"2px","heading":"Pricing","reasons":["6 precios con periodo (4)","título de planes + columnas"],"columns":4,"sequence":["navbar","pricing","content","navbar","features","content","features"]}],"composition":{"sites":26,"types":[{"type":"navbar","presence":0.92},{"type":"features","presence":0.88},{"type":"footer","presence":0.88},{"type":"hero","presence":0.69},{"type":"feature-split","presence":0.62},{"type":"logos","presence":0.62},{"type":"cta","presence":0.54}],"typical":["navbar","banner","hero","logos","feature-split","features","showcase","cta","testimonials","footer"]},"fonts":[{"family":"saans","sites":3,"free":"Geist"},{"family":"UntitledSansFont","sites":2,"free":"Inter"},{"family":"Matter","sites":1,"free":"Plus Jakarta Sans"},{"family":"Apercu","sites":1,"free":"Work Sans"},{"family":"Monaco","sites":1,"free":"JetBrains Mono"}],"critiqueExample":{"target":"vercel.com","reference":"linear.app","summary":"6 hallazgos (1 altos). Composición parecida en 42%.","findings":[{"severity":"high","area":"color","message":"Tema claro contra referencia oscura.","fix":"Si buscas el look de linear.app, cambia la base a #08090A."},{"severity":"low","area":"color","message":"El acento es de otra familia de color que el de la referencia.","fix":"Está bien si es tu marca; si no, acércalo a la referencia."},{"severity":"low","area":"shape","message":"Sombras: subtle vs heavy.","fix":"Usa una sombra tipo: rgba(0, 0, 0, 0.2) 0px 0px 12px 0px inset"},{"severity":"low","area":"layout","message":"Ancho de contenido 1080px vs 1416px.","fix":"max-width ≈ 1416px."}]},"sectionExample":{"host":"linear.app","idx":1,"type":"hero","confidence":0.68,"reasons":["primer bloque de contenido en el primer pantallazo","titular de 64px"],"heading":"The product development system for teams and agents The product development system for teams and agents","columns":2,"bg":"#08090A","dark":true,"height":1024,"sequence":["navbar","hero","content","features","integrations","content","features","content","features"]},"pricingPages":97,"scene":{"host":"linear.app","bg":"#08090A","surface":"#101112","text":"#D0D6E0","muted":"#8A8F98","accent":"#E4F222","border":"#1C1D1E","swatches":["#08090A","#101112","#D0D6E0","#8A8F98","#E4F222","#F7BF8B"],"display":{"family":"Inter Variable","size":72,"ls":-0.022,"weight":510},"free":"Inter","radius":8,"pill":true,"sections":[{"type":"navbar","share":0.011,"columns":1,"confidence":0.83,"dark":true},{"type":"hero","share":0.1548,"columns":2,"confidence":0.68,"dark":true},{"type":"content","share":0.0218,"columns":1,"confidence":0.3,"dark":true},{"type":"features","share":0.0707,"columns":3,"confidence":0.77,"dark":true},{"type":"integrations","share":0.1853,"columns":4,"confidence":0.61,"dark":true},{"type":"content","share":0.1858,"columns":2,"confidence":0.3,"dark":true},{"type":"features","share":0.1862,"columns":4,"confidence":0.77,"dark":true},{"type":"content","share":0.1844,"columns":2,"confidence":0.3,"dark":true}]}} || { spectrum: [], demo: [], brands: 0, pages: 0, mobile: 0, sections: 0 };
   const PKG = "github:ruloCode/matiz-mcp";
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -433,11 +540,128 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
   // ---------- hero: muestras reales dentro del titular (el gesto de los íconos de Mobbin) ----------
   const pick = (h) => D.spectrum[Math.floor(D.spectrum.length * h)];
   const chips = [pick(0.04), pick(0.42), pick(0.7)].filter(Boolean);
-  if (chips.length === 3) {
-    const c = chips.map((s) => `<span class="chip" style="background:${s.hex}" title="${esc(s.hex)} · ${esc(s.host)}" aria-hidden="true"></span>`);
-    $("#hero-title").innerHTML = `Referencias de diseño ${c[0]} que tu agente ${c[1]} puede medir ${c[2]}`;
+  // titular palabra por palabra (cada palabra sube desde su máscara) con las muestras intercaladas
+  {
+    const words = ["Referencias", "de", "diseño", 0, "que", "tu", "agente", 1, "puede", "medir", 2];
+    let d = 0;
+    $("#hero-title").innerHTML = words
+      .map((w) => {
+        d++;
+        if (typeof w === "number") {
+          const c = chips[w];
+          return c ? `<span class="chip" style="background:${c.hex};--d:${d}" title="${esc(c.hex)} · ${esc(c.host)}" aria-hidden="true"></span>` : "";
+        }
+        return `<span class="w"><span style="--d:${d}">${w}</span></span>`;
+      })
+      .join(" ");
+    $("#hero-title").setAttribute("aria-label", "Referencias de diseño que tu agente puede medir");
   }
   if (D.brands) $("#hero-sub").textContent = `Colores con su rol, tipografía real, composición y DESIGN.md de ${fmt(D.brands)} marcas y ${fmt(D.pages)} páginas, listos para Claude, Codex o Cursor.`;
+
+  // ---------- motion graphic: Matiz mide una página real ----------
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const SC = D.scene;
+  const timers = [];
+  const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+  const anim = (el, frames, opts) => (el && el.animate ? el.animate(frames, { fill: "both", easing: "cubic-bezier(.16,.84,.24,1)", ...opts }) : null);
+  function mockBlock(sec) {
+    const t = SC.text, m = SC.muted, a = SC.accent, sf = SC.surface;
+    const bar = (w, c, h = 6, o = 1) => `<i class="bar-l" style="width:${w}%;height:${h}px;background:${c};opacity:${o}"></i>`;
+    const cards = (n, inner) => `<div class="mk-row">${Array.from({ length: Math.max(2, Math.min(n || 3, 4)) }, () => `<div class="mk-card" style="background:${sf}">${inner}</div>`).join("")}</div>`;
+    switch (sec.type) {
+      case "navbar": return `<div class="mk-row" style="justify-content:space-between;align-items:center"><i class="bar-l" style="width:10%;background:${t}"></i><span style="display:flex;gap:6px;width:40%">${bar(22, m, 4, .7)}${bar(22, m, 4, .7)}${bar(22, m, 4, .7)}</span><i style="width:9%;height:12px;border-radius:999px;background:${a}"></i></div>`;
+      case "hero": return `<div class="mk-col">${bar(70, t, 14)}${bar(52, t, 14)}${bar(44, m, 5, .7)}<span style="display:flex;gap:6px;margin-top:4px"><i style="width:44px;height:14px;border-radius:999px;background:${a}"></i><i style="width:44px;height:14px;border-radius:999px;border:1px solid ${m}"></i></span></div>`;
+      case "logos": return `<div class="mk-row" style="align-items:center">${Array.from({ length: 6 }, () => bar(10, m, 6, .55)).join("")}</div>`;
+      case "pricing": return cards(3, `${bar(40, m, 4, .7)}${bar(60, t, 10)}${bar(90, m, 3, .5)}${bar(80, m, 3, .5)}<i style="height:10px;border-radius:999px;background:${a};margin-top:auto"></i>`);
+      case "testimonials": return cards(sec.columns, `${bar(20, a, 8)}${bar(95, m, 3, .6)}${bar(80, m, 3, .6)}${bar(40, t, 4)}`);
+      case "feature-split": return `<div class="mk-row"><div class="mk-col" style="align-items:flex-start;flex:1">${bar(70, t, 10)}${bar(90, m, 4, .6)}${bar(80, m, 4, .6)}</div><div style="flex:1.2;border-radius:6px;background:${sf}"></div></div>`;
+      case "cta": return `<div class="mk-col">${bar(46, t, 10)}<i style="width:56px;height:14px;border-radius:999px;background:${a};margin-top:3px"></i></div>`;
+      case "footer": return `<div class="mk-row">${Array.from({ length: 4 }, () => `<div class="mk-col" style="align-items:flex-start">${bar(50, t, 4, .8)}${bar(70, m, 3, .5)}${bar(60, m, 3, .5)}${bar(65, m, 3, .5)}</div>`).join("")}</div>`;
+      case "features": case "bento": case "integrations": case "stats": return cards(sec.columns, `<i style="width:14px;height:14px;border-radius:4px;background:${a};opacity:.85"></i>${bar(60, t, 6)}${bar(90, m, 3, .55)}${bar(75, m, 3, .55)}`);
+      case "showcase": case "gallery": case "video": return `<div style="width:86%;height:78%;border-radius:8px;background:${sf};border:1px solid ${SC.border}"></div>`;
+      default: return `<div class="mk-col">${bar(50, t, 8)}${bar(80, m, 4, .6)}${bar(72, m, 4, .6)}</div>`;
+    }
+  }
+  function buildScene() {
+    if (!SC) { $("#scene").closest(".scene-stage").hidden = true; return; }
+    const page = $("#scene-page");
+    page.style.background = SC.bg;
+    page.style.setProperty("--scan", SC.accent);
+    $("#scene-url").textContent = SC.host;
+    // altura mínima por bloque para que ninguna etiqueta pise a la siguiente
+    const MIN = 0.085;
+    const raw = SC.sections.map((x) => Math.max(x.share, MIN));
+    const sum = raw.reduce((n, v) => n + v, 0);
+    SC.sections.forEach((x, i) => (x.share = raw[i] / sum));
+    page.innerHTML = '<div class="beam" id="beam"></div>' + SC.sections
+      .map((sec, i) => `<div class="blk" data-i="${i}" style="height:${(sec.share * 100).toFixed(2)}%"><span class="tag" style="background:${SC.accent};color:${lum(SC.accent) > 0.6 ? "#111" : "#fff"}">${esc(sec.type)} · ${Math.round(sec.confidence * 100)}%</span>${mockBlock(sec)}</div>`)
+      .join("");
+    $("#sp-host").textContent = SC.host;
+    $("#sp-sw").innerHTML = SC.swatches.map((h) => `<i style="background:${h}" title="${esc(h)}"></i>`).join("");
+    $("#sp-fam").textContent = SC.display ? `${SC.display.family} · ${SC.display.weight}` : "";
+    $("#sp-ls").textContent = SC.display ? `tracking ${SC.display.ls}em` : "";
+    $("#sp-free").textContent = SC.free ? `${SC.display?.family ?? ""} → ${SC.free}` : "";
+    $("#sp-r").textContent = SC.radius >= 999 ? "pill" : `${SC.radius}px${SC.pill ? " · botones pill" : ""}`;
+    $("#sp-rbox").style.borderTopLeftRadius = `${Math.min(SC.radius, 16)}px`;
+    $("#sp-seq").innerHTML = SC.sections.map((x) => `<span>${esc(x.type)}</span>`).join("");
+    $("#sp-foot").textContent = `${SC.sections.length} secciones · medido en el navegador, no adivinado`;
+  }
+  function finalState() {
+    document.querySelectorAll("#scene-page .blk").forEach((b) => b.classList.add("on"));
+    if (SC?.display) $("#sp-size").textContent = SC.display.size;
+  }
+  function playScene() {
+    if (!SC) return;
+    timers.splice(0).forEach(clearTimeout);
+    const blocks = [...document.querySelectorAll("#scene-page .blk")];
+    blocks.forEach((b) => b.classList.remove("on"));
+    $("#sp-size").textContent = "0";
+    if (reduced) return finalState();
+    anim($(".scene-win"), [{ opacity: 0, transform: "translateY(22px) scale(.985)" }, { opacity: 1, transform: "none" }], { duration: 700 });
+    anim($("#scene-panel"), [{ opacity: 0, transform: "translateY(22px)" }, { opacity: 1, transform: "none" }], { duration: 700, delay: 120 });
+    blocks.forEach((b, i) => anim(b, [{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 520, delay: 260 + i * 85 }));
+    const T0 = 1150, SWEEP = 2000;
+    const beam = $("#beam");
+    anim(beam, [{ top: "-64px", opacity: 0 }, { top: "0%", opacity: 1, offset: 0.06 }, { top: "100%", opacity: 1, offset: 0.94 }, { top: "100%", opacity: 0 }], { duration: SWEEP, delay: T0, easing: "linear", fill: "none" });
+    let acc = 0;
+    blocks.forEach((b, i) => {
+      const share = SC.sections[i].share;
+      const mid = acc + share * 0.55;
+      acc += share;
+      later(T0 + mid * SWEEP, () => b.classList.add("on"));
+    });
+    [...document.querySelectorAll("#scene-panel .sp-row, #sp-foot")].forEach((r, i) =>
+      anim(r, [{ opacity: 0, transform: "translateX(12px)" }, { opacity: 1, transform: "none" }], { duration: 500, delay: T0 + 150 + i * 330 }),
+    );
+    [...document.querySelectorAll("#sp-sw i")].forEach((sw, k) =>
+      anim(sw, [{ opacity: 0, transform: "scale(.3)" }, { opacity: 1, transform: "none" }], { duration: 620, delay: T0 + 300 + k * 95, easing: "cubic-bezier(.34,1.56,.64,1)" }),
+    );
+    [...document.querySelectorAll("#sp-seq span")].forEach((c, k) =>
+      anim(c, [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 380, delay: T0 + 1750 + k * 75 }),
+    );
+    if (SC.display) {
+      later(T0 + 480, () => {
+        const start = performance.now(), dur = 950, to = SC.display.size;
+        const step = (now) => {
+          const k = Math.min(1, (now - start) / dur);
+          $("#sp-size").textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    }
+  }
+  buildScene();
+  $("#replay").addEventListener("click", playScene);
+  // arranca cuando la escena entra en pantalla (en la mayoría de pantallas, de inmediato)
+  if ("IntersectionObserver" in window && !reduced) {
+    finalState(); // en reposo se ve completa; la animación la recorre al entrar
+    const so = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { so.disconnect(); playScene(); } }, { threshold: 0.35 });
+    so.observe($("#scene"));
+  } else finalState();
+
+  // secciones que suben al hacer scroll (CSS scroll-driven; sin soporte, quedan quietas y legibles)
+  document.querySelectorAll(".section-head, .card, .prompt, .made, #demo, .problem h2, .step, .faq details").forEach((el) => el.classList.add("reveal"));
 
   // ---------- ventana de producto: tarjetas hechas de datos, no de capturas ----------
   $("#results").innerHTML = (D.demo || [])
@@ -505,6 +729,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
     const b = document.createElement("button");
     b.type = "button";
     b.style.background = s.hex;
+    b.style.setProperty("--i", String(strip.children.length));
     b.setAttribute("aria-label", `${s.hex}, ${s.host}`);
     b.addEventListener("mouseenter", () => show(s));
     b.addEventListener("focus", () => show(s));

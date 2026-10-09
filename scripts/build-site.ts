@@ -116,6 +116,32 @@ const sectionExample = secEx && {
 };
 const pricingPages = all.filter((s) => s.page === "pricing" && s.viewport !== "mobile").length;
 
+// escena del motion graphic: una portada real, sus secciones a escala y lo que Matiz mide de ella
+const sceneSrc = homes.find((h) => h.host === "linear.app");
+const scene = sceneSrc && (() => {
+  const d = sceneSrc.dna;
+  const secs = d.sections.filter((x) => x.height >= 60).slice(0, 8);
+  const total = secs.reduce((n, x) => n + Math.min(x.height, 1300), 0) || 1;
+  const disp = d.typography.display;
+  const fam = disp?.family ?? d.typography.body?.family ?? "";
+  const av = fam ? fontAvailability(fam) : undefined;
+  return {
+    host: sceneSrc.host,
+    bg: d.palette.background,
+    surface: d.palette.surface ?? d.palette.background,
+    text: d.palette.text,
+    muted: d.palette.mutedText ?? d.palette.text,
+    accent: d.palette.accent ?? d.palette.text,
+    border: d.palette.border ?? d.palette.surface ?? d.palette.background,
+    swatches: [d.palette.background, d.palette.surface, d.palette.text, d.palette.mutedText, d.palette.accent, d.palette.accent2].filter(Boolean),
+    display: disp && { family: fam.replace(/^_+|_[0-9a-f]{5,}$/gi, ""), size: Math.round(disp.size), ls: disp.letterSpacing, weight: disp.weight },
+    free: av?.free ? av.freeAs : av?.alternatives?.[0],
+    radius: d.shape.radius >= 999 ? 999 : d.shape.radius,
+    pill: d.shape.pill,
+    sections: secs.map((x) => ({ type: x.type, share: +(Math.min(x.height, 1300) / total).toFixed(4), columns: x.columns, confidence: x.confidence, dark: x.dark })),
+  };
+})();
+
 const data = {
   generated: new Date().toISOString().slice(0, 10),
   brands: new Set(all.map((s) => s.host)).size,
@@ -134,6 +160,7 @@ const data = {
   critiqueExample,
   sectionExample,
   pricingPages,
+  scene,
 };
 const tpl = readFileSync("site/template.html", "utf8");
 const page = tpl.replace("/*__MATIZ_DATA__*/null", JSON.stringify(data));
@@ -142,7 +169,7 @@ writeFileSync("site/index.html", page);
 mkdirSync("site/public", { recursive: true });
 writeFileSync(
   "site/public/index.html",
-  `<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta property="og:title" content="Matiz">\n<meta property="og:description" content="Referencias de diseño medidas para tu agente: colores con rol, tipografía, composición y DESIGN.md.">\n${page.replace(/(<\/style>)/, "$1").replace(/^(<title>.*?<\/title>)/s, "$1")}\n</html>\n`
+  `<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta property="og:title" content="Matiz">\n<meta property="og:description" content="Referencias de diseño medidas para tu agente: colores con rol, tipografía, composición y DESIGN.md.">\n<meta property="og:image" content="/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="/og.png">\n${page.replace(/(<\/style>)/, "$1").replace(/^(<title>.*?<\/title>)/s, "$1")}\n</html>\n`
     .replace("<style>", "<style>\n" )
     .replace(/(<\/style>)/, "$1\n</head>\n<body>")
     .replace(/<\/html>\n$/, "</body>\n</html>\n"),
