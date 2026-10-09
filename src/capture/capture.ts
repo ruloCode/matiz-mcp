@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { buildDna } from "../analysis/dna.js";
 import { SHOTS, saveSite, siteIdFromUrl } from "../db.js";
 import type { RawPage, SiteRecord } from "../types.js";
+import { installChromium, isMissingBrowser } from "../browser-install.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const EXTRACT = readFileSync(join(here, "extract.browser.js"), "utf8");
@@ -17,10 +18,34 @@ const UA =
 
 let browser: Browser | undefined;
 
+const launch = () => chromium.launch({ headless: true, args: ["--disable-blink-features=AutomationControlled"] });
+
 async function getBrowser(): Promise<Browser> {
   if (browser?.isConnected()) return browser;
-  browser = await chromium.launch({ headless: true, args: ["--disable-blink-features=AutomationControlled"] });
+  try {
+    browser = await launch();
+  } catch (e) {
+    // máquina nueva (o caché de Playwright limpiado): se instala Chromium una vez y se reintenta
+    if (!isMissingBrowser(e)) throw e;
+    const r = installChromium();
+    if (!r.ok) throw new Error(`No se pudo instalar Chromium automáticamente. Corre: npx -y matiz-mcp init\n${r.output.slice(-400)}`);
+    browser = await launch();
+  }
   return browser;
+}
+
+/** Comprueba (y opcionalmente instala) Chromium. Para `init` y `doctor`. */
+export async function ensureBrowser(o: { install?: boolean } = {}): Promise<{ ok: boolean; installed?: boolean; error?: string }> {
+  try {
+    const b = await launch();
+    await b.close();
+    return { ok: true };
+  } catch (e) {
+    if (!isMissingBrowser(e)) return { ok: false, error: (e as Error).message.split("\n")[0] };
+    if (o.install === false) return { ok: false, error: "Chromium no instalado" };
+    const r = installChromium();
+    return r.ok ? { ok: true, installed: true } : { ok: false, error: r.output.slice(-300) };
+  }
 }
 
 export async function closeBrowser() {

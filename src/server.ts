@@ -6,7 +6,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { readFileSync, existsSync } from "node:fs";
 import { z } from "zod";
-import { allSites, findSite, openDb } from "./db.js";
+import { HOME, allSites, findSite, openDb } from "./db.js";
+import { corpusIsEmpty, importPack } from "./pack.js";
+import { designDocCount, seedDesignDocs } from "./design-docs.js";
 import { search, searchDesignDocs } from "./search.js";
 import { captureSite } from "./capture/capture.js";
 import { similarity } from "./analysis/similarity.js";
@@ -143,6 +145,8 @@ server.registerTool(
         const imgs = image(sec?.thumb ?? h.site.shots.heroThumb);
         if (imgs.length) content.push(text(`↓ ${h.refId} — ${h.name}${h.sectionType ? ` · ${h.sectionType}` : ""}`), ...imgs);
       }
+      if (!content.some((c) => c.type === "image"))
+        content.push(text("(Sin miniaturas en esta máquina todavía: get_reference las captura al pedirlas, o corre `npx -y matiz-mcp init --images`.)"));
     }
     return ok(content);
   }),
@@ -161,9 +165,16 @@ server.registerTool(
     },
   },
   guard(async (a) => {
-    const site = findSite(a.ref_id);
+    let site = findSite(a.ref_id);
     if (!site) return fail(`No está en el corpus: ${a.ref_id}. Captúralo con capture_site.`);
     const idx = a.ref_id.includes("#") ? +a.ref_id.split("#")[1] : undefined;
+    // corpus importado sin imágenes: la primera vez que se pide una, se captura el sitio aquí (~10 s)
+    const wanted = a.image === "none" ? undefined : site.shots.heroThumb;
+    if (a.image !== "none" && (!wanted || !existsSync(wanted))) {
+      const s0 = site;
+      await serial(() => captureSite(s0.url, { name: s0.name, tags: s0.tags, industry: s0.tags.includes("curated") ? s0.industry : undefined })).catch(() => undefined);
+      site = findSite(site.id) ?? site;
+    }
     const sec = idx !== undefined ? site.dna.sections.find((s) => s.idx === idx) : undefined;
     const d = site.dna;
     const body = {
@@ -371,12 +382,14 @@ server.registerTool(
   "search_design_md",
   {
     title: "Buscar en DESIGN.md abiertos",
-    description: "Busca en los DESIGN.md de sistemas de marca con licencia abierta indexados (pnpm seed:design-md).",
+    description: "Busca en ~140 DESIGN.md de sistemas de marca con licencia abierta (MIT). La primera llamada los indexa.",
     inputSchema: { query: z.string().min(1), limit: z.number().int().min(1).max(10).default(4) },
   },
   guard(async (a) => {
+    // primera vez en una máquina: se indexan los DESIGN.md abiertos (git clone superficial, ~10 s)
+    if (designDocCount() === 0) seedDesignDocs();
     const docs = searchDesignDocs(a.query, a.limit);
-    if (!docs.length) return ok([text("Sin resultados (¿corriste pnpm seed:design-md?).")]);
+    if (!docs.length) return ok([text("Sin resultados en los DESIGN.md indexados.")]);
     return ok([text(docs.map((d) => ({ id: d.id, name: d.name, source: d.source, path: d.path, tokens: JSON.parse(d.tokens), excerpt: d.excerpt })))]);
   }),
 );
@@ -546,6 +559,12 @@ server.registerPrompt(
     ],
   }),
 );
+
+// primera ejecución en una máquina: el corpus empaquetado entra antes de aceptar llamadas
+if (corpusIsEmpty()) {
+  const r = importPack();
+  process.stderr.write(`[matiz] corpus inicial: ${r.imported} sitios importados en ${HOME}\n`);
+}
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

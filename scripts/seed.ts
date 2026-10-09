@@ -1,50 +1,20 @@
-// Siembra el corpus con data/seed-sites.json (o un archivo propio): N capturas en paralelo,
-// salta lo ya capturado (--force recaptura), deja las fallas en ~/.matiz/seed-failures.json.
-// pnpm seed [--file path] [--concurrency 3] [--only fintech] [--limit 20] [--force]
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { captureSite, closeBrowser } from "../src/capture/capture.js";
-import { HOME, allSites, getSite, siteIdFromUrl } from "../src/db.js";
+// pnpm seed [--file path] [--concurrency 3] [--only fintech] [--limit 20] [--force] [--images]
+import { seed } from "../src/seed.js";
+import { closeBrowser } from "../src/capture/capture.js";
 
 const args = process.argv.slice(2);
-const opt = (k: string, d?: string) => {
+const opt = (k: string) => {
   const i = args.indexOf(`--${k}`);
-  return i >= 0 ? args[i + 1] : d;
+  return i >= 0 ? args[i + 1] : undefined;
 };
-const file = opt("file", "data/seed-sites.json")!;
-const concurrency = +opt("concurrency", "3")!;
-const only = opt("only");
-const limit = opt("limit") ? +opt("limit")! : Infinity;
-const force = args.includes("--force");
-
-type Seed = { url: string; industry?: string[]; tags?: string[]; name?: string };
-let sites: Seed[] = JSON.parse(readFileSync(file, "utf8")).sites;
-if (only) sites = sites.filter((s) => s.industry?.includes(only) || s.tags?.includes(only));
-// un sitio que redirige (sentry.io → /welcome) queda con otro id: se compara también por dominio
-const host = (u: string) => new URL(/^https?:/.test(u) ? u : `https://${u}`).hostname.replace(/^www\./, "");
-const capturedHosts = new Set(allSites().map((s) => host(s.url)));
-if (!force) sites = sites.filter((s) => !getSite(siteIdFromUrl(s.url)) && !capturedHosts.has(host(s.url)));
-sites = sites.slice(0, limit);
-console.log(`Capturando ${sites.length} sitios (concurrencia ${concurrency})…`);
-
-const failures: Array<{ url: string; error: string }> = [];
-let done = 0;
-const t0 = Date.now();
-async function worker() {
-  while (sites.length) {
-    const s = sites.shift()!;
-    try {
-      const { record, ms } = await captureSite(s.url, { tags: s.tags, industry: s.industry?.length ? s.industry : undefined });
-      done++;
-      console.log(`✓ [${done}] ${record.id} ${(ms / 1000).toFixed(1)}s · ${record.dna.theme} · ${record.dna.sequence.join("›")}`);
-    } catch (e) {
-      failures.push({ url: s.url, error: (e as Error).message.split("\n")[0] });
-      console.log(`✗ ${s.url}: ${(e as Error).message.split("\n")[0]}`);
-    }
-  }
-}
-await Promise.all(Array.from({ length: concurrency }, worker));
+const r = await seed({
+  file: opt("file"),
+  concurrency: Number(opt("concurrency") ?? 3),
+  only: opt("only"),
+  limit: opt("limit") ? Number(opt("limit")) : undefined,
+  force: args.includes("--force"),
+  imagesOnly: args.includes("--images"),
+});
 await closeBrowser();
-process.exit(process.exitCode ?? 0);
-writeFileSync(join(HOME, "seed-failures.json"), JSON.stringify(failures, null, 1));
-console.log(`Listo: ${done} capturados, ${failures.length} fallidos en ${Math.round((Date.now() - t0) / 1000)}s`);
+console.log(`Listo: ${r.done} capturados, ${r.failures.length} fallidos`);
+process.exit(0);
