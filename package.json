@@ -1,11 +1,11 @@
 {
-  "name": "design-mcp",
+  "name": "matiz-mcp",
   "version": "0.1.0",
-  "description": "MCP de referencias de diseño: pantallas, secciones, marca y composición como DATOS (tokens, estructura, DESIGN.md), capturadas de la web pública.",
+  "description": "Matiz: MCP de referencias de diseño: pantallas, secciones, marca y composición como DATOS (tokens, estructura, DESIGN.md), capturadas de la web pública.",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "design-mcp": "dist/server.js"
+    "matiz-mcp": "dist/server.js"
   },
   "files": [
     "dist",

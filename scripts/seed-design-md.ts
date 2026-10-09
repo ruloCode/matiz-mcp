@@ -1,5 +1,5 @@
 // Indexa DESIGN.md de repos con licencia abierta (MIT) para search_design_md.
-// Clona superficial a ~/.design-mcp/sources y guarda cada DESIGN.md con su fuente y licencia.
+// Clona superficial a ~/.matiz/sources y guarda cada DESIGN.md con su fuente y licencia.
 // pnpm seed:design-md
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";

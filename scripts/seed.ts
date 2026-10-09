@@ -1,5 +1,5 @@
 // Siembra el corpus con data/seed-sites.json (o un archivo propio): N capturas en paralelo,
-// salta lo ya capturado (--force recaptura), deja las fallas en ~/.design-mcp/seed-failures.json.
+// salta lo ya capturado (--force recaptura), deja las fallas en ~/.matiz/seed-failures.json.
 // pnpm seed [--file path] [--concurrency 3] [--only fintech] [--limit 20] [--force]
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";

@@ -74,7 +74,7 @@ function tokens(d: Dna) {
 const MAX_IMAGES = 8;
 
 const server = new McpServer(
-  { name: "design-mcp", version: "0.1.0" },
+  { name: "matiz", version: "0.1.0" },
   {
     instructions:
       "Referencias de diseño como datos. Flujo recomendado para diseñar algo nuevo: " +
@@ -533,7 +533,7 @@ server.registerPrompt(
           type: "text",
           text:
             `Voy a construir una ${page} para: ${product}.${mood ? ` Tono: ${mood}.` : ""}\n\n` +
-            "Antes de escribir código, usa design-mcp:\n" +
+            "Antes de escribir código, usa Matiz (tools mcp__matiz__*):\n" +
             "1. corpus_stats para ver qué hay.\n" +
             "2. get_composition (filtra por la industria más cercana) y propón la secuencia de secciones justificándola con las cifras.\n" +
             "3. Por cada sección clave, search_references y elige 1–2 referencias; explica qué tomas de cada una mirando la imagen.\n" +

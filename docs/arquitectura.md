@@ -6,7 +6,7 @@ Medí el MCP de Mobbin con su contrato real (ver `research/mobbin-contract.md`, 
 
 Este MCP invierte eso: **el dato estructurado es lo principal y la imagen lo acompaña**.
 
-| | Mobbin MCP | design-mcp |
+| | Mobbin MCP | Matiz |
 |---|---|---|
 | Resultado | imagen + link | imagen + tokens medidos + secuencia de secciones + motivos |
 | Colores / tipografía | no | sí, con rol (fondo, texto, acento…), familia, escala y tracking |

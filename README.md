@@ -1,8 +1,8 @@
-# design-mcp
+# Matiz
 
-> Nombre provisional.
+> El tono y el matiz: referencias de diseño medidas, no solo imágenes.
 
-Es un servidor MCP de **referencias de diseño como datos**. Mobbin y similares le dan al agente una imagen y un link. Este MCP le da, además de la imagen, lo que necesita para construir:
+Matiz es un servidor MCP de **referencias de diseño como datos**. Mobbin y similares le dan al agente una imagen y un link. Matiz le da, además de la imagen, lo que necesita para construir:
 
 - tokens medidos: colores con rol, tipografía real, radios, espaciado y botones,
 - la estructura de la página, con cada sección clasificada y el motivo de esa clasificación,
@@ -30,7 +30,7 @@ pnpm smoke                # prueba de punta a punta de las 13 tools
 Para agregarlo a Claude Code (en este repo ya está `.mcp.json`; para usarlo en cualquier proyecto):
 
 ```bash
-claude mcp add design -s user -- npx tsx /ruta/a/design-mcp/src/server.ts
+claude mcp add matiz -s user -- npx tsx /ruta/a/matiz-mcp/src/server.ts
 ```
 
 Para inspeccionarlo a mano: `pnpm inspect`.
@@ -68,7 +68,7 @@ URL pública ──Playwright──► extract.browser.js ──► RawPage ─�
 
 - **Nada se inventa.** Todo valor sale de `getComputedStyle` del sitio en vivo. Los colores se agrupan en OKLab, y el contraste se mide con la fórmula de WCAG.
 - **Clasificación explicable.** Cada sección lleva `reasons` (p. ej. "3 precios con periodo", "titular de 64px en el primer pantallazo").
-- **Local.** El corpus vive en `~/.design-mcp` (`DESIGN_MCP_HOME`), nunca en el repo.
+- **Local.** El corpus vive en `~/.matiz` (`MATIZ_HOME`), nunca en el repo.
 - **Cero dependencias nativas.** Usa `node:sqlite` con FTS5, que viene en Node ≥ 22.5.
 
 Más detalle en [docs/arquitectura.md](docs/arquitectura.md). El estudio de qué hay en el ecosistema está en [docs/panorama.md](docs/panorama.md), y la ingeniería inversa del contrato de Mobbin en [research/](research/).

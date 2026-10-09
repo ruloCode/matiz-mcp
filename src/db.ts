@@ -1,5 +1,5 @@
 // Corpus local: SQLite nativo de Node (node:sqlite) con FTS5. Cero dependencias nativas.
-// Vive en ~/.design-mcp (DESIGN_MCP_HOME): DB + screenshots, nunca dentro del repo.
+// Vive en ~/.matiz (MATIZ_HOME): DB + screenshots, nunca dentro del repo.
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { homedir } from "node:os";
@@ -7,7 +7,7 @@ import { join } from "node:path";
 import type { ClassifiedSection, Dna, SiteRecord } from "./types.js";
 import { SECTION_SYNONYMS } from "./analysis/sections.js";
 
-export const HOME = process.env.DESIGN_MCP_HOME || join(homedir(), ".design-mcp");
+export const HOME = process.env.MATIZ_HOME || join(homedir(), ".matiz");
 export const SHOTS = join(HOME, "shots");
 
 let db: DatabaseSync | undefined;
