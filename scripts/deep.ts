@@ -1,4 +1,4 @@
-// pnpm deep [host…] [--force] [--jobs N] — análisis profundo (Playwright) de las portadas del catálogo:
+// pnpm deep [host…] [--force] [--jobs N] [--timeout S] — análisis profundo (Playwright) de las portadas del catálogo:
 // componentes con hover real, ritmo de espaciado, sombras, movimiento, imágenes, rejilla y stack.
 // Deja <shots>/<id>/deep.json + recortes; build-explore los convierte en la ficha de cada marca.
 import { existsSync } from "node:fs";
@@ -9,8 +9,10 @@ import { SHOTS, homeSites } from "../src/db.js";
 
 const args = process.argv.slice(2);
 const force = args.includes("--force");
-const jobs = +(args[args.indexOf("--jobs") + 1] || 0) || 5;
-const only = new Set(args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--jobs"));
+const val = (k: string) => (args.includes(k) ? +args[args.indexOf(k) + 1] || 0 : 0);
+const jobs = val("--jobs") || 5;
+const limitS = val("--timeout") || 150;
+const only = new Set(args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--jobs" && args[i - 1] !== "--timeout"));
 const targets = homeSites().filter((h) => !h.tags.includes("referencia-matiz") && (!only.size || only.has(h.host ?? "") || only.has(h.id)) && (force || only.size || !existsSync(join(SHOTS, h.id, "deep.json"))));
 console.log(`${targets.length} portadas por analizar (${jobs} en paralelo)`);
 let ok = 0;
@@ -23,10 +25,7 @@ await Promise.all(
       const h = queue.shift()!;
       const t = Date.now();
       try {
-        const r = await Promise.race([
-          deepAnalyze(h.url, h.id),
-          new Promise<never>((_, rej) => setTimeout(() => rej(new Error("tiempo agotado (150 s)")), 150_000)),
-        ]);
+        const r = await deepAnalyze(h.url, h.id, { timeoutMs: limitS * 1000 });
         ok++;
         const b = (r.buttons as unknown[])?.length ?? 0;
         console.log(`✓ ${++n}/${targets.length} ${h.host} · ${b} botones · ${Object.keys(r.crops).length} recortes · ${r.reveal.revealed} reveals · ${((Date.now() - t) / 1000).toFixed(0)} s`);

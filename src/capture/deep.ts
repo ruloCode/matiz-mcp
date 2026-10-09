@@ -263,11 +263,15 @@ async function center(page: Page, key: string) {
 }
 
 /** Corre el análisis profundo de una URL y lo deja en <shots>/<id>/deep.json. */
-export async function deepAnalyze(url: string, id: string): Promise<DeepReport> {
+export async function deepAnalyze(url: string, id: string, opts: { timeoutMs?: number } = {}): Promise<DeepReport> {
   const b = await getBrowser();
   // aquí el movimiento NO se reduce: es justo lo que se mide
   const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, userAgent: UA, locale: "en-US", colorScheme: "light", reducedMotion: "no-preference" });
   const page = await ctx.newPage();
+  // tope real: cerrar el contexto corta todo lo que esté en vuelo (un Promise.race afuera no lo detenía
+  // y la tarea "vencida" seguía escribiendo y borrando recortes después)
+  let expired = false;
+  const timer = opts.timeoutMs ? setTimeout(() => { expired = true; ctx.close().catch(() => {}); }, opts.timeoutMs) : undefined;
   const dir = join(SHOTS, id, "deep");
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
@@ -323,9 +327,14 @@ export async function deepAnalyze(url: string, id: string): Promise<DeepReport> 
       if (focusable) await loc.blur().catch(() => {});
     }
     const report: DeepReport = { version: 1, url: page.url(), measuredAt: new Date().toISOString(), ...data, reveal: summarizeReveal(post, anims), states, crops, legacyClick: legacy };
+    if (expired) throw new Error(`tiempo agotado (${Math.round((opts.timeoutMs ?? 0) / 1000)} s)`);
     writeFileSync(join(SHOTS, id, "deep.json"), JSON.stringify(report));
     return report;
+  } catch (e) {
+    if (expired) throw new Error(`tiempo agotado (${Math.round((opts.timeoutMs ?? 0) / 1000)} s)`);
+    throw e;
   } finally {
+    clearTimeout(timer);
     await ctx.close().catch(() => {});
   }
 }

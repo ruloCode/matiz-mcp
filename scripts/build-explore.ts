@@ -217,8 +217,13 @@ async function worker() {
   while (jobs.length) {
     const j = jobs.shift()!;
     mkdirSync(join(j.dst, ".."), { recursive: true });
-    await run("cwebp", ["-quiet", "-q", "72", "-resize", String(j.w), "0", j.src, "-o", j.dst]);
-    done++;
+    // un recorte que falte no tumba el build: se omite (la ficha cae al componente recreado)
+    try {
+      await run("cwebp", ["-quiet", "-q", "72", "-resize", String(j.w), "0", j.src, "-o", j.dst]);
+      done++;
+    } catch {
+      console.log(`  (omitida) ${j.src}`);
+    }
   }
 }
 const total = jobs.length;

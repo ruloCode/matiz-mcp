@@ -108,7 +108,8 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
 }
 
 /* ---------- ficha de sistema (ADN de marca) ---------- */
-.sys { display: grid; gap: 56px; }
+.sys { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+.sys > *, .sys section > * { min-width: 0; }
 .sys h3 { margin: 0 0 6px; font-size: 22px; letter-spacing: -0.03em; }
 .sys .lead { margin: 0 0 18px; color: var(--muted); font-size: 14px; max-width: 70ch; }
 .ident { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; align-items: stretch; }
@@ -179,8 +180,124 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
 .export .bar2 .cp { margin-left: auto; background: #222225; color: #ededee; }
 .export pre { margin: 0; padding: 16px; max-height: 420px; overflow: auto; font: 12px/1.6 var(--mono); }
 .sys-nav { display: flex; gap: 6px; flex-wrap: wrap; position: sticky; top: 64px; z-index: 1; background: color-mix(in oklab, var(--bg) 92%, transparent); padding: 6px 0; }
+@media (max-width: 760px) { .sys-nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .sys-nav::-webkit-scrollbar { display: none; } .sys-nav a { flex: none; } }
+.ident.half { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 860px) { .ident.half { grid-template-columns: minmax(0, 1fr); } }
+.cx-stage > * { min-width: 0; max-width: 100%; }
+.cx-shot img { max-width: 100%; }
+/* dentro de un lienzo con el fondo de la marca, los chips y notas heredan su color */
+.canvas .chips2 span { background: color-mix(in oklab, currentColor 12%, transparent); color: inherit; }
+.canvas .chips2 span em, .canvas .elev small, .canvas .note { color: inherit; opacity: .72; }
+.canvas .sub-h { color: inherit; }
 .sys-nav a { font-size: 13px; color: var(--muted); padding: 5px 10px; border-radius: 999px; }
 .sys-nav a:hover { background: var(--soft); color: var(--ink); }
+/* ---------- análisis profundo ---------- */
+.sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 18%, transparent); flex: none; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.kpi { background: var(--soft); border-radius: 16px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.kpi b { font-size: 24px; letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 12.5px; color: var(--muted); }
+.cx-list { display: grid; gap: 14px; }
+.cx { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--bg); }
+.cx.wide { grid-template-columns: minmax(0, 1fr); }
+.cx.sm { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+@media (max-width: 900px) { .cx, .cx.sm { grid-template-columns: minmax(0, 1fr); } }
+.cx-stage { position: relative; background: var(--soft); background-image: radial-gradient(color-mix(in oklab, var(--ink) 9%, transparent) 1px, transparent 1px); background-size: 14px 14px; display: grid; place-items: center; padding: 34px 20px; min-height: 170px; }
+.cx-shot { position: relative; margin: 0; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 28px -10px rgba(0,0,0,.22); max-width: 100%; cursor: default; }
+.cx-shot img { display: block; max-width: 100%; height: auto; }
+.cx-shot img.h { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .18s; }
+.cx-shot.has-h { cursor: pointer; }
+.cx-shot.has-h:hover img.h, .cx-shot.on img.h { opacity: 1; }
+.cx-tag { position: absolute; left: 12px; top: 10px; font: 500 11px var(--mono); color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.cx-tag i { width: 7px; height: 7px; border-radius: 50%; background: #30a46c; }
+.cx-body { padding: 18px 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.cx-body header { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.cx-body header b { font-size: 16px; letter-spacing: -0.02em; }
+.cx-body header span { font-size: 12.5px; color: var(--muted); }
+.spec { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 2px 14px; margin: 0; }
+.spec div { display: grid; gap: 1px; padding: 6px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.spec dt { font-size: 11.5px; color: var(--muted); }
+.spec dd { margin: 0; font: 12.5px/1.4 var(--mono); overflow-wrap: anywhere; display: flex; align-items: center; }
+.delta { display: flex; flex-wrap: wrap; gap: 6px; }
+.delta .lbl { font-size: 12px; color: var(--muted); width: 100%; }
+.dchip { display: inline-flex; align-items: center; gap: 4px; font: 11.5px var(--mono); background: var(--soft); border-radius: 999px; padding: 4px 10px; max-width: 100%; overflow-wrap: anywhere; }
+.dchip .sw { width: 11px; height: 11px; margin: 0; }
+.cx-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 12px; }
+.cx-foot .rec { display: flex; align-items: center; gap: 10px; font-size: 11.5px; color: var(--muted); min-width: 0; }
+.mini { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 5px 12px; font-size: 12.5px; cursor: pointer; }
+.mini:hover { background: var(--soft); }
+.rhythm-wrap { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 900px) { .rhythm-wrap { grid-template-columns: minmax(0, 1fr); } }
+.rhythm { display: grid; gap: 3px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.rb { position: relative; display: flex; flex-direction: column; min-height: 30px; }
+.rb .pad { position: relative; background-image: repeating-linear-gradient(135deg, color-mix(in oklab, currentColor 26%, transparent) 0 1px, transparent 1px 7px); display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font: 10.5px var(--mono); }
+.rb .pad span { background: color-mix(in oklab, currentColor 14%, transparent); border-radius: 4px; padding: 0 5px; }
+.rb .ct { flex: 1; display: flex; justify-content: center; align-items: center; min-height: 6px; }
+.rb .ct i { display: block; height: 100%; min-height: 6px; border: 1px dashed color-mix(in oklab, currentColor 45%, transparent); border-radius: 4px; }
+.histo { display: grid; gap: 5px; }
+.histo div { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 2.5rem; gap: 10px; align-items: center; font: 11.5px var(--mono); }
+.histo i { height: 10px; border-radius: 3px; background: var(--ink); opacity: .7; display: block; }
+.histo em { font-style: normal; color: var(--muted); text-align: right; }
+.elev { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 26px 20px; }
+.elev .e { display: grid; gap: 10px; }
+.elev .card3 { height: 104px; border-radius: 14px; display: grid; place-items: center; font: 600 22px var(--mono); }
+.elev small { font: 11px/1.5 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+.curves { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.curve { background: var(--soft); border-radius: 16px; padding: 14px; display: grid; gap: 10px; }
+.curve svg { width: 100%; height: 120px; overflow: visible; }
+.curve .track { position: relative; height: 22px; border-radius: 999px; background: color-mix(in oklab, var(--ink) 8%, transparent); }
+.curve .track i { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); }
+.curve b { font: 600 13px var(--mono); }
+.curve span { font-size: 12px; color: var(--muted); }
+@keyframes mz-slide { 0%, 18% { left: 3px; } 82%, 100% { left: calc(100% - 19px); } }
+@media (prefers-reduced-motion: reduce) { .curve .track i { animation: none !important; } }
+.reveal-demo { border-radius: 18px; padding: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; min-height: 180px; border: 1px solid var(--line); }
+.reveal-demo i { border-radius: 12px; min-height: 120px; display: block; }
+.chips2 { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips2 span { font: 12px var(--mono); background: var(--soft); border-radius: 999px; padding: 4px 10px; }
+.chips2 span em { font-style: normal; color: var(--muted); margin-left: 4px; }
+.ratios { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+.ratios div { display: grid; gap: 6px; justify-items: center; font: 11.5px var(--mono); }
+.ratios i { display: block; background: var(--soft-2); border-radius: 6px; border: 1px solid var(--line); }
+.bp { position: relative; height: 58px; margin-top: 8px; }
+.bp .axis { position: absolute; left: 0; right: 0; top: 26px; height: 2px; background: var(--line); }
+.bp b { position: absolute; top: 14px; width: 2px; height: 26px; background: var(--ink); transform: translateX(-1px); }
+.bp span { position: absolute; top: 44px; font: 10.5px var(--mono); transform: translateX(-50%); color: var(--muted); white-space: nowrap; }
+.bp span.up { top: 0; }
+.cmp-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 16px; }
+.cmp-head select { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 7px 12px; font-size: 14px; max-width: 100%; }
+.legend { display: flex; gap: 14px; font-size: 12.5px; color: var(--muted); align-items: center; flex-wrap: wrap; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.metrics { display: grid; gap: 4px; }
+.metric { display: grid; grid-template-columns: 13rem minmax(0, 1fr) 9rem; gap: 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+@media (max-width: 760px) { .metric { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+.metric .n { font-size: 13.5px; font-weight: 500; }
+.metric .n small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+.strip { position: relative; height: 30px; }
+.strip .t { position: absolute; top: 9px; width: 1px; height: 12px; background: var(--ink); opacity: .16; }
+.strip .med { position: absolute; top: 4px; width: 1px; height: 22px; background: var(--ink); opacity: .45; }
+.strip .me, .strip .ot { position: absolute; top: 7px; width: 16px; height: 16px; border-radius: 50%; transform: translateX(-8px); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--ink); }
+.strip .me { background: var(--ink); z-index: 2; }
+.strip .ot { background: var(--mark); z-index: 1; }
+.metric .v { font: 12.5px var(--mono); text-align: right; }
+.metric .v small { display: block; color: var(--muted); font-family: var(--font); font-size: 11.5px; }
+@media (max-width: 760px) { .metric .v { text-align: left; } }
+.facts2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.fact { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 4px; }
+.fact b { font-size: 13.5px; } .fact span { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.hier { display: grid; }
+.hier .row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 18px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid color-mix(in oklab, currentColor 14%, transparent); }
+.hier .row:last-child { border-bottom: 0; }
+.hier .m { font: 11.5px/1.55 var(--mono); opacity: .75; }
+.hier .tx { overflow: hidden; text-overflow: ellipsis; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .hier .row { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+.glass-demo { position: relative; height: 150px; border-radius: 16px; overflow: hidden; display: grid; place-items: center; }
+.glass-demo .blob { position: absolute; width: 140px; height: 140px; border-radius: 50%; }
+.glass-demo .panel { position: relative; padding: 14px 22px; border-radius: 12px; font: 500 13px var(--mono); }
+.note { font-size: 12.5px; color: var(--muted); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 22px; align-items: start; }
+.sub-h { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 10px; }
+details.more2 summary { cursor: pointer; font-size: 13px; color: var(--muted); margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -196,7 +313,7 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
     <div><h1>Explorar</h1><p id="sub">Páginas reales de producto, medidas por Matiz.</p></div>
     <div class="controls">
       <div class="seg" role="group" aria-label="Vista"><button type="button" data-view="sites" aria-pressed="true">Sitios</button><button type="button" data-view="sections" aria-pressed="false">Secciones</button></div>
-      <select id="sort" aria-label="Orden"><option value="recent">Recientes</option><option value="az">A–Z</option></select>
+      <select id="sort" aria-label="Orden"><option value="recent">Recientes</option><option value="az">A–Z</option><option value="air">Más aire</option><option value="motion">Más movimiento</option><option value="round">Botones más redondos</option><option value="depth">Más sombras</option><option value="type">Títulos más grandes</option></select>
     </div>
   </div>
   <div class="chips" id="chips"></div>
@@ -229,6 +346,9 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
   function filtered() {
     let l = B.filter((b) => !state.industry || b.industry.includes(state.industry));
     if (state.sort === "az") l = [...l].sort((a, b) => a.name.localeCompare(b.name));
+    const SORT = { air: (m) => m.sectionPad, motion: (m) => m.transitions + 4 * m.reveals + 3 * m.hovers, round: (m) => (m.btnHeight ? m.btnRadius / m.btnHeight : null), depth: (m) => m.shadows * 10 + m.elevation, type: (m) => m.h1Size };
+    const f = SORT[state.sort];
+    if (f) l = [...l].sort((a, b) => (b.metrics ? f(b.metrics) ?? -1 : -1) - (a.metrics ? f(a.metrics) ?? -1 : -1));
     return l;
   }
 
@@ -342,82 +462,468 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
   const on = (hex) => (lum(hex) > 0.58 ? "#111" : "#fff");
   const copy = async (t, el) => { try { await navigator.clipboard.writeText(t); const o = el.textContent; el.textContent = "Copiado"; setTimeout(() => (el.textContent = o), 1200); } catch {} };
 
-  function systemHtml(D) {
+  // ---------- utilidades del análisis profundo ----------
+  const hexOf = (c) => {
+    const m = String(c || "").match(/rgba?\(([^)]+)\)/);
+    if (!m) return String(c || "");
+    const [r, g, b, a = 1] = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat);
+    const h = "#" + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+    return a < 1 ? `${h} ${Math.round(a * 100)}%` : h;
+  };
+  const isColor = (c) => /^(rgb|#|hsl|oklch|color\()/.test(String(c || "").trim());
+  const swc = (c) => `<i class="sw" style="background:${String(c).replace(/"/g, "")}"></i>`;
+  const colorCell = (c) => (!c || c === "transparent" || /,\s*0\)$/.test(c) ? "transparente" : `${swc(c)}${esc(hexOf(c))}`);
+  const borderCell = (b) => {
+    if (!b) return "—";
+    const m = String(b).match(/^([\d.]+px)\s+(\w+)\s+(.+)$/);
+    return m ? `${swc(m[3])}${m[1]} ${m[2] === "solid" ? "" : m[2] + " "}${esc(hexOf(m[3]))}` : esc(b);
+  };
+  const ms = (d) => (String(d).endsWith("ms") ? parseFloat(d) : parseFloat(d) * 1000);
+  const matrix = (t) => {
+    const m = String(t || "").match(/matrix(3d)?\(([^)]+)\)/);
+    if (!m) return { x: 0, y: 0, s: 1 };
+    const a = m[2].split(",").map(Number);
+    return m[1] ? { x: a[12], y: a[13], s: a[0] } : { x: a[4], y: a[5], s: Math.hypot(a[0], a[1]) };
+  };
+  const PROP_CSS = { fondo: "background-color", texto: "color", borde: "border-color", sombra: "box-shadow", transform: "transform", opacidad: "opacity", subrayado: "text-decoration-line", filtro: "filter", degradado: "background-image", outline: "outline-style", "color de outline": "outline-color", "ancho de outline": "outline-width", escala: "scale", desplazamiento: "translate" };
+  // un cambio medido, en palabras: "sube 2px", "fondo #111 → #333"
+  function describe(c) {
+    const who = c.on === "hijo" ? "ícono/hijo: " : "";
+    if (c.prop === "transform" || c.prop === "desplazamiento" || c.prop === "escala") {
+      const a = matrix(c.from), b = matrix(c.to);
+      const parts = [];
+      const dx = Math.round(b.x - a.x), dy = Math.round(b.y - a.y);
+      if (dy) parts.push(dy < 0 ? `sube ${-dy}px` : `baja ${dy}px`);
+      if (dx) parts.push(dx > 0 ? `se mueve ${dx}px →` : `se mueve ${-dx}px ←`);
+      if (Math.abs(b.s - a.s) > 0.004) parts.push(`escala ×${(b.s / (a.s || 1)).toFixed(2)}`);
+      if (!parts.length) parts.push(`${c.prop}: ${c.to.slice(0, 40)}`);
+      return `<span class="dchip">${who}${parts.join(" · ")}</span>`;
+    }
+    if (c.prop === "sombra") return `<span class="dchip">${who}${c.from === "none" ? "aparece sombra" : c.to === "none" ? "pierde la sombra" : "cambia la sombra"}</span>`;
+    if (c.prop === "subrayado") return `<span class="dchip">${who}${/underline/.test(c.to) ? "se subraya" : "quita el subrayado"}</span>`;
+    if (c.prop === "opacidad") return `<span class="dchip">${who}opacidad ${(+c.from).toFixed(2)} → ${(+c.to).toFixed(2)}</span>`;
+    if (c.prop === "ancho" || c.prop === "alto") return `<span class="dchip">${who}${c.prop} ${c.from} → ${c.to}px</span>`;
+    if (isColor(c.from) || isColor(c.to)) return `<span class="dchip">${who}${esc(c.prop)} ${isColor(c.from) ? swc(c.from) : ""}${esc(hexOf(c.from))} → ${isColor(c.to) ? swc(c.to) : ""}${esc(hexOf(c.to))}</span>`;
+    return `<span class="dchip">${who}${esc(c.prop)}: ${esc(String(c.to).slice(0, 50))}</span>`;
+  }
+  const EASE = { ease: [0.25, 0.1, 0.25, 1], linear: [0, 0, 1, 1], "ease-in": [0.42, 0, 1, 1], "ease-out": [0, 0, 0.58, 1], "ease-in-out": [0.42, 0, 0.58, 1] };
+  const bez = (e) => EASE[e] || ((m) => (m ? m[1].split(",").map(Number) : null))(String(e).match(/cubic-bezier\(([^)]+)\)/));
+  const EASE_NAME = (e) => {
+    const p = bez(e);
+    if (!p) return "por pasos";
+    const [x1, y1, x2, y2] = p;
+    if (y1 > 1 || y2 > 1 || y1 < 0 || y2 < 0) return "con rebote";
+    if (x1 === 0 && y1 === 0 && x2 === 1 && y2 === 1) return "lineal";
+    if (x1 >= 0.3 && x2 >= 0.9) return "acelera";
+    if (x1 <= 0.1 && (x2 <= 0.6 || y2 >= 0.9)) return "frena suave";
+    return "suave a los dos lados";
+  };
+  function curveSvg(e) {
+    const p = bez(e);
+    if (!p) return `<svg viewBox="0 0 100 100"><text x="50" y="55" text-anchor="middle" font-size="10" fill="currentColor">${esc(e)}</text></svg>`;
+    const [x1, y1, x2, y2] = p;
+    const Y = (v) => 100 - v * 100;
+    return `<svg viewBox="-4 -14 108 128" aria-hidden="true"><rect x="0" y="0" width="100" height="100" fill="none" stroke="currentColor" stroke-opacity=".12"/>
+      <line x1="0" y1="100" x2="${x1 * 100}" y2="${Y(y1)}" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="2 2"/><line x1="100" y1="0" x2="${x2 * 100}" y2="${Y(y2)}" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="2 2"/>
+      <circle cx="${x1 * 100}" cy="${Y(y1)}" r="2.6" fill="currentColor"/><circle cx="${x2 * 100}" cy="${Y(y2)}" r="2.6" fill="currentColor"/>
+      <path d="M0,100 C${x1 * 100},${Y(y1)} ${x2 * 100},${Y(y2)} 100,0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+  }
+  // métricas comparables con todo el catálogo
+  const MET = [
+    ["sectionPad", "Aire entre secciones", "px", "Secciones con más aire que el {p}% del catálogo", "Secciones más compactas que el {p}% del catálogo"],
+    ["container", "Ancho de contenido", "px", "Contenido más ancho que el {p}% del catálogo", "Contenido más angosto que el {p}% del catálogo"],
+    ["h1Size", "Tamaño del título", "px", "Título más grande que el {p}% del catálogo", "Título más contenido que el {p}% del catálogo"],
+    ["h1Tracking", "Tracking del título", "% em", "Título más abierto que el {p}% del catálogo", "Título más apretado que el {p}% del catálogo"],
+    ["bodySize", "Texto de lectura", "px", "Texto de lectura más grande que el {p}% del catálogo", "Texto de lectura más pequeño que el {p}% del catálogo"],
+    ["btnRadius", "Radio del botón", "px", "Botones más redondos que el {p}% del catálogo", "Botones más rectos que el {p}% del catálogo"],
+    ["btnHeight", "Alto del botón", "px", "Botones más altos que el {p}% del catálogo", "Botones más bajos que el {p}% del catálogo"],
+    ["btnPadX", "Padding lateral del botón", "px", "Botones más anchos de padding que el {p}% del catálogo", "Botones más ceñidos que el {p}% del catálogo"],
+    ["cardRadius", "Radio de tarjeta", "px", "Tarjetas más redondeadas que el {p}% del catálogo", "Tarjetas más rectas que el {p}% del catálogo"],
+    ["cardPad", "Padding de tarjeta", "px", "Tarjetas con más aire interno que el {p}% del catálogo", "Tarjetas más densas que el {p}% del catálogo"],
+    ["shadows", "Sombras distintas", "", "Usa más sombras distintas que el {p}% del catálogo", "Casi sin sombras: menos que el {p}% del catálogo"],
+    ["elevation", "Elevación máxima", "px", "Sombras más profundas que el {p}% del catálogo", "Sombras más planas que el {p}% del catálogo"],
+    ["transitions", "Elementos con transición", "", "Más elementos animados que el {p}% del catálogo", "Menos transiciones que el {p}% del catálogo"],
+    ["duration", "Duración típica", "ms", "Animaciones más lentas que el {p}% del catálogo", "Animaciones más rápidas que el {p}% del catálogo"],
+    ["keyframes", "Keyframes CSS", "", "Más keyframes que el {p}% del catálogo", "Menos keyframes que el {p}% del catálogo"],
+    ["reveals", "Aparecen al hacer scroll", "", "Más elementos que entran al hacer scroll que el {p}% del catálogo", "Menos animación de entrada que el {p}% del catálogo"],
+    ["hovers", "Cambios en hover", "", "Hovers más ricos que el {p}% del catálogo", "Hovers más sobrios que el {p}% del catálogo"],
+    ["navHeight", "Alto de la barra", "px", "Barra más alta que el {p}% del catálogo", "Barra más baja que el {p}% del catálogo"],
+    ["images", "Imágenes en portada", "", "Más imágenes que el {p}% del catálogo", "Menos imágenes que el {p}% del catálogo"],
+    ["breakpoints", "Breakpoints", "", "Más breakpoints que el {p}% del catálogo", "Menos breakpoints que el {p}% del catálogo"],
+  ];
+  function dist(key) {
+    const v = B.map((b) => b.metrics && b.metrics[key]).filter((x) => typeof x === "number").sort((a, b) => a - b);
+    return v;
+  }
+  function pctOf(vals, v) {
+    if (v == null || !vals.length) return null;
+    let lo = 0, eq = 0;
+    for (const x of vals) { if (x < v) lo++; else if (x === v) eq++; }
+    return (lo + eq / 2) / vals.length;
+  }
+  function metricTraits(b) {
+    if (!b.metrics) return [];
+    const out = [];
+    for (const [k, label, unit, hi, lo] of MET) {
+      const vals = dist(k);
+      const v = b.metrics[k];
+      const p = pctOf(vals, v);
+      if (p == null || vals.length < 40 || vals[0] === vals[vals.length - 1]) continue;
+      if (p >= 0.9) out.push({ value: `${fmt(v)}${unit && unit !== "% em" ? unit : unit ? "%" : ""}`, text: hi.replace("{p}", Math.round(p * 100)), s: p });
+      else if (p <= 0.1 && v > 0) out.push({ value: `${fmt(v)}${unit && unit !== "% em" ? unit : unit ? "%" : ""}`, text: lo.replace("{p}", Math.round((1 - p) * 100)), s: 1 - p });
+    }
+    return out.sort((a, c) => c.s - a.s).slice(0, 4);
+  }
+  const fmt = (v) => (v == null ? "—" : Math.abs(v) >= 100 ? Math.round(v) : +(+v).toFixed(1));
+
+  function cssBlock(sel, decl, hov) {
+    const body = Object.entries(decl).filter(([, v]) => v !== "" && v != null).map(([k, v]) => `  ${k}: ${v};`).join("\n");
+    const h = (hov || []).filter((c) => c.on === "self" && PROP_CSS[c.prop]).map((c) => `  ${PROP_CSS[c.prop]}: ${c.to};`).join("\n");
+    return `${sel} {\n${body}\n}${h ? `\n${sel}:hover {\n${h}\n}` : ""}`;
+  }
+
+  function systemHtml(D, b) {
     const bg = D.roles.find((r) => r.role === "Fondo")?.hex || "#fff";
     const fg = D.roles.find((r) => r.role === "Texto")?.hex || "#111";
     const muted = D.roles.find((r) => r.role === "Secundario")?.hex || fg;
     const accent = D.roles.find((r) => r.role === "Acento")?.hex;
+    const X = D.deep;
     // comillas simples: este valor va dentro de style="…"
-    const fontFor = (family) => { const f = D.fonts.find((x) => x.family === family) || D.fonts[0]; return f ? `'${(f.use || f.family).replace(/'/g, "")}', system-ui, sans-serif` : "system-ui"; };
+    const fontFor = (family) => { const f = D.fonts.find((x) => x.family === family) || D.fonts.find((x) => family && family.toLowerCase().includes(String(x.family).toLowerCase())) || D.fonts[0]; return f ? `'${(f.use || f.family).replace(/'/g, "")}', system-ui, sans-serif` : "system-ui"; };
     D.fonts.forEach((f) => loadFont(f.use));
-    const heading = D.typeScale[0];
-    const pb = D.buttons.find((b) => b.kind === "primary");
-    const sb = D.buttons.find((b) => b.kind === "secondary");
-    // "Sign in Sign in": el texto oculto para lectores de pantalla duplica la etiqueta
     const clean = (t) => { const w = String(t || "").trim().split(/\s+/); const h = w.length / 2; return w.length % 2 === 0 && w.slice(0, h).join(" ") === w.slice(h).join(" ") ? w.slice(0, h).join(" ") : t; };
-    const btn = (b, label) => b ? `<a style="display:inline-flex;align-items:center;justify-content:center;background:${b.bg === "transparent" ? "transparent" : b.bg};color:${b.text};border:${b.border ? `1px solid ${b.border}` : "0"};border-radius:${b.radius >= 999 ? "999px" : b.radius + "px"};padding:${Math.max(b.paddingY, 10)}px ${Math.max(b.paddingX, 14)}px;font:${b.weight} 15px ${fontFor(D.fonts[0]?.family)}">${esc(clean(b.label) || label)}</a>` : "";
     const sec = (id, title, lead, body) => `<section id="${id}"><h3>${title}</h3>${lead ? `<p class="lead">${lead}</p>` : ""}${body}</section>`;
+    const stateOf = (key) => (X?.states || []).find((s) => s.key === key);
+    const shot = (key, alt) => {
+      const base = X?.crops?.[key];
+      if (!base) return "";
+      const st = stateOf(key);
+      const h = X.crops[`${key}-hover`] || X.crops[`${key}-focus`];
+      return `<figure class="cx-shot${h ? " has-h" : ""}" ${h ? 'tabindex="0"' : ""}><img src="${base}" alt="${esc(alt)} en ${esc(D.name)}" loading="lazy" onerror="const s=this.closest('.cx-stage');this.closest('figure').remove();s&&s.querySelector('.cx-tag')?.remove();s&&s.querySelector('.fallback')&&(s.querySelector('.fallback').hidden=false)">${h ? `<img class="h" src="${h}" alt="" aria-hidden="true" loading="lazy">` : ""}</figure>${h ? `<span class="cx-tag"><i></i>${st?.state === "focus" ? "clic: focus real" : "pasa el cursor: hover real"}</span>` : ""}`;
+    };
+    const deltaHtml = (key) => {
+      const st = stateOf(key);
+      if (!st) return "";
+      return `<div class="delta"><span class="lbl">${st.state === "focus" ? "Al enfocar" : "Al pasar el cursor"}${st.waitMs ? ` · medido tras ${st.waitMs}ms` : ""}</span>${st.changes.length ? st.changes.map(describe).join("") : `<span class="dchip">sin cambio visible</span>`}</div>`;
+    };
+    const specHtml = (rows) => `<dl class="spec">${rows.filter((r) => r && r[1] != null && r[1] !== "").map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`;
 
+    // ---------- identidad + rasgos (con lo medido en profundidad) ----------
+    const traits = [...D.traits, ...metricTraits(b)].slice(0, 6);
     const ident = `<div class="ident">
-      <div class="logo-tile" style="background:${bg};color:${fg}">${D.logo ? `<img src="${D.logo.src}" alt="Logo de ${esc(D.name)}" referrerpolicy="no-referrer">` : `<b style="font:700 34px ${fontFor(D.fonts[0]?.family)};letter-spacing:-.03em">${esc(D.name)}</b>`}
+      <div class="logo-tile" style="background:${bg};color:${fg}">${D.logo ? `<img src="${D.logo.src}" alt="Logo de ${esc(D.name)}" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('b'),{textContent:${esc(JSON.stringify(D.name))}}))">` : `<b style="font:700 34px ${fontFor(D.fonts[0]?.family)};letter-spacing:-.03em">${esc(D.name)}</b>`}
         <span class="fav">${D.favicon ? `<img src="${esc(D.favicon)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}${esc(D.host)} · ${D.theme === "dark" ? "tema oscuro" : "tema claro"}</span></div>
       <div><h3>Lo que la hace única</h3><p class="lead">Rasgos medidos frente a las ${esc(String(B.length))} marcas del catálogo.</p>
-        <div class="traits">${(D.traits.length ? D.traits : [{ value: "—", text: "Ningún rasgo extremo: es una marca muy en la media del catálogo." }]).map((t) => `<div class="trait"><b>${esc(t.value)}</b><span>${esc(t.text)}</span></div>`).join("")}</div></div>
+        <div class="traits">${(traits.length ? traits : [{ value: "—", text: "Ningún rasgo extremo: es una marca muy en la media del catálogo." }]).map((t) => `<div class="trait"><b>${esc(t.value)}</b><span>${esc(t.text)}</span></div>`).join("")}</div></div>
     </div>`;
 
+    // ---------- color ----------
     const roles = `<div class="roles">${D.roles.map((r) => `<button class="role" type="button" data-copy="${r.hex}"><div class="rc" style="background:${r.hex};color:${on(r.hex)}">${esc(r.role)}</div><div class="meta2">${r.hex}${r.contrast != null ? ` <span><span class="badge ${r.contrast >= 4.5 ? "ok" : r.contrast >= 3 ? "" : "no"}">${r.contrast >= 4.5 ? "AA" : r.contrast >= 3 ? "AA grande" : "bajo"} ${r.contrast}:1</span></span>` : ""}${r.vars && r.vars.length ? `<small>${r.vars.map(esc).join(" · ")}</small>` : ""}</div></button>`).join("")}</div>`;
     const accScale = D.accentScale ? `<div class="scale">${Object.entries(D.accentScale).map(([k, h]) => `<button type="button" data-copy="${h}" style="background:${h};color:${on(h)}" title="${h}">${k}</button>`).join("")}</div><p class="lead" style="margin-top:8px">Escala 50–950 del acento, calculada en OKLCH para usar en estados y fondos.</p>` : "";
     const tk = D.tokens;
-    // prefijo común de los nombres (p. ej. --hds-color-): se muestra una vez y cada token sin él
-    const names = tk ? tk.colors.map((c) => c.name) : [];
-    let prefix = names[0] || "";
-    for (const n of names) while (prefix && !n.startsWith(prefix)) prefix = prefix.slice(0, -1);
+    const named = tk ? tk.colors.filter((c) => !c.hashed) : [];
+    const hashed = tk ? tk.colors.filter((c) => c.hashed) : [];
+    let prefix = named[0]?.name || "";
+    for (const c of named) while (prefix && !c.name.startsWith(prefix)) prefix = prefix.slice(0, -1);
     prefix = prefix.slice(0, prefix.lastIndexOf("-") + 1);
     if (prefix.length < 4) prefix = "";
-    const declared = tk && tk.total >= 3 && (tk.colors.length || tk.scales.length) ? `<p class="lead" style="margin-top:18px">El sitio declara <b>${tk.total}</b> variables CSS. Estas son las de color, con su nombre original:</p>
+    const tokBtn = (c, pre) => `<button class="tok" type="button" data-copy="${c.name}: ${c.hex};" title="${esc(c.name)} · ${c.hex}"><i style="background:${c.hex}"></i><span>${esc(pre ? c.name.slice(pre.length) : c.name)}</span><em>${c.role ? esc(c.role) : c.hex}</em></button>`;
+    const declared = tk && tk.total >= 3 && (tk.colors.length || tk.scales.length) ? `<p class="lead" style="margin-top:18px">El sitio declara <b>${tk.total}</b> variables CSS.${named.length ? " Estas son las de color, con su nombre original:" : ""}</p>
         ${prefix ? `<p class="lead" style="margin:0">Prefijo común: <code>${esc(prefix)}</code></p>` : ""}
-        <div class="tok-grid">${tk.colors.map((c) => `<button class="tok" type="button" data-copy="${c.name}: ${c.hex};" title="${esc(c.name)} · ${c.hex}"><i style="background:${c.hex}"></i><span>${esc(prefix ? c.name.slice(prefix.length) : c.name)}</span><em>${c.role ? esc(c.role) : c.hex}</em></button>`).join("")}</div>
+        ${named.length ? `<div class="tok-grid">${named.map((c) => tokBtn(c, prefix)).join("")}</div>` : ""}
+        ${hashed.length ? `<details class="more2"${named.length ? "" : " open"}><summary>${hashed.length} variables de color con nombre generado por CSS-in-JS (${esc(hashed[0].name)}…): son reales, pero el nombre no dice su función</summary><div class="tok-grid">${hashed.map((c) => tokBtn(c, "")).join("")}</div></details>` : ""}
         ${tk.scales.length ? `<div class="scales">${tk.scales.map((sc) => `<div class="row"><span>--${esc(sc.name)}</span><div>${sc.steps.map((st) => `<i style="background:${st.hex}" title="${st.step} ${st.hex}"></i>`).join("")}</div></div>`).join("")}</div>` : ""}`
       : `<p class="lead" style="margin-top:18px">${tk && tk.total ? `El sitio declara solo ${tk.total} variable${tk.total === 1 ? "" : "s"} CSS y ninguna de color` : "Este sitio no expone variables CSS en :root"}: los colores de arriba salen de medir lo que pinta.</p>`;
     const grads = D.gradients.length ? `<p class="lead" style="margin-top:18px">Degradados en uso:</p><div class="grads">${D.gradients.map((g) => `<div style="background:${g.replace(/"/g, "'")}" title="${esc(g)}"></div>`).join("")}</div>` : "";
 
+    // ---------- tipografía ----------
     const fonts = `<div class="fonts-grid">${D.fonts.map((f) => `<div class="fcard"><div class="aa" style="font-family:${fontFor(f.family)}">Aa</div><b>${esc(f.family)}</b><small>${esc(f.class)} · ${Math.round(f.share * 100)}% del texto${f.weights && f.weights.length ? ` · pesos ${esc(f.weights.join(", "))}` : ""}</small><small>${f.free ? `Libre: ${esc(f.freeAs || f.use)} (Google Fonts)` : `Comercial o propia → usa <b>${esc(f.use || "Inter")}</b>`}</small></div>`).join("")}</div>`;
-    const ladder = `<div class="canvas" style="background:${bg};color:${fg}"><div class="ladder">${D.typeScale.map((t) => {
+    const H = X?.headings || {};
+    const hRow = (tag, h, sample) => {
+      if (!h) return "";
+      const shown = Math.min(h.size, 76);
+      return `<div class="row"><div class="m"><b>${tag}</b> · ${esc(h.family)}<br>${h.size}px · ${h.weight} · lh ${h.lh}${h.ls ? ` · ${(h.ls * 100).toFixed(1)}% em` : ""}${h.transform !== "none" ? ` · ${esc(h.transform)}` : ""}${h.count > 1 ? `<br>${h.count} en la página` : ""}${shown < h.size ? " · reducido" : ""}</div>
+        <div class="tx" style="font-family:${fontFor(h.family)};font-size:${shown}px;font-weight:${h.weight};line-height:${Math.min(h.lh || 1.2, 1.5)};letter-spacing:${h.ls || 0}em;text-transform:${h.transform};font-style:${h.style || "normal"};color:${tag === "body" ? muted : fg};${h.gradient ? `background:${h.gradient.replace(/"/g, "'")};-webkit-background-clip:text;background-clip:text;color:transparent;` : ""}">${esc(sample || h.text)}</div></div>`;
+    };
+    const sh = X?.sectionHeader;
+    const eb = sh?.eyebrow;
+    const hier = X && (H.h1 || H.h2) ? `<p class="sub-h" style="margin-top:28px">Jerarquía real de la portada</p><div class="canvas" style="background:${bg};color:${fg}"><div class="hier">
+        ${eb ? `<div class="row"><div class="m"><b>antetítulo</b> · ${esc(eb.family)}<br>${eb.size}px · ${eb.weight}${eb.ls ? ` · ${(eb.ls * 100).toFixed(1)}% em` : ""}${eb.transform !== "none" ? ` · ${esc(eb.transform)}` : ""}</div><div class="tx"><span style="font-family:${fontFor(eb.family)};font-size:${eb.size}px;font-weight:${eb.weight};letter-spacing:${eb.ls}em;text-transform:${eb.transform};color:${eb.color};${eb.bg ? `background:${eb.bg};padding:3px 10px;border-radius:${eb.radius}px;` : ""}">${esc(eb.text)}</span></div></div>` : ""}
+        ${hRow("h1", H.h1)}${hRow("h2", H.h2)}${hRow("h3", H.h3)}${hRow("h4", H.h4)}${hRow("body", H.body)}
+      </div></div>
+      ${sh ? `<div class="kpis" style="margin-top:14px"><div class="kpi"><b>${Math.round(sh.centeredShare * 100)}%</b><span>de los títulos de sección van centrados</span></div><div class="kpi"><b>${Math.round(sh.eyebrowShare * 100)}%</b><span>llevan antetítulo</span></div><div class="kpi"><b>${Math.round(sh.subtitleShare * 100)}%</b><span>llevan subtítulo debajo</span></div>${H.body?.maxCh ? `<div class="kpi"><b>~${H.body.maxCh}</b><span>caracteres por línea en el texto de lectura</span></div>` : ""}</div>` : ""}` : "";
+    const ladder = `<p class="sub-h" style="margin-top:28px">Escala de tamaños por cantidad de texto</p><div class="canvas" style="background:${bg};color:${fg}"><div class="ladder">${D.typeScale.map((t) => {
       const shown = Math.min(t.size, 88);
       return `<div class="rung"><div class="m">${t.size}px · ${t.weight} · lh ${t.lh}${t.ls ? ` · ${t.ls}em` : ""}<br>${t.role}${shown < t.size ? " · reducido" : ""} · ${Math.round(t.share * 100)}%<span class="bar" style="width:${Math.max(4, t.share * 100)}%"></span></div><div class="sample" style="font-family:${fontFor(t.family)};font-size:${shown}px;font-weight:${t.weight};line-height:${Math.min(t.lh || 1.2, 1.4)};letter-spacing:${t.ls || 0}em;color:${t.role === "small" ? muted : fg}">${t.role === "display" || t.role === "heading" ? esc(D.name) + " en " + t.size + "px" : "Así se lee el texto de esta marca, medido en su sitio."}</div></div>`;
     }).join("")}</div></div>`;
 
-    const radii = [...new Set([...(D.radius.scale || []), D.radius.typical].filter((r) => r > 0 && r < 999))].sort((a, b) => a - b);
+    // ---------- componentes reales ----------
+    let comps = "";
+    if (X) {
+      const items = [];
+      const ROLE = { primary: "Botón primario", secondary: "Botón secundario", tertiary: "Botón terciario" };
+      const seenRole = {};
+      for (const bt of X.buttons || []) {
+        const st = stateOf(bt.key);
+        const n = (seenRole[bt.role] = (seenRole[bt.role] || 0) + 1);
+        const title = `${ROLE[bt.role] || "Botón"}${n > 1 ? ` ${n}` : ""}`;
+        const decl = { "background-color": bt.bg === "transparent" ? "transparent" : hexOf(bt.bg).split(" ")[0], color: hexOf(bt.color).split(" ")[0], border: bt.border || "0", "border-radius": bt.pill ? "999px" : bt.radius + "px", height: bt.height + "px", padding: `0 ${bt.padX}px`, font: `${bt.weight} ${bt.fontSize}px/1 '${bt.family}'`, "letter-spacing": bt.letterSpacing ? bt.letterSpacing + "em" : "", "text-transform": bt.transform !== "none" ? bt.transform : "", "box-shadow": bt.shadow || "", transition: bt.transition || "" };
+        const rec = `<span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:${bt.bg};color:${bt.color};border:${bt.border || "0"};border-radius:${bt.pill ? "999px" : bt.radius + "px"};height:${bt.height}px;padding:0 ${bt.padX}px;font:${bt.weight} ${bt.fontSize}px/1 ${fontFor(bt.family)};letter-spacing:${bt.letterSpacing}em;text-transform:${bt.transform};box-shadow:${bt.shadow || "none"};white-space:nowrap">${esc(clean(bt.label))}</span>`;
+        items.push(`<article class="cx sm"><div class="cx-stage">${shot(bt.key, title)}<div class="fallback" ${X.crops?.[bt.key] ? "hidden" : ""} style="background:${bg};padding:24px;border-radius:10px">${rec}</div></div><div class="cx-body">
+          <header><b>${title}</b><span>${bt.kind === "solid" ? "relleno" : "contorno"} · ${bt.count} ${bt.count === 1 ? "uso" : "usos"} · “${esc(clean(bt.label))}”</span></header>
+          ${specHtml([["Fondo", colorCell(bt.bg)], ["Texto", colorCell(bt.color)], ["Borde", borderCell(bt.border)], ["Radio", bt.pill ? `pill (${bt.radius >= 900 ? bt.radius + "px" : "alto/2"})` : bt.radius + "px"], ["Alto", bt.height + "px"], ["Padding", `${bt.padY}px ${bt.padX}px`], ["Fuente", `${esc(bt.family)} ${bt.fontSize}px · ${bt.weight}`], ["Tracking", bt.letterSpacing ? `${(bt.letterSpacing * 100).toFixed(1)}% em` : "normal"], ["Mayúsculas", bt.transform !== "none" ? esc(bt.transform) : ""], ["Sombra", bt.shadow ? esc(bt.shadow.slice(0, 70)) : ""], ["Transición", bt.transition ? esc(bt.transition) : "ninguna"], ["Ícono", bt.icon ? "sí" : ""]])}
+          ${deltaHtml(bt.key)}
+          <div class="cx-foot"><span class="rec">Recreado con los tokens ${rec}</span><button class="mini" type="button" data-copy="${esc(cssBlock(`.btn-${bt.role}`, decl, st?.changes))}">Copiar CSS</button></div>
+        </div></article>`);
+      }
+      const nv = X.nav;
+      if (nv) items.push(`<article class="cx wide"><div class="cx-stage" style="padding:26px 18px">${shot("nav", "Barra de navegación")}</div><div class="cx-body">
+          <header><b>Barra de navegación</b><span>${nv.links} enlaces · alineados a la ${esc(nv.align)}${nv.ctas ? ` · ${nv.ctas} CTA` : ""}</span></header>
+          ${specHtml([["Alto", nv.height + "px"], ["Fondo", colorCell(nv.bg)], ["Desenfoque", nv.blur ? esc(nv.blur) : "no"], ["Posición", nv.position === "fixed" || nv.position === "sticky" ? `${nv.position} (se queda arriba)` : "se va con el scroll"], ["Borde inferior", nv.borderBottom ? borderCell(nv.borderBottom.replace(/^([\d.]+px) /, "$1 solid ")) : "no"], ["Sombra", nv.shadow ? esc(nv.shadow.slice(0, 60)) : "no"], ["Enlaces", nv.linkSize ? `${nv.linkSize}px · ${nv.linkWeight}` : "—"], ["Color de enlace", nv.linkColor ? colorCell(nv.linkColor) : "—"], ["Separación", nv.linkGap != null ? nv.linkGap + "px" : "—"], ["Flotante", nv.floating ? `sí · radio ${nv.radius}px` : ""]])}
+        </div></article>`);
+      (X.cards || []).forEach((c, i) => {
+        const st = stateOf(c.key);
+        const decl = { "background-color": c.bg === "transparent" ? "transparent" : hexOf(c.bg).split(" ")[0], border: c.border || "", "border-radius": c.radius + "px", "box-shadow": c.shadow || "", padding: c.padding.map((v) => v + "px").join(" "), gap: c.gap != null ? c.gap + "px" : "", transition: c.transition || "" };
+        items.push(`<article class="cx"><div class="cx-stage">${shot(c.key, "Tarjeta")}</div><div class="cx-body">
+          <header><b>Tarjeta${(X.cards || []).length > 1 ? ` ${i + 1}` : ""}</b><span>${c.count} ${c.count === 1 ? "igual" : "iguales"} en la portada · ${c.w}×${c.h}px${c.media ? " · con imagen" : ""}</span></header>
+          ${specHtml([["Fondo", colorCell(c.bg)], ["Borde", borderCell(c.border)], ["Radio", c.radius + "px"], ["Padding", c.padding.join(" ") + "px"], ["Separación interna", c.gap != null ? c.gap + "px" : "—"], ["Sombra", c.shadow ? esc(c.shadow.slice(0, 80)) : "ninguna"], ["Título", c.title ? `${esc(c.title.family)} ${c.title.size}px · ${c.title.weight}` : "—"], ["Transición", c.transition ? esc(c.transition) : ""]])}
+          ${deltaHtml(c.key)}
+          <div class="cx-foot"><span class="rec">Recreada: <span style="display:inline-block;width:64px;height:40px;background:${c.bg === "transparent" ? bg : c.bg};border:${c.border || "0"};border-radius:${Math.min(c.radius, 14)}px;box-shadow:${c.shadow || "none"}"></span></span><button class="mini" type="button" data-copy="${esc(cssBlock(".card", decl, st?.changes))}">Copiar CSS</button></div>
+        </div></article>`);
+      });
+      (X.badges || []).forEach((bd) => {
+        items.push(`<article class="cx sm"><div class="cx-stage">${shot(bd.key, "Etiqueta")}</div><div class="cx-body">
+          <header><b>${bd.pill ? "Pill" : "Etiqueta"}</b><span>${bd.count} ${bd.count === 1 ? "uso" : "usos"} · “${esc(bd.label)}”${bd.link ? " · es un enlace" : ""}</span></header>
+          ${specHtml([["Fondo", colorCell(bd.bg)], ["Texto", colorCell(bd.color)], ["Borde", borderCell(bd.border)], ["Radio", bd.pill ? "pill" : bd.radius + "px"], ["Alto", bd.height + "px"], ["Padding lateral", bd.padX + "px"], ["Fuente", `${bd.fontSize}px · ${bd.weight}`], ["Mayúsculas", bd.transform !== "none" ? esc(bd.transform) : ""], ["Tracking", bd.letterSpacing ? `${(bd.letterSpacing * 100).toFixed(1)}% em` : ""]])}
+          ${deltaHtml(bd.key)}
+        </div></article>`);
+      });
+      if (X.input) {
+        const ip = X.input;
+        items.push(`<article class="cx sm"><div class="cx-stage">${shot("input", "Campo de texto")}</div><div class="cx-body">
+          <header><b>Campo de texto</b><span>${ip.placeholder ? `“${esc(ip.placeholder)}”` : ""}</span></header>
+          ${specHtml([["Fondo", colorCell(ip.bg)], ["Texto", colorCell(ip.color)], ["Borde", borderCell(ip.border)], ["Radio", ip.radius + "px"], ["Alto", ip.height + "px"], ["Padding lateral", ip.padX + "px"], ["Tamaño de letra", ip.fontSize + "px"], ["Sombra", ip.shadow ? esc(ip.shadow.slice(0, 60)) : ""]])}
+          ${deltaHtml("input")}
+        </div></article>`);
+      }
+      if (X.link) {
+        const lk = X.link;
+        items.push(`<article class="cx sm"><div class="cx-stage">${shot("link", "Enlace")}</div><div class="cx-body">
+          <header><b>Enlace de texto</b></header>
+          ${specHtml([["Color", colorCell(lk.color)], ["Subrayado", /underline/.test(lk.decoration) ? `sí${lk.offset && lk.offset !== "auto" ? ` · offset ${esc(lk.offset)}` : ""}${lk.thickness && lk.thickness !== "auto" ? ` · grosor ${esc(lk.thickness)}` : ""}` : "no"], ["Peso", lk.weight], ["Tamaño", lk.size + "px"]])}
+          ${deltaHtml("link")}
+        </div></article>`);
+      }
+      if (X.crops?.header) items.push(`<article class="cx wide"><div class="cx-stage">${shot("header", "Encabezado de sección")}</div><div class="cx-body"><header><b>Encabezado de sección</b><span>${eb ? "antetítulo + " : ""}título${sh?.subtitleShare ? " + subtítulo" : ""} · ${sh ? Math.round(sh.centeredShare * 100) : 0}% centrados</span></header></div></article>`);
+      comps = items.length ? `<div class="cx-list">${items.join("")}</div>` : `<p class="lead">No se encontraron componentes medibles en la portada.</p>`;
+    } else {
+      const pb = D.buttons.find((x) => x.kind === "primary");
+      const sb = D.buttons.find((x) => x.kind === "secondary");
+      const btn = (x, label) => x ? `<a style="display:inline-flex;align-items:center;justify-content:center;background:${x.bg === "transparent" ? "transparent" : x.bg};color:${x.text};border:${x.border ? `1px solid ${x.border}` : "0"};border-radius:${x.radius >= 999 ? "999px" : x.radius + "px"};padding:${Math.max(x.paddingY, 10)}px ${Math.max(x.paddingX, 14)}px;font:${x.weight} 15px ${fontFor(D.fonts[0]?.family)}">${esc(clean(x.label) || label)}</a>` : "";
+      comps = `<div class="canvas" style="background:${bg};color:${fg}"><div class="comps"><div class="comp"><span>botones</span><div class="row">${btn(pb, "Empezar")}${btn(sb, "Ver más")}</div></div></div></div>`;
+    }
+
+    // ---------- espaciado ----------
+    let spacing = "";
+    const SP = X?.spacing;
+    if (SP) {
+      const rh = SP.rhythm.slice(0, 14);
+      const tot = rh.reduce((n, r) => n + Math.min(r.h, 1600), 0) || 1;
+      const sc = 620 / tot;
+      const rhythm = rh.length ? `<div class="rhythm">${rh.map((r) => {
+        const h = Math.max(30, Math.min(r.h, 1600) * sc);
+        const t = Math.min(r.padTop, r.h / 2) * sc, bo = Math.min(r.padBottom, r.h / 2) * sc;
+        const c = on(hexOf(r.bg).split(" ")[0]);
+        return `<div class="rb" style="height:${h}px;background:${r.bg};color:${c}" title="${r.h}px de alto">
+          <div class="pad" style="height:${Math.max(t, 0)}px">${r.padTop >= 24 && t >= 13 ? `<span>${r.padTop}</span>` : ""}</div>
+          <div class="ct"><i style="width:${Math.min(100, (r.inner / 1440) * 100)}%"></i></div>
+          <div class="pad" style="height:${Math.max(bo, 0)}px">${r.padBottom >= 24 && bo >= 13 ? `<span>${r.padBottom}</span>` : ""}</div></div>`;
+      }).join("")}</div>` : `<p class="note">La portada no se organiza en bloques a lo ancho medibles.</p>`;
+      const all = [...SP.gaps, ...SP.paddings];
+      const maxC = Math.max(1, ...SP.paddings.map((x) => x.count), ...SP.gaps.map((x) => x.count));
+      const histo = (l) => `<div class="histo">${l.map((x) => `<div><span>${x.value}px</span><i style="width:${Math.max(3, (x.count / maxC) * 100)}%"></i><em>${x.count}</em></div>`).join("")}</div>`;
+      spacing = `<div class="kpis">
+          <div class="kpi"><b>${SP.base ? SP.base + " px" : "libre"}</b><span>${SP.base ? `unidad base: ${Math.round((SP.base === 8 ? SP.share8 : SP.share4) * 100)}% de las medidas son múltiplos de ${SP.base}` : `sin rejilla clara: solo ${Math.round(SP.share4 * 100)}% son múltiplos de 4`}</span></div>
+          ${b.metrics?.sectionPad != null ? `<div class="kpi"><b>${b.metrics.sectionPad} px</b><span>de aire típico arriba y abajo de cada sección</span></div>` : ""}
+          ${SP.container?.length ? `<div class="kpi"><b>${SP.container[0]} px</b><span>ancho máximo del contenedor${SP.gutter ? ` · ${SP.gutter}px de margen lateral` : ""}</span></div>` : ""}
+          <div class="kpi"><b>${SP.scale.length}</b><span>pasos en su escala: ${SP.scale.slice(0, 9).join(" · ")}${SP.scale.length > 9 ? "…" : ""}</span></div>
+        </div>
+        <div class="rhythm-wrap"><div><p class="sub-h">Ritmo vertical de la portada</p><p class="note" style="margin:-4px 0 10px">Cada franja es una sección a escala, con su fondo real. Lo rayado es el aire de arriba y abajo (en px) y el recuadro punteado, el ancho que ocupa el contenido.</p>${rhythm}</div>
+        <div><p class="sub-h">Padding más usado</p>${histo(SP.paddings.slice(0, 8))}<p class="sub-h" style="margin-top:22px">Gap entre elementos (flex/grid)</p>${SP.gaps.length ? histo(SP.gaps.slice(0, 8)) : `<p class="note">No usa gap: separa con márgenes.</p>`}${SP.margins.length ? `<p class="sub-h" style="margin-top:22px">Márgenes del texto</p><div class="chips2">${SP.margins.map((x) => `<span>${x.value}px<em>×${x.count}</em></span>`).join("")}</div>` : ""}</div></div>`;
+    }
+    const spacingOld = `<div class="spacing">${(D.spacing.scale || []).filter((v) => v > 0 && v <= 160).map((v) => `<div><i style="width:${v * 2}px"></i>${v}px</div>`).join("")}</div>`;
+
+    // ---------- forma y profundidad ----------
+    const RK = X?.radii || {};
+    const kindRadius = Object.entries(RK).filter(([k]) => k !== "caja" || Object.keys(RK).length < 3).slice(0, 5).map(([k, l]) => {
+      const r = l[0].value;
+      return `<div class="e"><div class="s" style="height:76px;border:1.5px solid currentColor;border-radius:${r >= 9999 ? "999px" : r + "px"};display:grid;place-items:center;font:12px var(--mono)">${r >= 9999 ? "pill" : r + "px"}</div><small>${esc(k)}${l.length > 1 ? ` · también ${l.slice(1, 3).map((x) => (x.value >= 9999 ? "pill" : x.value + "px")).join(", ")}` : ""}</small></div>`;
+    }).join("");
+    const radii = [...new Set([...(D.radius.scale || []), D.radius.typical].filter((r) => r > 0 && r < 999))].sort((a, b2) => a - b2);
+    const elev = (X?.shadows || []).slice().sort((a, c) => a.elevation - c.elevation);
+    const cardBg = D.roles.find((r) => r.role === "Superficie")?.hex || bg;
+    const shadowsHtml = elev.length ? `<div class="elev">${elev.map((s, i) => `<div class="e"><div class="card3" style="background:${cardBg};box-shadow:${s.value.replace(/"/g, "'")};color:${muted}">${i + 1}</div><small><b>${esc(s.type)}</b> · elevación ${s.elevation}px · ${s.layers} ${s.layers === 1 ? "capa" : "capas"}<br>en ${s.count} ${esc(s.kinds.join(", "))}<br>${esc(s.value.slice(0, 110))}</small></div>`).join("")}</div>` : D.shadows.length ? `<div class="shadows">${D.shadows.map((sh2) => `<div class="s" style="box-shadow:${sh2};background:${bg}">${esc(sh2.slice(0, 60))}</div>`).join("")}</div>` : `<p class="note">Sin sombras: la profundidad sale del color y los bordes.</p>`;
+    const FX = X?.effects;
+    const fxFacts = FX ? [
+      FX.glass && ["Vidrio esmerilado", `${FX.glass} ${FX.glass === 1 ? "elemento" : "elementos"} con backdrop-filter · ${FX.glassSample}`],
+      FX.gradientText && ["Texto con degradado", `${FX.gradientText} ${FX.gradientText === 1 ? "título" : "títulos"}`],
+      FX.blurBlobs && ["Manchas desenfocadas", `${FX.blurBlobs} formas grandes con blur() de fondo`],
+      FX.masks && ["Máscaras", `${FX.masks} elementos con mask-image (fundidos en los bordes)`],
+      FX.clips && ["Recortes", `${FX.clips} elementos con clip-path`],
+      FX.blend && ["Modos de fusión", `${FX.blend} elementos con mix-blend-mode`],
+      FX.noise && ["Textura de grano", `${FX.noise} capas de ruido`],
+      FX.gradientBorders && ["Bordes con degradado", `${FX.gradientBorders} elementos`],
+      FX.textShadows && ["Sombra de texto", `${FX.textShadows} elementos`],
+      FX.sticky && ["Elementos sticky", `${FX.sticky} se quedan pegados al hacer scroll`],
+    ].filter(Boolean) : [];
+    const glassDemo = FX?.glass ? `<div class="glass-demo" style="background:${bg}"><span class="blob" style="background:${accent || "#888"};left:18%;top:-10px"></span><span class="blob" style="background:${D.roles.find((r) => r.role === "Acento 2")?.hex || fg};right:16%;bottom:-30px;opacity:.7"></span><div class="panel" style="backdrop-filter:${esc(FX.glassSample.split(" · ")[0])};-webkit-backdrop-filter:${esc(FX.glassSample.split(" · ")[0])};background:${esc(FX.glassSample.split(" · ")[1] || "rgba(255,255,255,.4)")};color:${on(hexOf(FX.glassSample.split(" · ")[1] || "#fff").split(" ")[0])}">${esc(FX.glassSample.split(" · ")[0])}</div></div>` : "";
+    const gradText = FX?.gradientTextSample ? `<div style="font:700 44px/1.1 ${fontFor(H.h1?.family || D.fonts[0]?.family)};letter-spacing:-.03em;background:${FX.gradientTextSample.replace(/"/g, "'")};-webkit-background-clip:text;background-clip:text;color:transparent;padding:6px 0">${esc(D.name)}</div>` : "";
+    const BR = X?.borders;
     const shape = `<div class="canvas" style="background:${bg};color:${fg}">
-      <div class="shape">${radii.map((r) => `<div class="s" style="border-radius:${r}px">${r}px</div>`).join("")}${D.radius.pill ? `<div class="s" style="border-radius:999px">pill</div>` : ""}</div>
-      ${D.shadows.length ? `<div class="shadows" style="margin-top:26px">${D.shadows.map((sh) => `<div class="s" style="box-shadow:${sh};background:${bg}">${esc(sh.slice(0, 60))}</div>`).join("")}</div>` : ""}
-      <div class="spacing">${(D.spacing.scale || []).filter((v) => v > 0 && v <= 160).map((v) => `<div><i style="width:${v * 2}px"></i>${v}px</div>`).join("")}</div>
-      <p class="lead" style="margin:14px 0 0;color:inherit;opacity:.7">Base de espaciado ${D.spacing.base}px${D.borderWidth ? ` · bordes de ${D.borderWidth}px` : ""}.</p></div>`;
+      <p class="sub-h">Radio por tipo de elemento</p>
+      ${kindRadius ? `<div class="elev" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px">${kindRadius}</div>` : `<div class="shape">${radii.map((r) => `<div class="s" style="border-radius:${r}px">${r}px</div>`).join("")}${D.radius.pill ? `<div class="s" style="border-radius:999px">pill</div>` : ""}</div>`}
+      <p class="sub-h" style="margin-top:30px">Escalera de elevación</p>${shadowsHtml}
+      ${BR && BR.widths.length ? `<p class="sub-h" style="margin-top:30px">Bordes</p><div class="chips2">${BR.widths.map((w) => `<span>${w.value}px<em>×${w.count}</em></span>`).join("")}${BR.colors.map((c) => `<span>${swc(c.value)}${esc(hexOf(c.value))}<em>×${c.count}</em></span>`).join("")}</div>` : ""}
+      ${!SP ? spacingOld : ""}
+    </div>
+    ${fxFacts.length || glassDemo || gradText ? `<p class="sub-h" style="margin-top:26px">Efectos</p><div class="two">${glassDemo || gradText ? `<div>${glassDemo}${gradText}</div>` : ""}<div class="facts2">${fxFacts.map(([t, d]) => `<div class="fact"><b>${t}</b><span>${esc(d)}</span></div>`).join("")}</div></div>` : ""}`;
 
-    const card = D.card ? `<div class="comp"><span>tarjeta</span><div style="background:${D.card.bg};border:${D.card.border || "0"};border-radius:${D.card.radius}px;box-shadow:${D.card.shadow || "none"};padding:22px;display:grid;gap:8px"><b style="font:600 18px ${fontFor(D.fonts[0]?.family)}">Título de tarjeta</b><span style="font:14px ${fontFor(D.fonts[0]?.family)};opacity:.75">Con el fondo, borde, radio y sombra que usa el sitio.</span></div></div>` : "";
-    const input = D.input ? `<div class="comp"><span>input</span><div style="background:${D.input.bg};color:${D.input.color};border:${D.input.border};border-radius:${D.input.radius}px;height:${D.input.height}px;padding:0 ${D.input.paddingX}px;display:flex;align-items:center;font:${D.input.fontSize}px ${fontFor(D.fonts[0]?.family)};opacity:.9">tu@email.com</div></div>` : "";
-    const link = D.link ? `<div class="comp"><span>link</span><a style="color:${D.link.color};text-decoration:${D.link.underline ? "underline" : "none"};font:${D.link.weight} 16px ${fontFor(D.fonts[0]?.family)}">Ver más detalles →</a></div>` : "";
-    const motion = D.motion ? `<div class="comp"><span>movimiento · ${esc(D.motion.duration)} · ${esc(D.motion.easing)}</span><div class="mdemo" title="Pasa el cursor"><i style="background:${accent || fg};transition:left ${D.motion.duration} ${D.motion.easing}"></i></div></div>` : "";
-    const comps = `<div class="canvas" style="background:${bg};color:${fg}"><div class="comps">
-      <div class="comp"><span>botones</span><div class="row">${btn(pb, "Empezar")}${btn(sb, "Ver más")}</div></div>${card}${input}${link}${motion}</div></div>`;
+    // ---------- movimiento ----------
+    let motion = "";
+    const MO = X?.motion, RV = X?.reveal;
+    if (MO) {
+      const durs = MO.durations;
+      const top = MO.easings.slice(0, 4);
+      const curves = top.length ? `<div class="curves">${top.map((e) => {
+        const d = durs[0] ? ms(durs[0].value) : 300;
+        return `<div class="curve" style="color:var(--ink)">${curveSvg(e.value)}<div class="track"><i style="background:${accent || "var(--ink)"};animation:mz-slide ${Math.max(0.2, d / 640).toFixed(2)}s ${bez(e.value) ? e.value : "linear"} infinite alternate"></i></div><b>${esc(EASE_NAME(e.value))}</b><span>${esc(e.value)} · ${e.count} ${e.count === 1 ? "uso" : "usos"}</span></div>`;
+      }).join("")}</div>` : "";
+      const maxD = Math.max(1, ...durs.map((x) => x.count));
+      const hov = (X.states || []).filter((s) => s.changes.length);
+      const rvDesc = RV && RV.revealed ? `${RV.revealed} ${RV.revealed === 1 ? "elemento entra" : "elementos entran"} al hacer scroll: <b>${esc(RV.pattern)}</b>${RV.distance ? ` desde ${RV.distance}px` : ""}${RV.fromOpacity != null ? `, opacidad inicial ${RV.fromOpacity}` : ""}${RV.duration ? ` · ${esc(RV.duration)}` : ""}${RV.easing ? ` · ${esc(RV.easing)}` : ""}${RV.stagger ? ` · escalonado en ${RV.stagger} ${RV.stagger === 1 ? "grupo" : "grupos"}` : ""}.` : "Nada aparece animado al hacer scroll: el contenido está quieto desde que carga.";
+      const live = [...(MO.live || []), ...((RV && RV.scrollAnimations) || [])];
+      const seen = new Set();
+      const liveU = live.filter((a) => { const k = a.type + a.name + a.props; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 10);
+      motion = `<div class="kpis">
+          <div class="kpi"><b>${MO.withTransition}</b><span>elementos con transición (${Math.round(MO.transitionShare * 1000) / 10}% de la página)</span></div>
+          <div class="kpi"><b>${durs[0] ? esc(durs[0].value) : "—"}</b><span>duración más usada${b.metrics?.duration ? ` · media ${b.metrics.duration}ms` : ""}</span></div>
+          <div class="kpi"><b>${RV ? RV.revealed : 0}</b><span>aparecen al hacer scroll</span></div>
+          <div class="kpi"><b>${MO.keyframeCount}</b><span>keyframes CSS${MO.infinite ? ` · ${MO.infinite} en bucle` : ""}</span></div>
+          <div class="kpi"><b>${hov.length}/${(X.states || []).length}</b><span>componentes que cambian al hover/focus</span></div>
+        </div>
+        ${MO.libs.length || MO.smoothScroll || MO.scrollTimeline || MO.viewTransitions ? `<div class="chips2" style="margin-bottom:18px">${MO.libs.map((l) => `<span>${esc(l)}</span>`).join("")}${MO.smoothScroll ? "<span>scroll-behavior: smooth</span>" : ""}${MO.scrollTimeline ? `<span>animation-timeline<em>×${MO.scrollTimeline}</em></span>` : ""}${MO.viewTransitions ? `<span>View Transitions<em>×${MO.viewTransitions}</em></span>` : ""}</div>` : ""}
+        ${curves ? `<p class="sub-h">Curvas de easing</p><p class="note" style="margin:-4px 0 10px">La curva real de cada easing y una bola que la recorre a la duración medida.</p>${curves}` : ""}
+        <div class="two" style="margin-top:26px">
+          <div><p class="sub-h">Duraciones</p>${durs.length ? `<div class="histo">${durs.map((x) => `<div><span>${esc(x.value)}</span><i style="width:${Math.max(3, (x.count / maxD) * 100)}%"></i><em>${x.count}</em></div>`).join("")}</div>` : `<p class="note">Sin transiciones.</p>`}
+            ${MO.properties.length ? `<p class="sub-h" style="margin-top:22px">Qué anima</p><div class="chips2">${MO.properties.map((p) => `<span>${esc(p.value)}<em>×${p.count}</em></span>`).join("")}</div>` : ""}</div>
+          <div><p class="sub-h">Entrada al hacer scroll</p><p class="note" style="margin:-4px 0 10px">${rvDesc}</p>
+            ${RV && RV.revealed ? `<div class="reveal-demo" id="rv" style="background:${bg}" data-op="${RV.fromOpacity ?? 0}" data-dist="${RV.distance || 0}" data-pat="${esc(RV.pattern)}" data-dur="${RV.duration ? ms(RV.duration) : 600}" data-ease="${esc(RV.easing || "ease")}" data-stg="${RV.stagger ? 90 : 0}" data-sc="${RV.scale || 1}">${[0, 1, 2].map(() => `<i style="background:${cardBg};border:1px solid ${D.roles.find((r) => r.role === "Borde")?.hex || "transparent"}"></i>`).join("")}</div><button class="mini" type="button" id="rv-play" style="margin-top:10px">↻ Reproducir la entrada</button>` : ""}</div>
+        </div>
+        ${hov.length ? `<p class="sub-h" style="margin-top:26px">Estados medidos con el cursor</p><div class="facts2">${hov.map((s) => `<div class="fact"><b>${esc(s.key.replace(/^btn-(\d)/, "Botón $1").replace(/^card-(\d)/, "Tarjeta $1").replace(/^badge-(\d)/, "Etiqueta $1").replace("link", "Enlace").replace("input", "Campo"))}</b><div class="delta">${s.changes.map(describe).join("")}</div></div>`).join("")}</div>` : ""}
+        ${liveU.length || MO.keyframes.length ? `<p class="sub-h" style="margin-top:26px">Animaciones vivas y keyframes</p><div class="chips2">${liveU.map((a) => `<span>${esc(a.name || (a.type === "js" ? "animación JS" : a.type))}${a.props?.length ? ` · ${esc(a.props.join(", "))}` : ""}${a.duration ? ` · ${a.duration}ms` : ""}${a.infinite ? " · ∞" : ""}<em>${esc(a.type)}</em></span>`).join("")}${MO.keyframes.filter((k) => !liveU.some((a) => a.name === k.name)).slice(0, 14).map((k) => `<span>@keyframes ${esc(k.name)}<em>${esc(k.props.join(", "))}</em></span>`).join("")}</div>` : ""}`;
+    } else if (D.motion) {
+      motion = `<div class="comp"><span>movimiento · ${esc(D.motion.duration)} · ${esc(D.motion.easing)}</span><div class="mdemo" title="Pasa el cursor"><i style="background:${accent || fg};transition:left ${D.motion.duration} ${D.motion.easing}"></i></div></div>`;
+    }
 
+    // ---------- imágenes ----------
+    let imagery = "";
+    const IM = X?.imagery;
+    if (IM) {
+      const RAT = { "1:1": 1, "4:3": 4 / 3, "3:2": 1.5, "16:10": 1.6, "16:9": 16 / 9, "21:9": 21 / 9, "3:4": 0.75, "2:3": 2 / 3, "9:16": 9 / 16 };
+      imagery = `<div class="kpis">
+          <div class="kpi"><b>${IM.images}</b><span>imágenes${IM.large ? ` · ${IM.large} grandes (≥30% del ancho)` : ""}</span></div>
+          <div class="kpi"><b>${IM.videos}</b><span>videos</span></div>
+          <div class="kpi"><b>${IM.illustrations}</b><span>ilustraciones SVG grandes</span></div>
+          <div class="kpi"><b>${IM.canvases}</b><span>canvas (3D, WebGL o generativo)</span></div>
+          <div class="kpi"><b>${IM.icons.count}</b><span>íconos · estilo ${esc(IM.icons.style)}${IM.icons.sizes[0] ? ` · ${IM.icons.sizes[0].value}px` : ""}</span></div>
+          ${IM.avatars ? `<div class="kpi"><b>${IM.avatars}</b><span>avatares redondos (prueba social)</span></div>` : ""}
+        </div>
+        <div class="two"><div><p class="sub-h">Proporciones</p><div class="ratios">${IM.ratios.filter((r) => RAT[r.value]).map((r) => { const q = RAT[r.value]; const h = 64; return `<div><i style="width:${Math.round(h * Math.min(q, 2.4))}px;height:${Math.round(q > 2.4 ? (h * 2.4) / q : h)}px"></i>${r.value}<span class="note">×${r.count}</span></div>`; }).join("")}${IM.ratios.find((r) => r.value === "libre") ? `<div><i style="width:60px;height:44px;border-style:dashed"></i>libre<span class="note">×${IM.ratios.find((r) => r.value === "libre").count}</span></div>` : ""}</div></div>
+        <div class="facts2">
+          <div class="fact"><b>Radio de imágenes</b><span>${IM.radius.length ? IM.radius.map((r) => `${r.value}px ×${r.count}`).join(" · ") : "—"}</span></div>
+          <div class="fact"><b>Recorte</b><span>${Math.round(IM.coverShare * 100)}% con object-fit: cover</span></div>
+          ${IM.grayscaleShare ? `<div class="fact"><b>En escala de grises</b><span>${Math.round(IM.grayscaleShare * 100)}% (típico de muros de logos)</span></div>` : ""}
+          <div class="fact"><b>Formatos</b><span>${IM.formats.map((f) => `${f.value} ×${f.count}`).join(" · ") || "—"}</span></div>
+        </div></div>`;
+    }
+
+    // ---------- composición y layout ----------
     const totalH = D.layout.sections.reduce((n, x) => n + Math.min(x.h, 1400), 0) || 1;
-    const compo = `<div class="ident" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
-      <div><p class="lead">Orden de secciones de la portada, a escala, con su fondo real:</p><div class="comp-seq">${D.layout.sections.slice(0, 16).map((x) => `<div style="height:${Math.max(18, (Math.min(x.h, 1400) / totalH) * 520)}px;background:${x.bg};color:${on(x.bg)}">${esc(x.type)}</div>`).join("")}</div></div>
-      <div><p class="lead">Ancho de contenido frente a una pantalla de 1440px:</p><div class="width-ruler"><i style="width:${Math.min(100, (D.layout.width / 1440) * 100)}%"></i><span>${D.layout.width}px · densidad ${esc(D.layout.density)}</span></div></div></div>`;
+    const bps = X?.breakpoints || [];
+    const bpMax = Math.max(1920, ...bps);
+    const compo = `<div class="ident half">
+      <div><p class="lead">Orden de secciones de la portada, a escala, con su fondo real:</p><div class="comp-seq">${D.layout.sections.slice(0, 16).map((x) => `<div style="height:${Math.max(18, (Math.min(x.h, 1400) / totalH) * 520)}px;background:${x.bg};color:${on(x.bg)}">${esc(TYPES[x.type] || x.type)}</div>`).join("")}</div></div>
+      <div><p class="lead">Ancho de contenido frente a una pantalla de 1440px:</p><div class="width-ruler"><i style="width:${Math.min(100, (D.layout.width / 1440) * 100)}%"></i><span>${D.layout.width}px · densidad ${esc(D.layout.density)}</span></div>
+        ${X?.grid?.columns?.length ? `<p class="sub-h" style="margin-top:26px">Columnas en sus rejillas</p><div class="chips2">${X.grid.columns.map((c) => `<span>${c.value} columnas<em>×${c.count}</em></span>`).join("")}</div>` : ""}
+        ${bps.length ? `<p class="sub-h" style="margin-top:26px">Breakpoints declarados</p><div class="bp"><div class="axis"></div>${bps.map((v, i) => `<b style="left:${(v / bpMax) * 100}%"></b><span class="${i % 2 ? "up" : ""}" style="left:${(v / bpMax) * 100}%">${v}</span>`).join("")}</div><p class="note">${bps.length} cortes de ${bps[0]} a ${bps[bps.length - 1]}px${X.containerQueries ? ` · ${X.containerQueries} container queries` : ""}.</p>` : ""}
+      </div></div>`;
+
+    // ---------- stack y accesibilidad ----------
+    const A = X?.a11y;
+    const stack = X ? `<div class="two"><div><p class="sub-h">Stack detectado</p>${X.stack.length || X.motion.libs.length ? `<div class="chips2">${[...X.stack, ...X.motion.libs].map((s) => `<span>${esc(s)}</span>`).join("")}</div>` : `<p class="note">No se reconoció un framework por sus huellas en el HTML.</p>`}<p class="note">Detectado por huellas en el HTML y los scripts (rutas /_next/, atributos data-framer, clases de utilidades…).</p></div>
+      <div class="facts2">
+        <div class="fact"><b>Foco visible</b><span>${A.focusVisible ? esc(A.focusVisible) : "sin regla :focus-visible propia"}</span></div>
+        <div class="fact"><b>Movimiento reducido</b><span>${A.reducedMotionCss ? "respeta prefers-reduced-motion" : "no declara prefers-reduced-motion"}</span></div>
+        <div class="fact"><b>Modo oscuro</b><span>${A.darkCss ? "el CSS trae variante oscura" : "sin variante oscura en el CSS"}</span></div>
+        ${A.selection ? `<div class="fact"><b>Selección de texto</b><span>${swc(A.selection)}${esc(hexOf(A.selection))}</span></div>` : ""}
+        ${A.scrollbar ? `<div class="fact"><b>Scrollbar propia</b><span>estiliza la barra de scroll</span></div>` : ""}
+        ${A.customCursor ? `<div class="fact"><b>Cursor propio</b><span>cambia el cursor del sistema</span></div>` : ""}
+      </div></div>` : "";
+
+    // ---------- comparar ----------
+    const cmp = b.metrics ? `<div class="cmp-head"><label class="note" for="cmp-sel">Comparar con</label><select id="cmp-sel"><option value="">— otra marca —</option>${B.filter((x) => x.metrics && x.host !== b.host).sort((x, y) => x.name.localeCompare(y.name)).map((x) => `<option value="${esc(x.host)}">${esc(x.name)}</option>`).join("")}</select>
+        <div class="legend"><span><i style="background:var(--ink)"></i>${esc(D.name)}</span><span id="cmp-leg" hidden><i style="background:var(--mark)"></i><b></b></span><span><i style="background:var(--ink);opacity:.2;border-radius:0;width:2px"></i>el resto del catálogo</span></div></div>
+        <div class="metrics" id="metrics"></div>` : "";
 
     const exp = `<div class="export"><div class="bar2"><button type="button" data-fmt="css" aria-pressed="true">Variables CSS</button><button type="button" data-fmt="tailwind" aria-pressed="false">Tailwind v4</button><button type="button" data-fmt="designmd" aria-pressed="false">DESIGN.md</button><button class="cp" type="button" id="exp-copy">Copiar</button></div><pre id="exp-pre"></pre></div>`;
 
+    const nav = [["s-color", "Color"], ["s-type", "Tipografía"], ["s-comp", "Componentes"], X && ["s-space", "Espaciado"], ["s-shape", "Forma y profundidad"], (X || D.motion) && ["s-motion", "Movimiento"], X && ["s-img", "Imágenes"], ["s-layout", "Layout"], X && ["s-stack", "Stack"], b.metrics && ["s-cmp", "Comparar"], ["s-export", "Exportar"]].filter(Boolean);
     return `<div class="sys">
-      <nav class="sys-nav"><a href="#s-color">Color</a><a href="#s-type">Tipografía</a><a href="#s-shape">Forma y espacio</a><a href="#s-comp">Componentes</a><a href="#s-layout">Composición</a><a href="#s-export">Exportar</a></nav>
+      <nav class="sys-nav">${nav.map(([id, t]) => `<a href="#${id}">${t}</a>`).join("")}</nav>
       ${ident}
       ${sec("s-color", "Color", "Cada rol con su contraste sobre el fondo y la variable CSS de la que sale, si el sitio la declara. Clic para copiar.", roles + accScale + declared + grads)}
-      ${sec("s-type", "Tipografía", `Base ${D.base}px · razón de escala ${D.ratio}. Los especímenes usan la alternativa libre cuando la fuente original es comercial.`, fonts + ladder)}
-      ${sec("s-shape", "Forma y espacio", "Radios, sombras y escala de espaciado medidos, aplicados sobre el fondo de la marca.", shape)}
-      ${sec("s-comp", "Componentes", "Renderizados con los estilos medidos en el sitio.", comps)}
-      ${sec("s-layout", "Composición", "", compo)}
+      ${sec("s-type", "Tipografía", `Base ${D.base}px · razón de escala ${D.ratio}. Los especímenes usan la alternativa libre cuando la fuente original es comercial.`, fonts + hier + ladder)}
+      ${sec("s-comp", "Componentes", X ? "Recortados del sitio real y medidos uno por uno. Los que tienen punto verde muestran su hover o focus REAL al pasar el cursor: Matiz lo provocó con Playwright y midió el cambio." : "Renderizados con los estilos medidos en el sitio.", comps)}
+      ${X ? sec("s-space", "Espaciado", "Medido sobre todos los elementos de la portada: padding, gap y márgenes, y el aire real de cada sección.", spacing) : ""}
+      ${sec("s-shape", "Forma y profundidad", "Radios por tipo de elemento, la escalera de sombras ordenada por elevación y los efectos que usa.", shape)}
+      ${X || D.motion ? sec("s-motion", "Movimiento", X ? "Transiciones, curvas y animaciones medidas con el movimiento ACTIVADO, recorriendo la página despacio para ver qué entra al hacer scroll." : "", motion) : ""}
+      ${X ? sec("s-img", "Imágenes e íconos", "", imagery) : ""}
+      ${sec("s-layout", "Layout", "", compo)}
+      ${X ? sec("s-stack", "Stack y accesibilidad", "", stack) : ""}
+      ${b.metrics ? sec("s-cmp", "Comparar con el catálogo", `Cada raya es una marca del catálogo; el punto oscuro es ${esc(D.name)}. Así se ve de un vistazo en qué se sale de lo común.`, cmp) : ""}
       ${sec("s-export", "Exportar", "Para replicar la marca en tu proyecto. También disponible para tu agente con get_brand_kit.", exp)}
     </div>`;
+  }
+
+  function drawMetrics(b, other) {
+    const el = document.getElementById("metrics");
+    if (!el) return;
+    el.innerHTML = MET.map(([k, label, unit]) => {
+      const vals = dist(k);
+      const v = b.metrics[k];
+      if (!vals.length || v == null) return "";
+      const lo = vals[Math.floor(vals.length * 0.03)], hi = vals[Math.ceil(vals.length * 0.97) - 1];
+      const span = hi - lo || 1;
+      const pos = (x) => Math.max(0, Math.min(100, ((x - lo) / span) * 100));
+      const med = vals[Math.floor(vals.length / 2)];
+      const p = pctOf(vals, v);
+      const o = other?.metrics?.[k];
+      const u = unit === "% em" ? "%" : unit;
+      return `<div class="metric"><div class="n">${label}<small>mediana ${fmt(med)}${u}</small></div>
+        <div class="strip">${vals.map((x) => `<span class="t" style="left:${pos(x)}%"></span>`).join("")}<span class="med" style="left:${pos(med)}%" title="mediana"></span>${o != null ? `<span class="ot" style="left:${pos(o)}%" title="${esc(other.name)}: ${fmt(o)}${u}"></span>` : ""}<span class="me" style="left:${pos(v)}%" title="${fmt(v)}${u}"></span></div>
+        <div class="v">${fmt(v)}${u}${o != null ? ` <span style="color:var(--mark)">· ${fmt(o)}${u}</span>` : ""}<small>${p == null ? "" : p >= 0.5 ? `más que el ${Math.round(p * 100)}%` : `menos que el ${Math.round((1 - p) * 100)}%`}</small></div></div>`;
+    }).join("");
+  }
+
+  function playReveal() {
+    const box = document.getElementById("rv");
+    if (!box) return;
+    const op = +box.dataset.op, dist2 = +box.dataset.dist, dur = +box.dataset.dur, ease = box.dataset.ease, stg = +box.dataset.stg, sc = +box.dataset.sc, pat = box.dataset.pat;
+    const from = `${/sube/.test(pat) ? `translateY(${dist2}px)` : /baja/.test(pat) ? `translateY(-${dist2}px)` : /lateral|desliza/.test(pat) ? `translateX(${dist2}px)` : ""} ${sc !== 1 ? `scale(${sc})` : ""}`.trim() || "none";
+    const kids = [...box.children];
+    kids.forEach((k) => { k.style.transition = "none"; k.style.opacity = /fundido/.test(pat) ? op : 1; k.style.transform = from; k.style.filter = /desenfoque/.test(pat) ? "blur(8px)" : "none"; });
+    box.offsetHeight;
+    kids.forEach((k, i) => { k.style.transition = `opacity ${dur}ms ${ease} ${i * stg}ms, transform ${dur}ms ${ease} ${i * stg}ms, filter ${dur}ms ${ease} ${i * stg}ms`; k.style.opacity = 1; k.style.transform = "none"; k.style.filter = "none"; });
   }
 
   async function openBrand(host) {
@@ -441,13 +947,25 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
         </div></div>
         <div class="body">
           <div class="tabs">${D ? `<button class="chip" type="button" data-tab="-1" aria-pressed="${cur === -1}">Sistema</button>` : ""}${b.pages.map((x, i) => `<button class="chip" type="button" data-tab="${i}" aria-pressed="${i === cur}">${PAGES[x.page] || x.page}</button>`).join("")}</div>
-          ${cur === -1 ? systemHtml(D) : `<div class="wall" style="margin-top:0">${shots.map((s, k) => `<div class="tile" style="--k:${k}" data-img="${s.img}"><div class="frame"><img loading="lazy" src="${s.img}" alt="${esc(s.type)} de ${esc(b.name)}"></div><div class="cap"><b>${esc(s.type)}</b><span>${esc(PAGES[p.page] || p.page)}</span></div></div>`).join("")}</div>`}
+          ${cur === -1 ? systemHtml(D, b) : `<div class="wall" style="margin-top:0">${shots.map((s, k) => `<div class="tile" style="--k:${k}" data-img="${s.img}"><div class="frame"><img loading="lazy" src="${s.img}" alt="${esc(s.type)} de ${esc(b.name)}"></div><div class="cap"><b>${esc(s.type)}</b><span>${esc(PAGES[p.page] || p.page)}</span></div></div>`).join("")}</div>`}
         </div>`;
       $("#back").onclick = closeBrand;
       sheet.querySelectorAll("[data-tab]").forEach((t) => (t.onclick = () => { cur = +t.dataset.tab; draw(); sheet.scrollTop = 0; }));
       sheet.querySelectorAll(".tile").forEach((t) => (t.onclick = () => zoom(t.dataset.img)));
       sheet.querySelectorAll("[data-copy]").forEach((el) => (el.onclick = () => copy(el.dataset.copy, el.querySelector("span, .meta2") || el)));
       sheet.querySelectorAll(".sys-nav a").forEach((a) => (a.onclick = (e) => { e.preventDefault(); sheet.querySelector(a.getAttribute("href")).scrollIntoView({ behavior: "smooth", block: "start" }); }));
+      sheet.querySelectorAll(".cx-shot.has-h").forEach((f) => (f.onclick = () => f.classList.toggle("on")));
+      const rvb = $("#rv-play");
+      if (rvb) {
+        rvb.onclick = playReveal;
+        new IntersectionObserver((es, ob) => es.forEach((e) => { if (e.isIntersecting) { playReveal(); ob.disconnect(); } }), { root: sheet, threshold: 0.4 }).observe($("#rv"));
+      }
+      const sel = $("#cmp-sel");
+      if (sel) {
+        const upd = () => { const o = B.find((x) => x.host === sel.value); drawMetrics(b, o); const lg = $("#cmp-leg"); lg.hidden = !o; if (o) lg.querySelector("b").textContent = o.name; };
+        sel.onchange = upd;
+        upd();
+      }
       const pre = $("#exp-pre");
       if (pre && D) {
         const setFmt = () => { pre.textContent = D.exports[fmt]; sheet.querySelectorAll("[data-fmt]").forEach((x) => x.setAttribute("aria-pressed", x.dataset.fmt === fmt)); };

@@ -108,7 +108,8 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
 }
 
 /* ---------- ficha de sistema (ADN de marca) ---------- */
-.sys { display: grid; gap: 56px; }
+.sys { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+.sys > *, .sys section > * { min-width: 0; }
 .sys h3 { margin: 0 0 6px; font-size: 22px; letter-spacing: -0.03em; }
 .sys .lead { margin: 0 0 18px; color: var(--muted); font-size: 14px; max-width: 70ch; }
 .ident { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; align-items: stretch; }
@@ -179,6 +180,15 @@ main { max-width: 1480px; margin-inline: auto; padding: 36px var(--gutter) 60px;
 .export .bar2 .cp { margin-left: auto; background: #222225; color: #ededee; }
 .export pre { margin: 0; padding: 16px; max-height: 420px; overflow: auto; font: 12px/1.6 var(--mono); }
 .sys-nav { display: flex; gap: 6px; flex-wrap: wrap; position: sticky; top: 64px; z-index: 1; background: color-mix(in oklab, var(--bg) 92%, transparent); padding: 6px 0; }
+@media (max-width: 760px) { .sys-nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .sys-nav::-webkit-scrollbar { display: none; } .sys-nav a { flex: none; } }
+.ident.half { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 860px) { .ident.half { grid-template-columns: minmax(0, 1fr); } }
+.cx-stage > * { min-width: 0; max-width: 100%; }
+.cx-shot img { max-width: 100%; }
+/* dentro de un lienzo con el fondo de la marca, los chips y notas heredan su color */
+.canvas .chips2 span { background: color-mix(in oklab, currentColor 12%, transparent); color: inherit; }
+.canvas .chips2 span em, .canvas .elev small, .canvas .note { color: inherit; opacity: .72; }
+.canvas .sub-h { color: inherit; }
 .sys-nav a { font-size: 13px; color: var(--muted); padding: 5px 10px; border-radius: 999px; }
 .sys-nav a:hover { background: var(--soft); color: var(--ink); }
 /* ---------- análisis profundo ---------- */
@@ -589,7 +599,7 @@ details.more2 summary { cursor: pointer; font-size: 13px; color: var(--muted); m
       if (!base) return "";
       const st = stateOf(key);
       const h = X.crops[`${key}-hover`] || X.crops[`${key}-focus`];
-      return `<figure class="cx-shot${h ? " has-h" : ""}" ${h ? 'tabindex="0"' : ""}><img src="${base}" alt="${esc(alt)} en ${esc(D.name)}" loading="lazy">${h ? `<img class="h" src="${h}" alt="" aria-hidden="true" loading="lazy">` : ""}</figure>${h ? `<span class="cx-tag"><i></i>${st?.state === "focus" ? "clic: focus real" : "pasa el cursor: hover real"}</span>` : ""}`;
+      return `<figure class="cx-shot${h ? " has-h" : ""}" ${h ? 'tabindex="0"' : ""}><img src="${base}" alt="${esc(alt)} en ${esc(D.name)}" loading="lazy" onerror="const s=this.closest('.cx-stage');this.closest('figure').remove();s&&s.querySelector('.cx-tag')?.remove();s&&s.querySelector('.fallback')&&(s.querySelector('.fallback').hidden=false)">${h ? `<img class="h" src="${h}" alt="" aria-hidden="true" loading="lazy">` : ""}</figure>${h ? `<span class="cx-tag"><i></i>${st?.state === "focus" ? "clic: focus real" : "pasa el cursor: hover real"}</span>` : ""}`;
     };
     const deltaHtml = (key) => {
       const st = stateOf(key);
@@ -659,7 +669,7 @@ details.more2 summary { cursor: pointer; font-size: 13px; color: var(--muted); m
         const title = `${ROLE[bt.role] || "Botón"}${n > 1 ? ` ${n}` : ""}`;
         const decl = { "background-color": bt.bg === "transparent" ? "transparent" : hexOf(bt.bg).split(" ")[0], color: hexOf(bt.color).split(" ")[0], border: bt.border || "0", "border-radius": bt.pill ? "999px" : bt.radius + "px", height: bt.height + "px", padding: `0 ${bt.padX}px`, font: `${bt.weight} ${bt.fontSize}px/1 '${bt.family}'`, "letter-spacing": bt.letterSpacing ? bt.letterSpacing + "em" : "", "text-transform": bt.transform !== "none" ? bt.transform : "", "box-shadow": bt.shadow || "", transition: bt.transition || "" };
         const rec = `<span style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:${bt.bg};color:${bt.color};border:${bt.border || "0"};border-radius:${bt.pill ? "999px" : bt.radius + "px"};height:${bt.height}px;padding:0 ${bt.padX}px;font:${bt.weight} ${bt.fontSize}px/1 ${fontFor(bt.family)};letter-spacing:${bt.letterSpacing}em;text-transform:${bt.transform};box-shadow:${bt.shadow || "none"};white-space:nowrap">${esc(clean(bt.label))}</span>`;
-        items.push(`<article class="cx sm"><div class="cx-stage">${shot(bt.key, title) || `<div style="background:${bg};padding:24px;border-radius:10px">${rec}</div>`}</div><div class="cx-body">
+        items.push(`<article class="cx sm"><div class="cx-stage">${shot(bt.key, title)}<div class="fallback" ${X.crops?.[bt.key] ? "hidden" : ""} style="background:${bg};padding:24px;border-radius:10px">${rec}</div></div><div class="cx-body">
           <header><b>${title}</b><span>${bt.kind === "solid" ? "relleno" : "contorno"} · ${bt.count} ${bt.count === 1 ? "uso" : "usos"} · “${esc(clean(bt.label))}”</span></header>
           ${specHtml([["Fondo", colorCell(bt.bg)], ["Texto", colorCell(bt.color)], ["Borde", borderCell(bt.border)], ["Radio", bt.pill ? `pill (${bt.radius >= 900 ? bt.radius + "px" : "alto/2"})` : bt.radius + "px"], ["Alto", bt.height + "px"], ["Padding", `${bt.padY}px ${bt.padX}px`], ["Fuente", `${esc(bt.family)} ${bt.fontSize}px · ${bt.weight}`], ["Tracking", bt.letterSpacing ? `${(bt.letterSpacing * 100).toFixed(1)}% em` : "normal"], ["Mayúsculas", bt.transform !== "none" ? esc(bt.transform) : ""], ["Sombra", bt.shadow ? esc(bt.shadow.slice(0, 70)) : ""], ["Transición", bt.transition ? esc(bt.transition) : "ninguna"], ["Ícono", bt.icon ? "sí" : ""]])}
           ${deltaHtml(bt.key)}
@@ -752,7 +762,7 @@ details.more2 summary { cursor: pointer; font-size: 13px; color: var(--muted); m
     const radii = [...new Set([...(D.radius.scale || []), D.radius.typical].filter((r) => r > 0 && r < 999))].sort((a, b2) => a - b2);
     const elev = (X?.shadows || []).slice().sort((a, c) => a.elevation - c.elevation);
     const cardBg = D.roles.find((r) => r.role === "Superficie")?.hex || bg;
-    const shadowsHtml = elev.length ? `<div class="elev">${elev.map((s, i) => `<div class="e"><div class="card3" style="background:${cardBg};box-shadow:${s.value.replace(/"/g, "'")};color:${muted}">${i + 1}</div><small><b style="color:var(--ink)">${esc(s.type)}</b> · elevación ${s.elevation}px · ${s.layers} ${s.layers === 1 ? "capa" : "capas"}<br>en ${s.count} ${esc(s.kinds.join(", "))}<br>${esc(s.value.slice(0, 110))}</small></div>`).join("")}</div>` : D.shadows.length ? `<div class="shadows">${D.shadows.map((sh2) => `<div class="s" style="box-shadow:${sh2};background:${bg}">${esc(sh2.slice(0, 60))}</div>`).join("")}</div>` : `<p class="note">Sin sombras: la profundidad sale del color y los bordes.</p>`;
+    const shadowsHtml = elev.length ? `<div class="elev">${elev.map((s, i) => `<div class="e"><div class="card3" style="background:${cardBg};box-shadow:${s.value.replace(/"/g, "'")};color:${muted}">${i + 1}</div><small><b>${esc(s.type)}</b> · elevación ${s.elevation}px · ${s.layers} ${s.layers === 1 ? "capa" : "capas"}<br>en ${s.count} ${esc(s.kinds.join(", "))}<br>${esc(s.value.slice(0, 110))}</small></div>`).join("")}</div>` : D.shadows.length ? `<div class="shadows">${D.shadows.map((sh2) => `<div class="s" style="box-shadow:${sh2};background:${bg}">${esc(sh2.slice(0, 60))}</div>`).join("")}</div>` : `<p class="note">Sin sombras: la profundidad sale del color y los bordes.</p>`;
     const FX = X?.effects;
     const fxFacts = FX ? [
       FX.glass && ["Vidrio esmerilado", `${FX.glass} ${FX.glass === 1 ? "elemento" : "elementos"} con backdrop-filter · ${FX.glassSample}`],
@@ -841,7 +851,7 @@ details.more2 summary { cursor: pointer; font-size: 13px; color: var(--muted); m
     const totalH = D.layout.sections.reduce((n, x) => n + Math.min(x.h, 1400), 0) || 1;
     const bps = X?.breakpoints || [];
     const bpMax = Math.max(1920, ...bps);
-    const compo = `<div class="ident" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+    const compo = `<div class="ident half">
       <div><p class="lead">Orden de secciones de la portada, a escala, con su fondo real:</p><div class="comp-seq">${D.layout.sections.slice(0, 16).map((x) => `<div style="height:${Math.max(18, (Math.min(x.h, 1400) / totalH) * 520)}px;background:${x.bg};color:${on(x.bg)}">${esc(TYPES[x.type] || x.type)}</div>`).join("")}</div></div>
       <div><p class="lead">Ancho de contenido frente a una pantalla de 1440px:</p><div class="width-ruler"><i style="width:${Math.min(100, (D.layout.width / 1440) * 100)}%"></i><span>${D.layout.width}px · densidad ${esc(D.layout.density)}</span></div>
         ${X?.grid?.columns?.length ? `<p class="sub-h" style="margin-top:26px">Columnas en sus rejillas</p><div class="chips2">${X.grid.columns.map((c) => `<span>${c.value} columnas<em>×${c.count}</em></span>`).join("")}</div>` : ""}
