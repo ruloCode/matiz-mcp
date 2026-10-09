@@ -241,7 +241,12 @@ export function buildDna(raw: RawPage, opts: { industry?: string[] } = {}): Dna 
   // un navbar sticky que el DOM deja al final se VE arriba: la composición lo pone primero
   const types = sections.map((s) => s.type);
   const navAt = types.indexOf("navbar");
-  if (navAt > 1) types.unshift(...types.splice(navAt, 1));
+  // solo los banners de anuncio van antes del navbar
+  if (navAt > 0 && types.slice(0, navAt).some((t) => t !== "banner")) {
+    types.splice(navAt, 1);
+    const firstNonBanner = types.findIndex((t) => t !== "banner");
+    types.splice(firstNonBanner < 0 ? types.length : firstNonBanner, 0, "navbar");
+  }
   const sequence = collapseSequence(types);
 
   const keywords = [

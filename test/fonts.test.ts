@@ -8,6 +8,7 @@ test("normaliza los nombres que llegan de getComputedStyle", () => {
   assert.equal(normalizeFamily("Inter Variable"), "inter");
   assert.equal(normalizeFamily("sohne-var"), "sohne");
   assert.equal(normalizeFamily("Söhne"), "sohne");
+  assert.equal(normalizeFamily("saansFont"), normalizeFamily("saans"));
 });
 
 test("reconoce fuentes libres y propone equivalentes para las comerciales", () => {
@@ -25,4 +26,9 @@ test("reconoce fuentes libres y propone equivalentes para las comerciales", () =
 test("toda alternativa propuesta existe de verdad en el catálogo libre", () => {
   const missing = ALL_ALTERNATIVES.filter((f) => !freeFont(f));
   assert.deepEqual(missing, []);
+});
+
+test("reconoce Inter detrás de nombres de archivo variable y de prefijos de marca", () => {
+  assert.equal(fontAvailability("Inter Variablefont Slnt Wght").freeAs, "Inter");
+  assert.equal(fontAvailability("Shopify-Inter").freeAs, "Inter");
 });

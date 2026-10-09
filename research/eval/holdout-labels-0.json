@@ -1,0 +1,428 @@
+[
+ {
+  "ref_id": "shopify.com-co-enterprise#12",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "case-study cards carousel, images missing"
+ },
+ {
+  "ref_id": "mixpanel.com-about#4",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank white capture"
+ },
+ {
+  "ref_id": "vizcom.com-product#10",
+  "label": "contact",
+  "secondary": "logos",
+  "note": "book a demo form with logos"
+ },
+ {
+  "ref_id": "featurebase.app-about#1",
+  "label": "team",
+  "secondary": null,
+  "note": "team intro with group photo"
+ },
+ {
+  "ref_id": "runway.com-about#3",
+  "label": "gallery",
+  "secondary": "navbar",
+  "note": "office photos strip, sticky nav overlaps"
+ },
+ {
+  "ref_id": "dovetail.com-product-ai-docs#12",
+  "label": "testimonials",
+  "secondary": "cta",
+  "note": "customer story feature with buttons"
+ },
+ {
+  "ref_id": "dropbox.com-plans#3",
+  "label": "pricing",
+  "secondary": null,
+  "note": "two plan cards, Basic and Enterprise"
+ },
+ {
+  "ref_id": "jasper.ai-case-studies-cushman-wakefield#0",
+  "label": "hero",
+  "secondary": null,
+  "note": "case study page hero"
+ },
+ {
+  "ref_id": "merchants.doordash.com-en-us-integrations#9",
+  "label": "faq",
+  "secondary": null,
+  "note": "FAQ list on integrations"
+ },
+ {
+  "ref_id": "jasper.ai-platform#12",
+  "label": "cta",
+  "secondary": null,
+  "note": "get started band with two buttons"
+ },
+ {
+  "ref_id": "shopify.com-co-enterprise#2",
+  "label": "showcase",
+  "secondary": null,
+  "note": "large phone dashboard visual"
+ },
+ {
+  "ref_id": "clara.com-es-co-precios#15",
+  "label": "comparison",
+  "secondary": null,
+  "note": "plan feature table rows"
+ },
+ {
+  "ref_id": "runway.com-product#8",
+  "label": "showcase",
+  "secondary": "features",
+  "note": "workflow node graph visual with headline"
+ },
+ {
+  "ref_id": "dovetail.com-product-ai-docs#13",
+  "label": "faq",
+  "secondary": null,
+  "note": "FAQ accordion"
+ },
+ {
+  "ref_id": "sentry.io-product-logs#5",
+  "label": "feature-split",
+  "secondary": null,
+  "note": "text with bullets left, right side empty"
+ },
+ {
+  "ref_id": "miro.com-pricing#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "top navigation bar"
+ },
+ {
+  "ref_id": "dropbox.com-plans#15",
+  "label": "comparison",
+  "secondary": null,
+  "note": "plan feature checkmark table"
+ },
+ {
+  "ref_id": "vizcom.com-case-studies#7",
+  "label": "blog",
+  "secondary": "testimonials",
+  "note": "customer story cards grid, no quotes"
+ },
+ {
+  "ref_id": "featurebase.app-features-support#21",
+  "label": "cta",
+  "secondary": null,
+  "note": "security badges with talk to sales"
+ },
+ {
+  "ref_id": "atlassian.com-customers#6",
+  "label": "stats",
+  "secondary": null,
+  "note": "big numbers about customers"
+ },
+ {
+  "ref_id": "miro.com-pricing#24",
+  "label": "faq",
+  "secondary": null,
+  "note": "single FAQ row strip"
+ },
+ {
+  "ref_id": "shopify.com-co-enterprise#3",
+  "label": "showcase",
+  "secondary": null,
+  "note": "large phone dashboard visual"
+ },
+ {
+  "ref_id": "xero.com-about#6",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "big customer quote with photo"
+ },
+ {
+  "ref_id": "base44.com-blog#2",
+  "label": "blog",
+  "secondary": null,
+  "note": "article cards grid with dates"
+ },
+ {
+  "ref_id": "glossier.com-en-co-products-boy-brow#6",
+  "label": "testimonials",
+  "secondary": "stats",
+  "note": "product reviews list with rating"
+ },
+ {
+  "ref_id": "on.co-es-co-products-cloudmuse-3wg3107-womens-white-dew-shoes-3wg31072257#2",
+  "label": "faq",
+  "secondary": null,
+  "note": "product detail accordion rows"
+ },
+ {
+  "ref_id": "locomotive.ca-en-careers#11",
+  "label": "content",
+  "secondary": null,
+  "note": "job openings list"
+ },
+ {
+  "ref_id": "featurebase.app-features-support#20",
+  "label": "stats",
+  "secondary": "content",
+  "note": "four metrics under headline"
+ },
+ {
+  "ref_id": "dovetail.com-product-ai-docs#2",
+  "label": "logos",
+  "secondary": "showcase",
+  "note": "customer logo row below product sliver"
+ },
+ {
+  "ref_id": "mural.co-apps#5",
+  "label": "footer",
+  "secondary": null,
+  "note": "link columns plus giant wordmark"
+ },
+ {
+  "ref_id": "merchants.doordash.com-en-us-contact#5",
+  "label": "footer",
+  "secondary": null,
+  "note": "footer link columns and legal"
+ },
+ {
+  "ref_id": "culturedcode.com-about#1",
+  "label": "footer",
+  "secondary": null,
+  "note": "minimal footer link columns"
+ },
+ {
+  "ref_id": "jasper.ai-pricing#1",
+  "label": "comparison",
+  "secondary": null,
+  "note": "plan feature table"
+ },
+ {
+  "ref_id": "base44.com-about-us#5",
+  "label": "cta",
+  "secondary": null,
+  "note": "community links Discord and Reddit"
+ },
+ {
+  "ref_id": "xero.com-about#1",
+  "label": "hero",
+  "secondary": "showcase",
+  "note": "about page headline with illustration"
+ },
+ {
+  "ref_id": "jasper.ai-company#0",
+  "label": "hero",
+  "secondary": "navbar",
+  "note": "mission headline under navbar"
+ },
+ {
+  "ref_id": "mural.co-about-us#1",
+  "label": "unclear",
+  "secondary": null,
+  "note": "title-only strip"
+ },
+ {
+  "ref_id": "shopify.com-co-comienza#5",
+  "label": "showcase",
+  "secondary": null,
+  "note": "phone visual with short headline"
+ },
+ {
+  "ref_id": "vizcom.com-case-studies#10",
+  "label": "footer",
+  "secondary": "newsletter",
+  "note": "footer columns with newsletter input"
+ },
+ {
+  "ref_id": "vizcom.com-product#6",
+  "label": "unclear",
+  "secondary": null,
+  "note": "tiny strip, title only"
+ },
+ {
+  "ref_id": "relume.ai-whats-new#7",
+  "label": "blog",
+  "secondary": null,
+  "note": "changelog release entry"
+ },
+ {
+  "ref_id": "dovetail.com-changelog#3",
+  "label": "blog",
+  "secondary": null,
+  "note": "tiny changelog entry row"
+ },
+ {
+  "ref_id": "sentry.io-signup#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "top navigation bar"
+ },
+ {
+  "ref_id": "sentry.io-product-logs#12",
+  "label": "newsletter",
+  "secondary": null,
+  "note": "monthly product updates email form"
+ },
+ {
+  "ref_id": "miro.com-pricing#5",
+  "label": "comparison",
+  "secondary": null,
+  "note": "sticky plan header row of table"
+ },
+ {
+  "ref_id": "mural.co-case-studies#5",
+  "label": "blog",
+  "secondary": "testimonials",
+  "note": "customer story cards grid"
+ },
+ {
+  "ref_id": "mixpanel.com-blog#1",
+  "label": "hero",
+  "secondary": "navbar",
+  "note": "blog hero title with category chips"
+ },
+ {
+  "ref_id": "miro.com-products-goals#1",
+  "label": "hero",
+  "secondary": "showcase",
+  "note": "product hero with screenshot"
+ },
+ {
+  "ref_id": "xero.com-signup#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "minimal logo plus go back"
+ },
+ {
+  "ref_id": "merchants.doordash.com-en-us-products-dashos#2",
+  "label": "showcase",
+  "secondary": null,
+  "note": "large illustrative product composite"
+ },
+ {
+  "ref_id": "jasper.ai-pricing#14",
+  "label": "cta",
+  "secondary": "features",
+  "note": "three support routing cards"
+ },
+ {
+  "ref_id": "featurebase.app-features-support#14",
+  "label": "features",
+  "secondary": null,
+  "note": "three feature items with icons"
+ },
+ {
+  "ref_id": "atlassian.com-blog#6",
+  "label": "newsletter",
+  "secondary": "cta",
+  "note": "subscribe band with sign up button"
+ },
+ {
+  "ref_id": "dropbox.com-about#6",
+  "label": "team",
+  "secondary": null,
+  "note": "leadership portraits with bios"
+ },
+ {
+  "ref_id": "runway.com-pricing#6",
+  "label": "footer",
+  "secondary": null,
+  "note": "large link columns footer"
+ },
+ {
+  "ref_id": "sentry.io-changelog#13",
+  "label": "footer",
+  "secondary": null,
+  "note": "thin copyright strip"
+ },
+ {
+  "ref_id": "mural.co-pricing#1",
+  "label": "pricing",
+  "secondary": null,
+  "note": "four plan cards with prices"
+ },
+ {
+  "ref_id": "jasper.ai-integrations#3",
+  "label": "cta",
+  "secondary": null,
+  "note": "start creating band with buttons"
+ },
+ {
+  "ref_id": "shuttle.zip-about#3",
+  "label": "showcase",
+  "secondary": null,
+  "note": "product preview modal visual"
+ },
+ {
+  "ref_id": "jasper.ai-platform#5",
+  "label": "steps",
+  "secondary": "feature-split",
+  "note": "numbered lifecycle steps beside photo"
+ },
+ {
+  "ref_id": "sentry.io-product-logs#8",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "social quote cards"
+ },
+ {
+  "ref_id": "sentry.io-product-logs#11",
+  "label": "blog",
+  "secondary": null,
+  "note": "related article cards carousel"
+ },
+ {
+  "ref_id": "clara.com-es-co-precios#4",
+  "label": "features",
+  "secondary": null,
+  "note": "feature cards carousel with visuals"
+ },
+ {
+  "ref_id": "shopify.com-co-enterprise#14",
+  "label": "features",
+  "secondary": null,
+  "note": "two partner type cards"
+ },
+ {
+  "ref_id": "jasper.ai-platform#1",
+  "label": "logos",
+  "secondary": null,
+  "note": "trusted-by logo row"
+ },
+ {
+  "ref_id": "shuttle.zip-about#1",
+  "label": "hero",
+  "secondary": "showcase",
+  "note": "hero with upload UI below"
+ },
+ {
+  "ref_id": "clara.com-es-co-clientes#3",
+  "label": "testimonials",
+  "secondary": "video",
+  "note": "customer stories video card"
+ },
+ {
+  "ref_id": "on.co-es-co-products-cloudmuse-3wg3107-womens-white-dew-shoes-3wg31072257#5",
+  "label": "features",
+  "secondary": null,
+  "note": "three product feature columns with images"
+ },
+ {
+  "ref_id": "sentry.io-about#2",
+  "label": "stats",
+  "secondary": null,
+  "note": "highlighted numbers paragraph"
+ },
+ {
+  "ref_id": "sentry.io-changelog#12",
+  "label": "unclear",
+  "secondary": null,
+  "note": "pagination strip only"
+ },
+ {
+  "ref_id": "runway.com-changelog#16",
+  "label": "blog",
+  "secondary": null,
+  "note": "changelog entry with date"
+ }
+]

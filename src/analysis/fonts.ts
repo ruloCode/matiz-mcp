@@ -26,7 +26,7 @@ export function normalizeFamily(family: string): string {
     .replace(/_[0-9a-f]{5,}$/i, "")
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "")
-    .replace(/(variable|var|vf|web|webfont|text|regular|fallback)$/g, "")
+    .replace(/(variable|var|vf|web|webfont|font|text|regular|fallback)$/g, "")
     .replace(/(variable|var|vf)$/g, "");
 }
 
@@ -44,7 +44,15 @@ function loadCatalog(): Map<string, FreeFont> {
 }
 
 export function freeFont(family: string): FreeFont | undefined {
-  return loadCatalog().get(normalizeFamily(family));
+  const cat = loadCatalog();
+  const direct = cat.get(normalizeFamily(family));
+  if (direct) return direct;
+  // "Inter Variablefont Slnt Wght" (nombre de archivo variable) o "Shopify-Inter" (marca-familia)
+  const stripped = family.replace(/\b(variable ?font|slnt|wght|opsz|wdth|ital|vf)\b/gi, " ").trim();
+  const byAxes = cat.get(normalizeFamily(stripped));
+  if (byAxes) return byAxes;
+  const last = family.split(/[-_]/).filter(Boolean).pop();
+  return last && last !== family ? cat.get(normalizeFamily(last)) : undefined;
 }
 
 /** Comerciales frecuentes → equivalentes libres (por estructura y sensación, no por nombre). */

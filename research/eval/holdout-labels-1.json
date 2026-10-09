@@ -1,0 +1,428 @@
+[
+ {
+  "ref_id": "dovetail.com-changelog#5",
+  "label": "blog",
+  "secondary": "unclear",
+  "note": "changelog entry date+title strip only"
+ },
+ {
+  "ref_id": "dropbox.com-about#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "Dropbox nav bar"
+ },
+ {
+  "ref_id": "merchants.doordash.com-en-us-blog#12",
+  "label": "unclear",
+  "secondary": null,
+  "note": "only \"Recent Articles\" title"
+ },
+ {
+  "ref_id": "shopify.com-co-precios#6",
+  "label": "unclear",
+  "secondary": null,
+  "note": "only \"Precios\" title strip"
+ },
+ {
+  "ref_id": "shopify.com-co-enterprise#4",
+  "label": "bento",
+  "secondary": "feature-split",
+  "note": "mixed cards with phone mockups"
+ },
+ {
+  "ref_id": "jasper.ai-pricing#12",
+  "label": "faq",
+  "secondary": null,
+  "note": "billing questions accordion; cookie+chat overlays"
+ },
+ {
+  "ref_id": "atlassian.com-customers#2",
+  "label": "testimonials",
+  "secondary": "logos",
+  "note": "customer story portrait with logo tabs"
+ },
+ {
+  "ref_id": "clara.com-es-co-precios#2",
+  "label": "pricing",
+  "secondary": null,
+  "note": "three Clara plan cards"
+ },
+ {
+  "ref_id": "jasper.ai-case-studies-cushman-wakefield#1",
+  "label": "stats",
+  "secondary": null,
+  "note": "results numbers strip, cookie banner overlap"
+ },
+ {
+  "ref_id": "runway.com-news#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "promo announcement bar"
+ },
+ {
+  "ref_id": "mixpanel.com-customers#3",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank white capture"
+ },
+ {
+  "ref_id": "runway.com-careers#18",
+  "label": "gallery",
+  "secondary": null,
+  "note": "row of office photos"
+ },
+ {
+  "ref_id": "sentry.io-customers#6",
+  "label": "contact",
+  "secondary": "hero",
+  "note": "book a demo form with pitch"
+ },
+ {
+  "ref_id": "dropbox.com-register#1",
+  "label": "footer",
+  "secondary": null,
+  "note": "link columns footer"
+ },
+ {
+  "ref_id": "base44.com-integrations#4",
+  "label": "faq",
+  "secondary": null,
+  "note": "integrations FAQ accordion"
+ },
+ {
+  "ref_id": "dovetail.com-changelog#16",
+  "label": "blog",
+  "secondary": "unclear",
+  "note": "changelog entry date+title strip only"
+ },
+ {
+  "ref_id": "featurebase.app-customers#3",
+  "label": "testimonials",
+  "secondary": "logos",
+  "note": "customer cards with logos and blurbs"
+ },
+ {
+  "ref_id": "miro.com-customers#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "Miro nav bar"
+ },
+ {
+  "ref_id": "jasper.ai-blog#0",
+  "label": "hero",
+  "secondary": "navbar",
+  "note": "blog page headline under nav"
+ },
+ {
+  "ref_id": "shopify.com-co-enterprise#1",
+  "label": "stats",
+  "secondary": null,
+  "note": "four big percentage metrics"
+ },
+ {
+  "ref_id": "featurebase.app-pricing#7",
+  "label": "comparison",
+  "secondary": null,
+  "note": "plan feature check table"
+ },
+ {
+  "ref_id": "dropbox.com-features#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "Dropbox nav bar"
+ },
+ {
+  "ref_id": "clara.com-es-co-blog#3",
+  "label": "contact",
+  "secondary": "cta",
+  "note": "account signup form, email+phone"
+ },
+ {
+  "ref_id": "mixpanel.com-blog#14",
+  "label": "unclear",
+  "secondary": null,
+  "note": "only \"View more articles\" link"
+ },
+ {
+  "ref_id": "runway.com-pricing#4",
+  "label": "comparison",
+  "secondary": "pricing",
+  "note": "credits per plan table, sticky plan header"
+ },
+ {
+  "ref_id": "featurebase.app-customers#1",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "grid of quote cards"
+ },
+ {
+  "ref_id": "runway.com-careers#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "promo announcement bar"
+ },
+ {
+  "ref_id": "mixpanel.com-platform-experiments#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "product announcement bar"
+ },
+ {
+  "ref_id": "clara.com-es-co-registro#2",
+  "label": "logos",
+  "secondary": null,
+  "note": "customer logos with trust headline"
+ },
+ {
+  "ref_id": "atlassian.com-blog#5",
+  "label": "blog",
+  "secondary": null,
+  "note": "article cards grid"
+ },
+ {
+  "ref_id": "mixpanel.com-about#7",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank white capture"
+ },
+ {
+  "ref_id": "sentry.io-changelog#3",
+  "label": "blog",
+  "secondary": null,
+  "note": "changelog entry card with date"
+ },
+ {
+  "ref_id": "dropbox.com-plans#16",
+  "label": "comparison",
+  "secondary": null,
+  "note": "support features check table"
+ },
+ {
+  "ref_id": "runway.com-changelog#4",
+  "label": "blog",
+  "secondary": null,
+  "note": "changelog entry with date"
+ },
+ {
+  "ref_id": "atlassian.com-platform-rovo-mcp#8",
+  "label": "features",
+  "secondary": null,
+  "note": "three security feature items"
+ },
+ {
+  "ref_id": "mixpanel.com-blog#10",
+  "label": "blog",
+  "secondary": "hero",
+  "note": "featured article card"
+ },
+ {
+  "ref_id": "merchants.doordash.com-en-us-products-dashos#4",
+  "label": "features",
+  "secondary": "integrations",
+  "note": "four product category cards"
+ },
+ {
+  "ref_id": "featurebase.app-pricing#13",
+  "label": "comparison",
+  "secondary": null,
+  "note": "integrations plan check table"
+ },
+ {
+  "ref_id": "base44.com-pricing#3",
+  "label": "faq",
+  "secondary": null,
+  "note": "pricing FAQ accordion"
+ },
+ {
+  "ref_id": "featurebase.app-features-support#1",
+  "label": "logos",
+  "secondary": null,
+  "note": "customer logos row"
+ },
+ {
+  "ref_id": "shopify.com-co-comienza#11",
+  "label": "newsletter",
+  "secondary": "cta",
+  "note": "email capture rewards card"
+ },
+ {
+  "ref_id": "base44.com-features#1",
+  "label": "hero",
+  "secondary": "navbar",
+  "note": "big headline with CTA"
+ },
+ {
+  "ref_id": "dovetail.com-changelog#7",
+  "label": "blog",
+  "secondary": "unclear",
+  "note": "changelog entry date+title strip only"
+ },
+ {
+  "ref_id": "on.co-es-co-products-cloudmuse-3wg3107-womens-white-dew-shoes-3wg31072257#3",
+  "label": "features",
+  "secondary": null,
+  "note": "product spec attributes with icons"
+ },
+ {
+  "ref_id": "mixpanel.com-about#1",
+  "label": "hero",
+  "secondary": null,
+  "note": "about headline statement"
+ },
+ {
+  "ref_id": "mixpanel.com-pricing#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "product announcement bar"
+ },
+ {
+  "ref_id": "miro.com-pricing#22",
+  "label": "faq",
+  "secondary": null,
+  "note": "single expanded FAQ item"
+ },
+ {
+  "ref_id": "glossier.com-en-co-products-boy-brow#2",
+  "label": "unclear",
+  "secondary": null,
+  "note": "collapsed \"Key ingredients\" strip"
+ },
+ {
+  "ref_id": "clara.com-es-co-precios#3",
+  "label": "logos",
+  "secondary": null,
+  "note": "faded customer logos row"
+ },
+ {
+  "ref_id": "locomotive.ca-en-careers#8",
+  "label": "content",
+  "secondary": null,
+  "note": "numbered careers value with marquee"
+ },
+ {
+  "ref_id": "vizcom.com-blog#5",
+  "label": "unclear",
+  "secondary": null,
+  "note": "pagination controls only"
+ },
+ {
+  "ref_id": "featurebase.app-pricing#12",
+  "label": "comparison",
+  "secondary": null,
+  "note": "reporting plan check table"
+ },
+ {
+  "ref_id": "runway.com-product#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "promo announcement bar"
+ },
+ {
+  "ref_id": "jasper.ai-pricing#15",
+  "label": "cta",
+  "secondary": null,
+  "note": "closing CTA, two buttons"
+ },
+ {
+  "ref_id": "runway.com-about#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "promo announcement bar"
+ },
+ {
+  "ref_id": "locomotive.ca-en-careers#6",
+  "label": "content",
+  "secondary": null,
+  "note": "numbered careers value with marquee"
+ },
+ {
+  "ref_id": "sentry.io-product-logs#14",
+  "label": "footer",
+  "secondary": null,
+  "note": "link columns and legal"
+ },
+ {
+  "ref_id": "shopify.com-co-precios#0",
+  "label": "hero",
+  "secondary": "navbar",
+  "note": "pricing headline; plan cards not rendered"
+ },
+ {
+  "ref_id": "dovetail.com-product-ai-docs#3",
+  "label": "feature-split",
+  "secondary": "steps",
+  "note": "numbered text + product screenshot"
+ },
+ {
+  "ref_id": "dropbox.com-features#11",
+  "label": "video",
+  "secondary": null,
+  "note": "founder video with play button"
+ },
+ {
+  "ref_id": "relume.ai-whats-new#18",
+  "label": "blog",
+  "secondary": null,
+  "note": "changelog post card with image"
+ },
+ {
+  "ref_id": "clara.com-es-co-blog#1",
+  "label": "blog",
+  "secondary": null,
+  "note": "featured post plus article list"
+ },
+ {
+  "ref_id": "clara.com-es-co-precios#14",
+  "label": "unclear",
+  "secondary": null,
+  "note": "only section title strip"
+ },
+ {
+  "ref_id": "xero.com-about#5",
+  "label": "feature-split",
+  "secondary": null,
+  "note": "image left, careers text right"
+ },
+ {
+  "ref_id": "mixpanel.com-blog#11",
+  "label": "blog",
+  "secondary": "hero",
+  "note": "featured article title block"
+ },
+ {
+  "ref_id": "mixpanel.com-platform-experiments#1",
+  "label": "navbar",
+  "secondary": null,
+  "note": "Mixpanel nav bar"
+ },
+ {
+  "ref_id": "clara.com-es-co-precios#0",
+  "label": "navbar",
+  "secondary": "banner",
+  "note": "nav with announcement bar above"
+ },
+ {
+  "ref_id": "clara.com-es-co-clientes#4",
+  "label": "contact",
+  "secondary": "cta",
+  "note": "account signup form, email+phone"
+ },
+ {
+  "ref_id": "dropbox.com-about#8",
+  "label": "team",
+  "secondary": null,
+  "note": "executive bio card"
+ },
+ {
+  "ref_id": "sentry.io-about#4",
+  "label": "logos",
+  "secondary": null,
+  "note": "vertical customer logo list"
+ },
+ {
+  "ref_id": "mural.co-blog#3",
+  "label": "blog",
+  "secondary": null,
+  "note": "blog post carousel cards"
+ }
+]

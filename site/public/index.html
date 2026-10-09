@@ -9,360 +9,384 @@
 <meta name="description" content="Matiz es un servidor MCP que le da a tu agente referencias de diseño medidas: colores con rol, tipografía, composición y DESIGN.md.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Schibsted+Grotesk:wght@400..700&family=Martian+Mono:wdth,wght@87.5,400;87.5,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 
-/* Layout: hoja de especificaciones. Columna de lectura de ~68ch, una sola pieza a todo el ancho
-   (la franja de acentos medidos) y el resto en silencio. El color de la página lo ponen los datos. */
+/* Layout: la gramática de las páginas MCP de Mobbin y Refero, medida con Matiz:
+   hero centrado → ventana de producto → problema en grande → bento de tarjetas grises
+   redondeadas → prompts → instalación por pasos → FAQ. Blanco + tinta, sin acento propio:
+   el color lo ponen los datos (muestras reales del corpus). */
 :root {
-  --paper: #f5f6f8;      /* papel frío, no crema */
-  --sheet: #ffffff;      /* superficie de las fichas */
-  --ink: #12141a;        /* texto y botones */
-  --ink-2: #4c5262;      /* texto secundario (AA sobre papel y ficha) */
-  --rule: #dcdfe6;       /* líneas de la hoja */
-  --mark: #3730d9;       /* foco y enlaces: el único acento propio */
-  --code-bg: #12141a;
-  --code-fg: #e7e9ef;
-  --code-dim: #9aa1b2;
-  --font-display: "Bricolage Grotesque", "Avenir Next Condensed", "Arial Narrow", system-ui, sans-serif;
-  --font-body: "Schibsted Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --step--1: 0.8125rem;
-  --step-0: 1rem;
-  --step-1: 1.1875rem;
-  --step-2: 1.5rem;
-  --step-3: 2.25rem;
-  --step-4: clamp(2.6rem, 6.4vw, 5.25rem);
-  --gutter: clamp(16px, 4vw, 40px);
-  --measure: 68ch;
-  --wide: 1180px;
+  --bg: #ffffff;
+  --soft: #f3f3f4;      /* tarjetas (Mobbin mide #F0F0F0, Refero #F7F8FB) */
+  --soft-2: #e9e9eb;
+  --ink: #141414;       /* el texto que mide Matiz en mobbin.com */
+  --muted: #66666c;     /* pasa AA sobre blanco y sobre --soft */
+  --line: #e4e4e7;
+  --mark: #2f6bff;      /* solo foco de teclado */
+  --win: #ffffff;
+  --code-bg: #141414;
+  --code-fg: #ededee;
+  --code-dim: #9b9ba1;
+  --sev-high-bg: #fde4e4; --sev-high-fg: #9d1c1c;
+  --sev-med-bg: #fdf0d8; --sev-med-fg: #7a4a00;
+  --font: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r-card: 28px;
+  --r-inner: 16px;
+  --gutter: clamp(16px, 4vw, 32px);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0d0f14; --sheet: #151821; --ink: #eceef3; --ink-2: #a7adbc; --rule: #2a2f3b;
-    --mark: #9d98ff; --code-bg: #07080b; --code-fg: #e7e9ef; --code-dim: #8a91a3; color-scheme: dark;
+    --bg: #0b0b0c; --soft: #161618; --soft-2: #222225; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e;
+    --mark: #86a6ff; --win: #111113; --code-bg: #050506; --code-fg: #ededee; --code-dim: #8d8d94;
+    --sev-high-bg: #3b1414; --sev-high-fg: #ffb3b3; --sev-med-bg: #33240a; --sev-med-fg: #ffd68a; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0d0f14; --sheet: #151821; --ink: #eceef3; --ink-2: #a7adbc; --rule: #2a2f3b;
-  --mark: #9d98ff; --code-bg: #07080b; --code-fg: #e7e9ef; --code-dim: #8a91a3; color-scheme: dark;
+  --bg: #0b0b0c; --soft: #161618; --soft-2: #222225; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e;
+  --mark: #86a6ff; --win: #111113; --code-bg: #050506; --code-fg: #ededee; --code-dim: #8d8d94;
+  --sev-high-bg: #3b1414; --sev-high-fg: #ffb3b3; --sev-med-bg: #33240a; --sev-med-fg: #ffd68a; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
-body {
-  margin: 0; background: var(--paper); color: var(--ink);
-  font: 400 var(--step-0)/1.6 var(--font-body);
-  -webkit-font-smoothing: antialiased;
-}
-a { color: inherit; text-decoration-color: color-mix(in oklab, var(--ink) 35%, transparent); text-underline-offset: 3px; }
-a:hover { text-decoration-color: var(--ink); }
-:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; border-radius: 4px; }
-code, pre, .mono { font-family: var(--font-mono); font-variation-settings: "wdth" 87.5; }
-h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1rem/1.55 var(--font); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-weight: 600; letter-spacing: -0.03em; }
 p { margin: 0; }
+code, pre, .mono { font-family: var(--mono); }
+.wrap { width: min(1200px, 100%); margin-inline: auto; padding-inline: var(--gutter); }
+.narrow { width: min(820px, 100%); margin-inline: auto; padding-inline: var(--gutter); }
+.center { text-align: center; }
 
-.wrap { width: min(var(--wide), 100%); margin-inline: auto; padding-inline: var(--gutter); }
-.label {
-  font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-2);
-}
+/* botones píldora (Mobbin: radio 9999px, padding 16px) */
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 12px 20px; font: 500 0.9375rem/1 var(--font); text-decoration: none; cursor: pointer; }
+.btn-ink { background: var(--ink); color: var(--bg); }
+.btn-ink:hover { opacity: 0.86; }
+.btn-soft { background: var(--soft); color: var(--ink); }
+.btn-soft:hover { background: var(--soft-2); }
+.pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 0.8125rem; color: var(--muted); background: var(--bg); }
+.pill i { width: 8px; height: 8px; border-radius: 50%; background: conic-gradient(#e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
 
 /* ---------- barra ---------- */
-.bar {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
-  background: color-mix(in oklab, var(--paper) 88%, transparent);
-  backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--rule);
-}
-.bar .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
-.wordmark { display: flex; align-items: center; gap: 10px; font: 700 1.25rem/1 var(--font-display); letter-spacing: -0.03em; text-decoration: none; }
-.wordmark i { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: conic-gradient(from 200deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
-.bar nav { display: flex; gap: 22px; margin-left: auto; font-size: var(--step--1); }
-.bar nav a { text-decoration: none; color: var(--ink-2); }
-.bar nav a:hover { color: var(--ink); }
-@media (max-width: 640px) { .bar nav a:not(.keep) { display: none; } }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in oklab, var(--bg) 86%, transparent); backdrop-filter: blur(12px) saturate(1.3); }
+.bar .wrap { display: flex; align-items: center; gap: 28px; height: 64px; }
+.logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.03em; text-decoration: none; }
+.logo i { width: 20px; height: 20px; border-radius: 6px; background: conic-gradient(from 210deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
+.bar nav { display: flex; gap: 24px; font-size: 0.9375rem; font-weight: 500; }
+.bar nav a { text-decoration: none; }
+.bar .right { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 0.9375rem; }
+.bar .right a.gh { text-decoration: none; color: var(--muted); }
+.bar .btn { padding: 9px 16px; font-size: 0.875rem; }
+@media (max-width: 760px) { .bar nav, .bar .right a.gh { display: none; } }
 
 /* ---------- hero ---------- */
-.hero { padding-block: clamp(48px, 8vw, 96px) clamp(32px, 5vw, 56px); }
-.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: end; }
-@media (max-width: 900px) { .hero .wrap { grid-template-columns: minmax(0, 1fr); } }
-.hero h1 {
-  font-size: var(--step-4); line-height: 0.95; font-weight: 700;
-  font-variation-settings: "wdth" 78, "opsz" 96; letter-spacing: -0.035em;
-}
-.hero h1 em { font-style: normal; font-variation-settings: "wdth" 100, "opsz" 96; font-weight: 400; }
-.lede { margin-top: 22px; font-size: var(--step-1); color: var(--ink-2); max-width: 46ch; }
-.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; align-items: center; }
-.cmd {
-  display: inline-flex; align-items: center; gap: 12px; max-width: 100%;
-  background: var(--code-bg); color: var(--code-fg); border-radius: 999px; padding: 10px 10px 10px 18px;
-  font-family: var(--font-mono); font-size: 0.8125rem; min-width: 0;
-}
-.cmd span { overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-.cmd span::-webkit-scrollbar { display: none; }
-.cmd span b { color: var(--code-dim); font-weight: 400; }
-.copy {
-  flex: none; border: 0; cursor: pointer; border-radius: 999px; padding: 6px 12px;
-  background: color-mix(in oklab, var(--code-fg) 14%, transparent); color: var(--code-fg);
-  font: 500 0.75rem/1 var(--font-body);
-}
-.copy:hover { background: color-mix(in oklab, var(--code-fg) 24%, transparent); }
-.ghost { text-decoration: none; font-weight: 500; padding: 10px 6px; }
-.note { margin-top: 14px; font-size: var(--step--1); color: var(--ink-2); }
+.hero { padding-block: clamp(56px, 9vw, 112px) 40px; }
+.hero h1 { margin-top: 22px; font-size: clamp(2.5rem, 6.6vw, 5rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 650; }
+.chip { display: inline-block; width: 0.82em; height: 0.82em; border-radius: 0.2em; vertical-align: -0.02em; margin-inline: 0.06em; }
+.hero .sub { margin: 24px auto 0; max-width: 40rem; font-size: 1.1875rem; color: var(--muted); }
+.hero .ctas { margin-top: 32px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.works { margin-top: 44px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 26px; font-size: 0.9375rem; font-weight: 500; }
+.works span:first-child { color: var(--muted); font-weight: 400; font-size: 0.8125rem; }
 
-/* ficha de especificación (salida real de Matiz) */
-.spec {
-  background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px;
-  font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.55; overflow: hidden;
-}
-.spec header { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
-.spec .chips { display: flex; height: 64px; }
-.spec .chips div { flex: 1; display: flex; align-items: flex-end; padding: 8px 10px; font-size: 0.6875rem; }
-.spec dl { margin: 0; padding: 14px 16px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 18px; }
-.spec dt { color: var(--ink-2); }
-.spec dd { margin: 0; overflow-wrap: anywhere; }
-.spec footer { padding: 10px 16px; border-top: 1px dashed var(--rule); color: var(--ink-2); }
+/* ---------- ventana de producto ---------- */
+.stage { margin-top: 56px; background: var(--soft); border-radius: 36px; padding: clamp(10px, 3vw, 40px); }
+.window { background: var(--win); border-radius: 22px; border: 1px solid var(--line); padding: clamp(16px, 3vw, 32px); text-align: left; }
+.dots { display: flex; gap: 7px; margin-bottom: 18px; }
+.dots b { width: 11px; height: 11px; border-radius: 50%; background: var(--soft-2); }
+.chat { display: grid; gap: 14px; max-width: 760px; margin-inline: auto; }
+.me { justify-self: end; display: grid; gap: 6px; justify-items: end; max-width: 100%; }
+.me span { font-size: 0.8125rem; color: var(--muted); }
+.me p { background: var(--ink); color: var(--bg); padding: 11px 18px; border-radius: 22px; font-weight: 500; }
+.agent { display: grid; gap: 8px; }
+.agent .who { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.9375rem; }
+.agent .who i { width: 18px; height: 18px; border-radius: 6px; background: var(--ink); }
+.agent .used { color: var(--muted); font-size: 0.8125rem; font-family: var(--mono); overflow-wrap: anywhere; }
+.results { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 900px) { .results { grid-template-columns: minmax(0, 1fr); } }
+.res { background: var(--soft); border-radius: var(--r-inner); padding: 12px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.mini { border-radius: 10px; padding: 18px 16px 16px; min-height: 160px; display: grid; align-content: space-between; gap: 14px; overflow: hidden; }
+.mini h4 { font-weight: 650; line-height: 1.04; font-size: 1.5rem; overflow-wrap: anywhere; }
+.mini .plans { display: flex; gap: 6px; }
+.mini .plans span { flex: 1; height: 34px; border-radius: 6px; }
+.mini .cta { justify-self: start; font-size: 0.75rem; font-weight: 600; padding: 7px 12px; }
+.res .meta { display: grid; gap: 8px; padding: 2px 4px 4px; font-size: 0.8125rem; }
+.res .host { font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.res .host a { text-decoration: none; }
+.res .sw { display: flex; gap: 5px; }
+.res .sw b { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--line); }
+.res .kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 12px; margin: 0; }
+.res .kv dt { color: var(--muted); }
+.res .kv dd { margin: 0; overflow-wrap: anywhere; }
 
-/* ---------- franja de acentos ---------- */
-.spectrum { border-block: 1px solid var(--rule); background: var(--sheet); }
-.spectrum .wrap { padding-block: 28px; display: grid; gap: 14px; }
-.spectrum .head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; align-items: baseline; }
-.spectrum .head p { font-size: var(--step--1); color: var(--ink-2); max-width: 60ch; }
-.strip { display: flex; height: 120px; border-radius: 10px; overflow: hidden; }
+/* ---------- problema ---------- */
+.problem { padding-block: clamp(80px, 12vw, 150px); }
+.problem h2 { font-size: clamp(1.9rem, 4.4vw, 3.25rem); line-height: 1.1; letter-spacing: -0.04em; font-weight: 600; }
+.problem h2 span { color: var(--muted); }
+
+/* ---------- bento ---------- */
+section.block { padding-block: clamp(56px, 9vw, 110px); }
+.section-head { display: grid; gap: 14px; justify-items: center; text-align: center; margin-bottom: 40px; }
+.section-head h2 { font-size: clamp(2rem, 4.6vw, 3.5rem); line-height: 1.04; letter-spacing: -0.045em; }
+.section-head p { color: var(--muted); font-size: 1.125rem; max-width: 40rem; }
+.bento { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .bento { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--soft); border-radius: var(--r-card); padding: clamp(22px, 3vw, 36px); display: grid; gap: 24px; align-content: space-between; min-width: 0; }
+.card.wide { grid-column: 1 / -1; }
+.card h3 { font-size: 1.5rem; }
+.card .txt { display: grid; gap: 10px; }
+.card .txt p { color: var(--muted); max-width: 34rem; }
+.visual { background: var(--win); border-radius: var(--r-inner); padding: 18px; min-width: 0; }
+
+.meta-table { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 560px) { .meta-table { grid-template-columns: minmax(0, 1fr); } }
+.meta-table dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; font-family: var(--mono); font-size: 0.75rem; align-content: start; }
+.meta-table dt { color: var(--muted); }
+.meta-table dd { margin: 0; overflow-wrap: anywhere; }
+.wire { display: grid; gap: 5px; align-content: start; }
+.wire div { border-radius: 6px; background: var(--soft); font-family: var(--mono); font-size: 0.6875rem; color: var(--muted); padding: 6px 8px; }
+.wire div.on { background: var(--ink); color: var(--bg); }
+
+.bars { display: grid; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 2.6rem; gap: 10px; align-items: center; font-size: 0.8125rem; }
+.bar-row code { font-size: 0.75rem; }
+.track { height: 10px; border-radius: 999px; background: var(--soft); overflow: hidden; }
+.fill { display: block; height: 100%; border-radius: 999px; background: var(--ink); }
+.bar-row .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+.font-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: center; padding-block: 11px; border-bottom: 1px solid var(--line); font-size: 0.9375rem; }
+.font-row:last-child { border-bottom: 0; }
+.font-row .from { color: var(--muted); overflow-wrap: anywhere; }
+.font-row .to { font-weight: 600; text-align: right; }
+.font-row .arrow { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; }
+
+.finds { display: grid; gap: 12px; }
+.find { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 12px; font-size: 0.875rem; }
+.sev { font-family: var(--mono); font-size: 0.6875rem; padding: 2px 8px; border-radius: 999px; align-self: start; margin-top: 2px; }
+.sev.high { background: var(--sev-high-bg); color: var(--sev-high-fg); }
+.sev.medium { background: var(--sev-med-bg); color: var(--sev-med-fg); }
+.sev.low { background: var(--soft); color: var(--muted); }
+.find .fix { grid-column: 2; color: var(--muted); font-size: 0.8125rem; overflow-wrap: anywhere; }
+
+.strip { display: flex; height: 132px; border-radius: 14px; overflow: hidden; }
 .strip button { flex: 1 1 0; min-width: 0; border: 0; padding: 0; cursor: crosshair; transition: flex-grow .25s ease; }
-.strip button:hover, .strip button:focus-visible { flex-grow: 7; outline: none; }
-.readout { font-family: var(--font-mono); font-size: 0.75rem; min-height: 1.6em; color: var(--ink-2); }
+.strip button:hover, .strip button:focus-visible { flex-grow: 8; outline: none; }
+.readout { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); min-height: 1.5em; }
 .readout b { color: var(--ink); font-weight: 500; }
 
-/* ---------- secciones ---------- */
-section.block { padding-block: clamp(56px, 8vw, 104px); }
-.block h2 { font-size: var(--step-3); line-height: 1.02; font-weight: 700; font-variation-settings: "wdth" 82, "opsz" 72; letter-spacing: -0.03em; }
-.block .intro { margin-top: 14px; color: var(--ink-2); max-width: 60ch; font-size: var(--step-1); }
+/* ---------- prompts ---------- */
+.prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .prompts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .prompts { grid-template-columns: minmax(0, 1fr); } }
+.prompt { border: 1px solid var(--line); border-radius: 20px; padding: 20px; display: grid; gap: 28px; align-content: space-between; min-height: 168px; background: var(--bg); }
+.prompt .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.prompt .row span { font-family: var(--mono); font-size: 0.6875rem; color: var(--muted); overflow-wrap: anywhere; }
+.icon-btn { border: 0; background: var(--soft); color: var(--ink); border-radius: 999px; padding: 7px 12px; font: 500 0.75rem/1 var(--font); cursor: pointer; flex: none; }
+.icon-btn:hover { background: var(--soft-2); }
 
-/* comparación */
-.compare { margin-top: 36px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--sheet); }
-@media (max-width: 720px) { .compare { grid-template-columns: minmax(0, 1fr); } }
-.compare > div { padding: 24px; display: grid; gap: 14px; align-content: start; }
-.compare > div + div { border-left: 1px solid var(--rule); }
-@media (max-width: 720px) { .compare > div + div { border-left: 0; border-top: 1px solid var(--rule); } }
-.compare h3 { font-size: var(--step-1); font-weight: 600; font-variation-settings: "wdth" 90; }
-.compare pre { margin: 0; padding: 14px; border-radius: 10px; background: var(--paper); font-size: 0.6875rem; line-height: 1.6; overflow-x: auto; }
-.compare ul { margin: 0; padding-left: 1.1em; color: var(--ink-2); font-size: var(--step--1); display: grid; gap: 4px; }
+/* ---------- cómo se diseñó ---------- */
+.made { background: var(--soft); border-radius: 36px; padding: clamp(24px, 5vw, 64px); }
+.made blockquote { margin: 0; font-size: clamp(1.6rem, 3.6vw, 2.6rem); line-height: 1.12; letter-spacing: -0.035em; font-weight: 600; max-width: 24ch; }
+.made .calls { margin-top: 36px; display: grid; }
+.made .call { display: grid; grid-template-columns: 2rem minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; padding-block: 16px; border-top: 1px solid var(--line); font-size: 0.9375rem; }
+@media (max-width: 760px) { .made .call { grid-template-columns: 1.6rem minmax(0, 1fr); } .made .call .a { grid-column: 2; } }
+.made .call .n { font-family: var(--mono); color: var(--muted); }
+.made .call code { font-size: 0.8125rem; display: block; overflow-wrap: anywhere; }
+.made .call .q { color: var(--muted); font-size: 0.875rem; margin-top: 3px; }
 
-/* tools */
-.jobs { margin-top: 40px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--ink); }
-@media (max-width: 980px) { .jobs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .jobs { grid-template-columns: minmax(0, 1fr); } }
-.job { padding: 18px 18px 22px 0; display: grid; gap: 14px; align-content: start; }
-.job + .job { padding-left: 18px; border-left: 1px solid var(--rule); }
-@media (max-width: 980px) { .job:nth-child(3) { border-left: 0; padding-left: 0; } .job { border-bottom: 1px solid var(--rule); } }
-@media (max-width: 560px) { .job + .job { border-left: 0; padding-left: 0; } }
-.job h3 { font-size: var(--step-2); font-weight: 600; font-variation-settings: "wdth" 85; }
-.tool { display: grid; gap: 2px; }
-.tool code { font-size: 0.75rem; font-weight: 500; }
-.tool span { font-size: var(--step--1); color: var(--ink-2); line-height: 1.45; }
+/* ---------- instalar ---------- */
+.steps { display: grid; margin-top: 8px; }
+.step { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 18px; position: relative; padding-bottom: 36px; }
+.step::before { content: ""; position: absolute; left: 10px; top: 24px; bottom: 0; width: 1px; background: var(--line); }
+.step:last-child::before { display: none; }
+.step .dot { width: 21px; height: 21px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--bg); margin-top: 1px; }
+.step small { font-size: 0.8125rem; color: var(--muted); }
+.step h3 { font-size: 1.1875rem; margin-top: 2px; letter-spacing: -0.02em; }
+.step .body { display: grid; gap: 12px; margin-top: 8px; min-width: 0; }
+.step .body > p { color: var(--muted); }
+.step .body code { font-size: 0.8125rem; background: var(--soft); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+.tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tools button { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 14px; padding: 14px 10px; font: 500 0.875rem/1.2 var(--font); cursor: pointer; }
+.tools button:hover { background: var(--soft); }
+.tools button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.snippet { position: relative; background: var(--code-bg); color: var(--code-fg); border-radius: 14px; min-width: 0; }
+.snippet .file { display: block; padding: 12px 16px 0; font: 400 0.75rem/1.4 var(--mono); color: var(--code-dim); overflow-wrap: anywhere; }
+.snippet pre { margin: 0; padding: 14px 96px 16px 16px; overflow-x: auto; font-size: 0.8125rem; line-height: 1.65; }
+.snippet .icon-btn { position: absolute; top: 10px; right: 10px; background: color-mix(in oklab, var(--code-fg) 14%, transparent); color: var(--code-fg); }
+.note { color: var(--muted); font-size: 0.875rem; }
+.note code { font-size: 0.8125rem; background: var(--soft); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
 
-/* cómo se diseñó */
-.log { margin-top: 40px; display: grid; gap: 0; border-top: 1px solid var(--rule); }
-.call { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; padding-block: 22px; border-bottom: 1px solid var(--rule); }
-@media (max-width: 820px) { .call { grid-template-columns: 2.4rem minmax(0, 1fr); } .call .ans { grid-column: 2; } }
-.call .n { font: 700 var(--step-2)/1 var(--font-display); font-variation-settings: "wdth" 75; color: var(--ink-2); }
-.call code { font-size: 0.75rem; display: block; margin-bottom: 6px; overflow-wrap: anywhere; }
-.call p { font-size: var(--step--1); color: var(--ink-2); }
-.ans { font-size: var(--step--1); }
-.ans .seq { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-.ans .seq span { font-family: var(--font-mono); font-size: 0.6875rem; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 9px; background: var(--sheet); }
+/* ---------- faq ---------- */
+.faq { display: grid; gap: 10px; }
+.faq details { background: var(--soft); border-radius: 16px; padding: 18px 22px; }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; font-weight: 500; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; width: 9px; height: 9px; border-right: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); transform: rotate(45deg); margin-top: 4px; flex: none; transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(225deg); margin-top: 9px; }
+.faq details p { margin-top: 12px; color: var(--muted); max-width: 60ch; }
+.faq code { font-size: 0.8125rem; }
 
-/* instalar */
-.install { margin-top: 36px; border: 1px solid var(--rule); border-radius: 14px; background: var(--sheet); overflow: hidden; }
-.tabs { display: flex; gap: 2px; padding: 8px; border-bottom: 1px solid var(--rule); overflow-x: auto; scrollbar-width: thin; }
-.tabs button {
-  flex: none; border: 0; background: transparent; color: var(--ink-2); cursor: pointer;
-  font: 500 var(--step--1)/1 var(--font-body); padding: 9px 13px; border-radius: 8px;
-}
-.tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
-.tabs button:not([aria-selected="true"]):hover { color: var(--ink); background: var(--paper); }
-.panel { padding: 22px; display: grid; gap: 16px; }
-.panel p { color: var(--ink-2); font-size: var(--step--1); max-width: 72ch; }
-.panel p code { font-size: 0.75em; background: var(--paper); padding: 1px 5px; border-radius: 4px; color: var(--ink); }
-.snippet { position: relative; background: var(--code-bg); color: var(--code-fg); border-radius: 10px; }
-.snippet pre { margin: 0; padding: 16px 92px 16px 16px; overflow-x: auto; font-size: 0.75rem; line-height: 1.65; }
-.snippet .copy { position: absolute; top: 10px; right: 10px; }
-.snippet .file { display: block; padding: 10px 16px 0; font: 400 0.6875rem/1.4 var(--font-mono); color: var(--code-dim); }
-.reqs { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: var(--step--1); color: var(--ink-2); }
-.reqs b { color: var(--ink); font-weight: 600; }
-
-/* faq */
-.faq { margin-top: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
-@media (max-width: 760px) { .faq { grid-template-columns: minmax(0, 1fr); } }
-.faq details { border-top: 1px solid var(--rule); padding-block: 16px; }
-.faq summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
-.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--ink-2); }
-.faq details[open] summary::after { content: "–"; }
-.faq details p { margin-top: 10px; color: var(--ink-2); font-size: var(--step--1); max-width: 60ch; }
-
-/* cierre */
-.closing { border-top: 1px solid var(--rule); background: var(--sheet); }
-.closing .wrap { padding-block: clamp(56px, 8vw, 96px); display: grid; gap: 22px; justify-items: start; }
-.closing h2 { font-size: var(--step-3); font-weight: 700; font-variation-settings: "wdth" 80, "opsz" 72; letter-spacing: -0.03em; line-height: 1; max-width: 18ch; }
-footer.site { border-top: 1px solid var(--rule); }
-footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; font-size: var(--step--1); color: var(--ink-2); }
-.num { font-variant-numeric: tabular-nums; }
+/* ---------- cierre ---------- */
+.closing { padding-block: clamp(80px, 12vw, 140px); }
+.closing h2 { font-size: clamp(2.2rem, 5.6vw, 4.25rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 650; }
+.closing .ctas { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+footer.site { border-top: 1px solid var(--line); }
+footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 28px; font-size: 0.875rem; color: var(--muted); }
 </style>
 </head>
 <body>
 
 <header class="bar">
   <div class="wrap">
-    <a class="wordmark" href="#top" aria-label="Matiz, inicio"><i aria-hidden="true"></i>Matiz</a>
+    <a class="logo" href="#top"><i aria-hidden="true"></i>Matiz</a>
     <nav aria-label="Secciones">
-      <a href="#que-hace">Qué hace</a>
-      <a href="#herramientas">Herramientas</a>
-      <a href="#como-se-diseno">Cómo se diseñó</a>
-      <a class="keep" href="#instalar">Instalar</a>
-      <a class="keep" href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a href="#demo">Cómo funciona</a>
+      <a href="#datos">Herramientas</a>
+      <a href="#instalar">Instalar</a>
+      <a href="#preguntas">Preguntas</a>
     </nav>
+    <div class="right">
+      <a class="gh" href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ink" href="#instalar">Conectar MCP</a>
+    </div>
   </div>
 </header>
 
 <main id="top">
-  <section class="hero">
+  <section class="hero center">
     <div class="wrap">
-      <div>
-        <p class="label">Servidor MCP · referencias de diseño</p>
-        <h1 style="margin-top:16px">Deja de diseñar <em>desde cero.</em></h1>
-        <p class="lede">Matiz le da a tu agente referencias que puede medir: colores con su rol, tipografía, radios y el orden de las secciones de sitios reales, listos para construir en Claude, Codex o Cursor. La imagen viene incluida.</p>
-        <div class="actions">
-          <div class="cmd"><span id="hero-cmd"><b>$</b> npx -y <span data-pkg></span></span><button class="copy" type="button" data-copy-from="hero-cmd">Copiar</button></div>
-          <a class="ghost" href="#instalar">Instalar en tu cliente →</a>
-        </div>
-        <p class="note">Sin cuenta ni API key. Node 22.13 o superior.</p>
+      <span class="pill"><i aria-hidden="true"></i>MCP de diseño · sin cuenta ni API key</span>
+      <h1 id="hero-title">Referencias de diseño que tu agente puede medir</h1>
+      <p class="sub" id="hero-sub">Colores con su rol, tipografía real, composición y DESIGN.md de sitios reales, listos para Claude, Codex o Cursor.</p>
+      <div class="ctas">
+        <a class="btn btn-ink" href="#instalar">Conectar MCP</a>
+        <a class="btn btn-soft" href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">Ver en GitHub →</a>
       </div>
-      <figure class="spec" id="spec" style="margin:0" aria-label="Ejemplo de lo que devuelve Matiz">
-        <header><span>get_reference</span><span id="spec-host"></span></header>
-        <div class="chips" id="spec-chips"></div>
-        <dl id="spec-dl"></dl>
-        <footer id="spec-foot"></footer>
-      </figure>
-    </div>
-  </section>
-
-  <section class="spectrum" aria-labelledby="spectrum-title">
-    <div class="wrap">
-      <div class="head">
-        <h2 id="spectrum-title" class="label" style="font-family:var(--font-mono);font-size:0.6875rem;letter-spacing:0.08em">El acento de cada marca del corpus, medido y ordenado por tono</h2>
-        <p>Cada franja es el color de acción de un sitio real, leído de sus estilos calculados en el navegador. Pasa el cursor para ver cuál.</p>
+      <div class="works" aria-label="Clientes compatibles">
+        <span>Funciona con</span><span>Claude Code</span><span>Codex</span><span>Cursor</span><span>VS Code</span><span>Gemini CLI</span><span>Windsurf</span><span>Zed</span>
       </div>
-      <div class="strip" id="strip" role="group" aria-label="Acentos medidos"></div>
-      <p class="readout" id="readout" aria-live="polite"></p>
-    </div>
-  </section>
 
-  <section class="block" id="que-hace">
-    <div class="wrap">
-      <p class="label">Qué hace distinto</p>
-      <h2 style="margin-top:12px">Una galería te da una imagen.<br>Matiz te da el diseño.</h2>
-      <p class="intro">Las galerías de referencias muestran capturas. Tu agente tiene que adivinar los valores mirando un JPEG. Matiz los mide en el sitio en vivo y te dice por qué clasificó cada sección como la clasificó.</p>
-      <div class="compare">
-        <div>
-          <h3>Lo que devuelve una galería</h3>
-<pre>{
-  "id": "5892cb8f-…",
-  "image_url": "https://…/short/ThAe5vpo",
-  "site_name": "Homerun"
-}</pre>
-          <ul><li>Imagen y nombre.</li><li>El link a la imagen vence.</li><li>Colores, tipografía y estructura: a ojo.</li></ul>
-        </div>
-        <div>
-          <h3>Lo que devuelve Matiz</h3>
-<pre id="matiz-json"></pre>
-          <ul><li>Paleta con rol, tipografía real y equivalente libre.</li><li>Cada sección con su tipo y su motivo.</li><li>Exportable a DESIGN.md y a tokens W3C.</li></ul>
+      <div class="stage" id="demo">
+        <div class="window">
+          <div class="dots" aria-hidden="true"><b></b><b></b><b></b></div>
+          <div class="chat">
+            <div class="me"><span>Tú</span><p>Diseña la página de precios de mi app de facturación</p></div>
+            <div class="agent">
+              <div class="who"><i aria-hidden="true"></i>Claude Code</div>
+              <p>Antes de escribir código busco páginas de precios reales en Matiz.</p>
+              <p class="used">Usó matiz · search_references { page: "pricing" }</p>
+              <p id="demo-said">Estas tres cubren tema oscuro, serif y sans. Tomo sus medidas:</p>
+            </div>
+          </div>
+          <div class="results" id="results"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="block" id="herramientas" style="padding-top:0">
+  <section class="problem center">
+    <div class="narrow">
+      <h2>Los agentes ya escriben código. <span>Pero no saben qué funciona en diseño. Adivinan, y se nota.</span> Matiz les da referencias medidas.</h2>
+    </div>
+  </section>
+
+  <section class="block" id="datos" style="padding-top:0">
     <div class="wrap">
-      <p class="label">13 herramientas</p>
-      <h2 style="margin-top:12px">Para buscar, decidir, construir y revisar.</h2>
-      <div class="jobs">
-        <div class="job">
-          <h3>Buscar</h3>
-          <div class="tool"><code>search_references</code><span>Sitios o secciones (hero, pricing, faq…) en español o inglés, filtrables por tema, industria, página y móvil.</span></div>
-          <div class="tool"><code>get_reference</code><span>Todo lo medido de un sitio o sección, con su imagen.</span></div>
-          <div class="tool"><code>find_similar</code><span>Sitios parecidos y en qué se parecen.</span></div>
-          <div class="tool"><code>search_design_md</code><span>DESIGN.md abiertos de sistemas de marca.</span></div>
-        </div>
-        <div class="job">
-          <h3>Decidir</h3>
-          <div class="tool"><code>get_composition</code><span>Qué secciones lleva una página de tu industria y en qué orden, con la frecuencia real.</span></div>
-          <div class="tool"><code>suggest_palettes</code><span>Paletas reales con roles y escala 50–950.</span></div>
-          <div class="tool"><code>suggest_type_pairings</code><span>Pares tipográficos en uso y su alternativa libre.</span></div>
-        </div>
-        <div class="job">
-          <h3>Construir</h3>
-          <div class="tool"><code>get_design_md</code><span>El sistema visual de una referencia como DESIGN.md o tokens DTCG.</span></div>
-          <div class="tool"><code>capture_site</code><span>Agrega cualquier sitio público al corpus en unos segundos.</span></div>
-          <div class="tool"><code>corpus_stats</code><span>Qué hay disponible para pedir.</span></div>
-        </div>
-        <div class="job">
-          <h3>Revisar</h3>
-          <div class="tool"><code>critique_against_reference</code><span>Mide tu página (también en localhost) contra la referencia: contraste, tipografía, forma y secciones que faltan.</span></div>
-          <div class="tool"><code>remember_taste</code><span>Guarda lo que te gustó y tus reglas por proyecto.</span></div>
-          <div class="tool"><code>get_taste</code><span>El perfil de gusto que reordena las búsquedas.</span></div>
-        </div>
+      <div class="section-head">
+        <h2>Datos para construir, no solo imágenes</h2>
+        <p>Cada referencia llega medida en el navegador. Tu agente lee el plano antes de mirar la captura.</p>
+      </div>
+      <div class="bento">
+        <article class="card">
+          <div class="visual meta-table" id="meta-visual"></div>
+          <div class="txt"><h3>Hecho para agentes</h3><p>Cada sección llega con su tipo, sus medidas y el motivo de la clasificación. Nada de adivinar mirando un JPEG.</p></div>
+        </article>
+        <article class="card">
+          <div class="visual"><div class="bars" id="bars"></div></div>
+          <div class="txt"><h3>La composición como dato</h3><p id="bars-txt">Qué secciones lleva una página de tu industria y con qué frecuencia, contado sobre sitios reales.</p></div>
+        </article>
+        <article class="card">
+          <div class="visual"><div id="fonts"></div></div>
+          <div class="txt"><h3>Cada fuente con su alternativa libre</h3><p>Las referencias usan tipografías comerciales. Matiz te dice cuál de Google Fonts usar en su lugar.</p></div>
+        </article>
+        <article class="card">
+          <div class="visual"><div class="finds" id="finds"></div></div>
+          <div class="txt"><h3>Revisa tu build contra la referencia</h3><p id="finds-txt">Mide tu página, también en localhost, y te dice qué corregir con los valores de los dos lados.</p></div>
+        </article>
+        <article class="card wide">
+          <div class="txt"><h3>El acento de cada marca, medido</h3><p>Cada franja es el color de acción de un sitio del corpus, ordenado por tono. Pasa el cursor para ver cuál.</p></div>
+          <div style="display:grid;gap:10px">
+            <div class="strip" id="strip" role="group" aria-label="Acentos medidos"></div>
+            <p class="readout" id="readout" aria-live="polite"></p>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="block" id="como-se-diseno" style="border-top:1px solid var(--rule)">
+  <section class="block" style="padding-top:0">
     <div class="wrap">
-      <p class="label">Esta página la diseñó Matiz</p>
-      <h2 style="margin-top:12px">Cinco llamadas antes de escribir una línea de CSS.</h2>
-      <p class="intro">Estas son las consultas reales que se hicieron para decidir la estructura, la tipografía y el tono de esta página, en este orden.</p>
-      <div class="log" id="log"></div>
+      <div class="section-head">
+        <h2>Pregúntale lo que sea</h2>
+        <p>Copia un prompt y pruébalo en tu agente.</p>
+      </div>
+      <div class="prompts" id="prompts"></div>
     </div>
   </section>
 
-  <section class="block" id="instalar" style="border-top:1px solid var(--rule)">
+  <section class="block" style="padding-top:0">
     <div class="wrap">
-      <p class="label">Instalar</p>
-      <h2 style="margin-top:12px">Elige tu cliente y pega una línea.</h2>
-      <p class="intro">La primera vez, Matiz trae su corpus y lo deja listo en tu máquina. Chromium se descarga solo cuando haga falta capturar un sitio.</p>
-      <div class="install">
-        <div class="tabs" role="tablist" aria-label="Cliente" id="tabs"></div>
-        <div class="panel" role="tabpanel" id="panel" tabindex="0"></div>
-      </div>
-      <div class="reqs">
-        <span><b>Node.js 22.13+</b> (usa SQLite nativo)</span>
-        <span><b>Datos</b> en <code class="mono">~/.matiz</code>, cámbialo con <code class="mono">MATIZ_HOME</code></span>
-        <span><b>Opcional:</b> <code class="mono">npx -y <span data-pkg></span> init --images</code> baja todas las capturas</span>
+      <div class="made">
+        <p class="pill" style="margin-bottom:22px">Esta página la diseñó Matiz</p>
+        <blockquote>Capturamos las páginas de Mobbin y Refero con Matiz y diseñamos esta a partir de sus medidas.</blockquote>
+        <div class="calls" id="calls"></div>
       </div>
     </div>
   </section>
 
-  <section class="block" style="border-top:1px solid var(--rule)">
-    <div class="wrap">
-      <p class="label">Preguntas</p>
-      <h2 style="margin-top:12px">Lo que se pregunta antes de instalar.</h2>
+  <section class="block" id="instalar" style="padding-top:0">
+    <div class="narrow">
+      <div class="section-head" style="justify-items:start;text-align:left;margin-bottom:28px">
+        <span class="pill">Sin cuenta · sin API key</span>
+        <h2>Listo en un minuto</h2>
+        <p>Una línea de configuración y tu agente puede buscar, comparar y medir referencias en cada tarea.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="dot"></span><div><small>Paso 1</small><h3>Ten Node.js 22.13 o superior</h3><div class="body"><p>Matiz usa el SQLite que trae Node. Revisa tu versión con <code>node -v</code>.</p></div></div></div>
+        <div class="step"><span class="dot"></span><div><small>Paso 2</small><h3>Conecta tu herramienta</h3><div class="body"><div class="tools" id="tools" role="group" aria-label="Cliente"></div><div id="tool-panel" style="display:grid;gap:12px"></div></div></div></div>
+        <div class="step"><span class="dot"></span><div><small>Paso 3</small><h3>Reinicia tu cliente</h3><div class="body"><p>La primera vez Matiz deja su corpus en tu máquina en menos de un segundo. Chromium se descarga solo cuando haga falta capturar un sitio.</p></div></div></div>
+        <div class="step"><span class="dot"></span><div><small>Paso 4</small><h3>Pruébalo</h3><div class="body"><p>Pídele a tu agente: “Busca páginas de precios con 3 planes y dime qué tienen en común”.</p></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="preguntas" style="padding-top:0">
+    <div class="narrow">
+      <div class="section-head"><h2>Preguntas frecuentes</h2></div>
       <div class="faq">
-        <details><summary>¿De dónde salen las referencias?</summary><p>De sitios públicos que Matiz abre con un navegador y mide. No copia catálogos de servicios de pago. Las capturas viven solo en tu máquina, y cada resultado cita la URL original.</p></details>
-        <details><summary>¿Necesito cuenta o API key?</summary><p>No. Matiz corre local. Tu cliente (Claude, Codex, Cursor…) es el que usa su propio modelo.</p></details>
-        <details><summary>¿Qué tan exacto es?</summary><p id="faq-acc">Los colores, tamaños y tracking se leen directo del navegador, así que son exactos. El tipo de cada sección es una clasificación, y medimos su exactitud contra secciones etiquetadas a ciegas.</p></details>
-        <details><summary>¿Puedo agregar los sitios que me gustan?</summary><p>Sí. Pídele a tu agente <code class="mono">capture_site</code> con la URL, o corre <code class="mono">npx -y <span data-pkg></span> capture https://…</code>.</p></details>
-        <details><summary>¿Funciona sin internet?</summary><p>Buscar, comparar y exportar funcionan offline. Capturar sitios nuevos y criticar una URL necesitan red.</p></details>
-        <details><summary>¿Y en Windows?</summary><p>Funciona con Node 22.13+. Si tu cliente no encuentra <code class="mono">npx</code>, usa <code class="mono">cmd</code> como comando y <code class="mono">/c npx -y …</code> como argumentos.</p></details>
+        <details><summary>¿Qué es un MCP de diseño?</summary><p>Un servidor que tu agente (Claude, Codex, Cursor…) puede llamar mientras trabaja. Matiz le responde con referencias de diseño medidas en vez de dejarlo adivinar.</p></details>
+        <details><summary>¿En qué se diferencia de Mobbin o Refero?</summary><p>Mobbin y Refero son catálogos curados enormes, con apps de iOS y flujos completos. Matiz mide sitios web públicos: te da tokens, composición, alternativas libres y la revisión de tu build, corre en tu máquina y es gratis. Se pueden usar juntos.</p></details>
+        <details><summary>¿De dónde salen las referencias?</summary><p>De sitios públicos que Matiz abre con un navegador y mide. No copia catálogos de servicios de pago. Las capturas se guardan solo en tu máquina, y cada resultado cita la URL original.</p></details>
+        <details><summary>¿Qué tan exacto es?</summary><p id="faq-acc">Colores, tamaños, tracking y radios se leen directo del navegador. El tipo de cada sección es una clasificación, y medimos su exactitud contra secciones etiquetadas a ciegas.</p></details>
+        <details><summary>¿Puedo agregar los sitios que me gustan?</summary><p>Sí. Pídele a tu agente <code>capture_site</code> con la URL, o corre <code>npx -y <span data-pkg></span> capture https://…</code>.</p></details>
+        <details><summary>¿Funciona sin internet?</summary><p>Buscar, comparar y exportar funcionan offline. Capturar sitios nuevos y revisar una URL necesitan red.</p></details>
+        <details><summary>¿Y en Windows?</summary><p>Funciona con Node 22.13+. Si tu cliente no encuentra <code>npx</code>, usa <code>cmd</code> como comando y <code>/c npx -y …</code> como argumentos.</p></details>
       </div>
     </div>
   </section>
 
-  <section class="closing">
+  <section class="closing center">
     <div class="wrap">
-      <h2>Tu próxima página empieza con referencias medidas.</h2>
-      <div class="cmd"><span id="close-cmd"><b>$</b> claude mcp add matiz -s user -- npx -y <span data-pkg></span></span><button class="copy" type="button" data-copy-from="close-cmd">Copiar</button></div>
+      <h2>Diseña con referencias,<br>no con suposiciones.</h2>
+      <div class="ctas">
+        <a class="btn btn-ink" href="#instalar">Conectar MCP</a>
+        <a class="btn btn-soft" href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">Ver en GitHub →</a>
+      </div>
     </div>
   </section>
 </main>
@@ -370,7 +394,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; gap: 10
 <footer class="site">
   <div class="wrap">
     <span>Matiz · MIT · hecho por <a href="https://github.com/ruloCode" target="_blank" rel="noopener">RuloCode</a></span>
-    <span class="num" id="foot-stats"></span>
+    <span id="foot-stats" style="font-variant-numeric:tabular-nums"></span>
     <a href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">github.com/ruloCode/matiz-mcp</a>
   </div>
 </footer>
@@ -378,69 +402,102 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; gap: 10
 <script>
 (() => {
   // Datos reales del corpus, inyectados por `pnpm build:site`.
-  const D = {"generated":"2026-10-09","brands":158,"pages":216,"mobile":152,"sections":5179,"designDocs":141,"accuracy":64.3,"evalN":140,"spectrum":[{"hex":"#D11F68","host":"wellfound.com"},{"hex":"#A3004C","host":"huggingface.co"},{"hex":"#F8375A","host":"airbnb.com"},{"hex":"#F56565","host":"raggededge.com"},{"hex":"#C42121","host":"givingli.com"},{"hex":"#F65C4F","host":"inngest.com"},{"hex":"#4A0A05","host":"incommonwith.com"},{"hex":"#FA4028","host":"jasper.ai"},{"hex":"#EA2804","host":"replicate.com"},{"hex":"#FF3008","host":"merchants.doordash.com"},{"hex":"#78392B","host":"assemblycoffee.co.uk"},{"hex":"#F25533","host":"incident.io"},{"hex":"#FF3D00","host":"brex.com"},{"hex":"#FF5229","host":"mistral.ai"},{"hex":"#E8400D","host":"amplemarket.com"},{"hex":"#FF4C00","host":"firecrawl.dev"},{"hex":"#FF4D00","host":"basement.studio"},{"hex":"#F35815","host":"planetscale.com"},{"hex":"#DE4C00","host":"aboard.com"},{"hex":"#863D1C","host":"customer.io"},{"hex":"#FDC298","host":"coda.io"},{"hex":"#945C26","host":"aesop.com"},{"hex":"#FFBB74","host":"beside.com"},{"hex":"#CD8407","host":"posthog.com"},{"hex":"#FFAA00","host":"rivian.com"},{"hex":"#F3B01C","host":"convex.dev"},{"hex":"#E7C878","host":"charma.io"},{"hex":"#FFD863","host":"gofundme.com"},{"hex":"#FFF2B7","host":"maximatherapy.com"},{"hex":"#FFDD00","host":"freitag.ch"},{"hex":"#FFF65D","host":"robot.com"},{"hex":"#FFFA56","host":"honeybook.com"},{"hex":"#EEF17C","host":"warp.dev"},{"hex":"#ECF956","host":"theleap.co"},{"hex":"#E4F222","host":"ramp.com"},{"hex":"#E4F222","host":"linear.app"},{"hex":"#E6FF32","host":"teachable.com"},{"hex":"#5B6F00","host":"granola.ai"},{"hex":"#4F6814","host":"komoot.com"},{"hex":"#C1FF00","host":"lusion.co"},{"hex":"#C4EE87","host":"pitch.com"},{"hex":"#9FE870","host":"wise.com"},{"hex":"#D3FFC3","host":"trawelt.com"},{"hex":"#58CC02","host":"duolingo.com"},{"hex":"#71FF19","host":"rive.app"},{"hex":"#86EA63","host":"clara.com"},{"hex":"#ABE3AA","host":"oysterhr.com"},{"hex":"#297A3A","host":"vercel.com"},{"hex":"#29CC57","host":"brilliant.org"},{"hex":"#349E54","host":"oku.club"},{"hex":"#9BD8A9","host":"craft.do"},{"hex":"#09E989","host":"platzi.com"},{"hex":"#0B7443","host":"fruitful.com"},{"hex":"#009959","host":"grain.com"},{"hex":"#70FFAF","host":"deno.com"},{"hex":"#0E7E4E","host":"supabase.com"},{"hex":"#00C27A","host":"mural.co"},{"hex":"#36F4A4","host":"shopify.com"},{"hex":"#34D59A","host":"neon.com"},{"hex":"#34785C","host":"cursor.com"},{"hex":"#00FCC1","host":"kushkipagos.com"},{"hex":"#ADEEDA","host":"maze.co"},{"hex":"#61DAFB","host":"astro.build"},{"hex":"#8CD6FF","host":"raycast.com"},{"hex":"#265974","host":"nothing.tech"},{"hex":"#005F86","host":"current.com"},{"hex":"#006399","host":"plane.so"},{"hex":"#00A3FF","host":"resend.com"},{"hex":"#5C85A8","host":"structured.app"},{"hex":"#0071BB","host":"teenage.engineering"},{"hex":"#0099FF","host":"framer.com"},{"hex":"#0099FF","host":"cal.com"},{"hex":"#91BEEB","host":"paraform.com"},{"hex":"#9ECBFF","host":"sentry.io"},{"hex":"#518DD2","host":"retool.com"},{"hex":"#0C2D54","host":"calendly.com"},{"hex":"#4586DA","host":"vizcom.com"},{"hex":"#0071E3","host":"apple.com"},{"hex":"#0071EB","host":"getyourguide.com"},{"hex":"#0077FF","host":"shuttle.zip"},{"hex":"#0550AE","host":"twenty.com"},{"hex":"#1F7CFF","host":"clickup.com"},{"hex":"#3483FA","host":"mercadopago.com.co"},{"hex":"#2A72DE","host":"ouraring.com"},{"hex":"#1868DB","host":"atlassian.com"},{"hex":"#1868DB","host":"loom.com"},{"hex":"#4F91FB","host":"culturedcode.com"},{"hex":"#052F70","host":"elevenlabs.io"},{"hex":"#146EF5","host":"webflow.com"},{"hex":"#1F65D6","host":"xero.com"},{"hex":"#0056D2","host":"coursera.org"},{"hex":"#006AFF","host":"squareup.com"},{"hex":"#0061EF","host":"headspace.com"},{"hex":"#145FE4","host":"1password.com"},{"hex":"#0062FF","host":"spline.design"},{"hex":"#266DF0","host":"attio.com"},{"hex":"#0061FE","host":"dropbox.com"},{"hex":"#0057FF","host":"laravel.com"},{"hex":"#0055FF","host":"sanalabs.com"},{"hex":"#2563EB","host":"dub.co"},{"hex":"#002991","host":"paypal.com"},{"hex":"#71A0FF","host":"patreon.com"},{"hex":"#0044FF","host":"dovetail.com"},{"hex":"#0000FF","host":"base.org"},{"hex":"#0000EE","host":"classpass.com"},{"hex":"#0000EE","host":"sketch.com"},{"hex":"#0600FF","host":"glossier.com"},{"hex":"#1E52F1","host":"lovable.dev"},{"hex":"#1644FF","host":"belvo.com"},{"hex":"#4B72F3","host":"pampam.city"},{"hex":"#3859FF","host":"miro.com"},{"hex":"#121E6C","host":"bold.co"},{"hex":"#2B22FA","host":"runway.com"},{"hex":"#3950E6","host":"base44.com"},{"hex":"#090C43","host":"allbirds.com"},{"hex":"#2F39BA","host":"beehiiv.com"},{"hex":"#2702C2","host":"arc.net"},{"hex":"#5266EB","host":"mercury.com"},{"hex":"#4823FF","host":"cakeequity.com"},{"hex":"#6161FF","host":"monday.com"},{"hex":"#533AFD","host":"stripe.com"},{"hex":"#6363F1","host":"workos.com"},{"hex":"#4B47A7","host":"sequencehq.com"},{"hex":"#6248F6","host":"clerk.com"},{"hex":"#5423E7","host":"lemonsqueezy.com"},{"hex":"#7064F2","host":"featurebase.app"},{"hex":"#473982","host":"hex.tech"},{"hex":"#201148","host":"deel.com"},{"hex":"#7C3AED","host":"fly.io"},{"hex":"#542F9C","host":"tines.com"},{"hex":"#423763","host":"phantom.com"},{"hex":"#D4C7FF","host":"superhuman.com"},{"hex":"#A981FF","host":"jitter.video"},{"hex":"#553F83","host":"railway.com"},{"hex":"#8A05FF","host":"render.com"},{"hex":"#8D0DE3","host":"nubank.com.br"},{"hex":"#B26BF5","host":"passionfroot.me"},{"hex":"#CB9FD2","host":"figma.com"},{"hex":"#FF00F4","host":"relume.ai"},{"hex":"#FF37C7","host":"app.uniswap.org"},{"hex":"#33001F","host":"mixpanel.com"},{"hex":"#FF82C2","host":"epidemicsound.com"},{"hex":"#F6339A","host":"tailwindcss.com"},{"hex":"#772A4D","host":"descript.com"},{"hex":"#FF1F8F","host":"bun.sh"}],"sample":{"url":"https://incident.io/","host":"incident.io","theme":"light","background":"#F1EBE2","text":"#000000","accent":"#F25533","accent2":"#FEBC2E","display":{"family":"STKBureauSerif","size":80,"ls":-0.04,"lh":1},"body":{"family":"STKBureauSans","size":18},"freeDisplay":"Fraunces","radius":6,"pill":true,"sequence":["banner","navbar","cta","feature-split","testimonials","content","features","content","features","cta","features","cta","footer"]}} || { spectrum: [], brands: 0, pages: 0, mobile: 0, sections: 0, designDocs: 0 };
+  const D = {"generated":"2026-10-09","brands":163,"pages":604,"mobile":152,"sections":9540,"designDocs":141,"accuracy":48.5,"evalN":130,"evalHoldout":true,"spectrum":[{"hex":"#D11F68","host":"wellfound.com"},{"hex":"#A3004C","host":"huggingface.co"},{"hex":"#F8375A","host":"airbnb.com"},{"hex":"#F56565","host":"raggededge.com"},{"hex":"#C42121","host":"givingli.com"},{"hex":"#F65C4F","host":"inngest.com"},{"hex":"#4A0A05","host":"incommonwith.com"},{"hex":"#FA4028","host":"jasper.ai"},{"hex":"#EA2804","host":"replicate.com"},{"hex":"#FF3008","host":"merchants.doordash.com"},{"hex":"#78392B","host":"assemblycoffee.co.uk"},{"hex":"#F25533","host":"incident.io"},{"hex":"#FF3D00","host":"brex.com"},{"hex":"#FF5229","host":"mistral.ai"},{"hex":"#E8400D","host":"amplemarket.com"},{"hex":"#FF4C00","host":"firecrawl.dev"},{"hex":"#FF4D00","host":"basement.studio"},{"hex":"#F35815","host":"planetscale.com"},{"hex":"#DE4C00","host":"aboard.com"},{"hex":"#863D1C","host":"customer.io"},{"hex":"#FDC298","host":"coda.io"},{"hex":"#945C26","host":"aesop.com"},{"hex":"#E49E58","host":"refero.design"},{"hex":"#FFBB74","host":"beside.com"},{"hex":"#CD8407","host":"posthog.com"},{"hex":"#FFAA00","host":"rivian.com"},{"hex":"#F3B01C","host":"convex.dev"},{"hex":"#E7C878","host":"charma.io"},{"hex":"#FFD863","host":"gofundme.com"},{"hex":"#FFF2B7","host":"maximatherapy.com"},{"hex":"#FFDD00","host":"freitag.ch"},{"hex":"#FFF65D","host":"robot.com"},{"hex":"#FFFA56","host":"honeybook.com"},{"hex":"#EEF17C","host":"warp.dev"},{"hex":"#ECF956","host":"theleap.co"},{"hex":"#E4F222","host":"ramp.com"},{"hex":"#E4F222","host":"linear.app"},{"hex":"#E6FF32","host":"teachable.com"},{"hex":"#5B6F00","host":"granola.ai"},{"hex":"#4F6814","host":"komoot.com"},{"hex":"#C1FF00","host":"lusion.co"},{"hex":"#C4EE87","host":"pitch.com"},{"hex":"#9FE870","host":"wise.com"},{"hex":"#D3FFC3","host":"trawelt.com"},{"hex":"#58CC02","host":"duolingo.com"},{"hex":"#71FF19","host":"rive.app"},{"hex":"#86EA63","host":"clara.com"},{"hex":"#ABE3AA","host":"oysterhr.com"},{"hex":"#297A3A","host":"vercel.com"},{"hex":"#29CC57","host":"brilliant.org"},{"hex":"#349E54","host":"oku.club"},{"hex":"#9BD8A9","host":"craft.do"},{"hex":"#09E989","host":"platzi.com"},{"hex":"#0B7443","host":"fruitful.com"},{"hex":"#009959","host":"grain.com"},{"hex":"#70FFAF","host":"deno.com"},{"hex":"#0E7E4E","host":"supabase.com"},{"hex":"#00C27A","host":"mural.co"},{"hex":"#36F4A4","host":"shopify.com"},{"hex":"#34D59A","host":"neon.com"},{"hex":"#34785C","host":"cursor.com"},{"hex":"#00FCC1","host":"kushkipagos.com"},{"hex":"#ADEEDA","host":"maze.co"},{"hex":"#61DAFB","host":"astro.build"},{"hex":"#8CD6FF","host":"raycast.com"},{"hex":"#265974","host":"nothing.tech"},{"hex":"#005F86","host":"current.com"},{"hex":"#006399","host":"plane.so"},{"hex":"#00A3FF","host":"resend.com"},{"hex":"#5C85A8","host":"structured.app"},{"hex":"#0071BB","host":"teenage.engineering"},{"hex":"#0099FF","host":"framer.com"},{"hex":"#0099FF","host":"cal.com"},{"hex":"#91BEEB","host":"paraform.com"},{"hex":"#9ECBFF","host":"sentry.io"},{"hex":"#518DD2","host":"retool.com"},{"hex":"#0C2D54","host":"calendly.com"},{"hex":"#4586DA","host":"vizcom.com"},{"hex":"#0071E3","host":"apple.com"},{"hex":"#0071EB","host":"getyourguide.com"},{"hex":"#0077FF","host":"shuttle.zip"},{"hex":"#0550AE","host":"twenty.com"},{"hex":"#1F7CFF","host":"clickup.com"},{"hex":"#3483FA","host":"mercadopago.com.co"},{"hex":"#2A72DE","host":"ouraring.com"},{"hex":"#1868DB","host":"atlassian.com"},{"hex":"#1868DB","host":"loom.com"},{"hex":"#4F91FB","host":"culturedcode.com"},{"hex":"#052F70","host":"elevenlabs.io"},{"hex":"#146EF5","host":"webflow.com"},{"hex":"#1F65D6","host":"xero.com"},{"hex":"#0056D2","host":"coursera.org"},{"hex":"#006AFF","host":"squareup.com"},{"hex":"#0061EF","host":"headspace.com"},{"hex":"#145FE4","host":"1password.com"},{"hex":"#0062FF","host":"spline.design"},{"hex":"#266DF0","host":"attio.com"},{"hex":"#0061FE","host":"dropbox.com"},{"hex":"#0057FF","host":"laravel.com"},{"hex":"#0055FF","host":"sanalabs.com"},{"hex":"#2563EB","host":"dub.co"},{"hex":"#002991","host":"paypal.com"},{"hex":"#71A0FF","host":"patreon.com"},{"hex":"#0044FF","host":"dovetail.com"},{"hex":"#0000FF","host":"base.org"},{"hex":"#0000EE","host":"classpass.com"},{"hex":"#0000EE","host":"sketch.com"},{"hex":"#0600FF","host":"glossier.com"},{"hex":"#1E52F1","host":"lovable.dev"},{"hex":"#1644FF","host":"belvo.com"},{"hex":"#4B72F3","host":"pampam.city"},{"hex":"#3859FF","host":"miro.com"},{"hex":"#121E6C","host":"bold.co"},{"hex":"#2B22FA","host":"runway.com"},{"hex":"#3950E6","host":"base44.com"},{"hex":"#090C43","host":"allbirds.com"},{"hex":"#2F39BA","host":"beehiiv.com"},{"hex":"#2702C2","host":"arc.net"},{"hex":"#5266EB","host":"mercury.com"},{"hex":"#4823FF","host":"cakeequity.com"},{"hex":"#6161FF","host":"monday.com"},{"hex":"#533AFD","host":"stripe.com"},{"hex":"#6363F1","host":"workos.com"},{"hex":"#4B47A7","host":"sequencehq.com"},{"hex":"#6248F6","host":"clerk.com"},{"hex":"#5423E7","host":"lemonsqueezy.com"},{"hex":"#7064F2","host":"featurebase.app"},{"hex":"#473982","host":"hex.tech"},{"hex":"#201148","host":"deel.com"},{"hex":"#7C3AED","host":"fly.io"},{"hex":"#542F9C","host":"tines.com"},{"hex":"#423763","host":"phantom.com"},{"hex":"#D4C7FF","host":"superhuman.com"},{"hex":"#A981FF","host":"jitter.video"},{"hex":"#553F83","host":"railway.com"},{"hex":"#8A05FF","host":"render.com"},{"hex":"#8D0DE3","host":"nubank.com.br"},{"hex":"#B26BF5","host":"passionfroot.me"},{"hex":"#CB9FD2","host":"figma.com"},{"hex":"#FF00F4","host":"relume.ai"},{"hex":"#FF37C7","host":"app.uniswap.org"},{"hex":"#33001F","host":"mixpanel.com"},{"hex":"#FF82C2","host":"epidemicsound.com"},{"hex":"#F6339A","host":"tailwindcss.com"},{"hex":"#772A4D","host":"descript.com"},{"hex":"#FF1F8F","host":"bun.sh"}],"sample":{"url":"https://incident.io/","host":"incident.io","theme":"light","background":"#F1EBE2","text":"#000000","accent":"#F25533","accent2":"#FEBC2E","display":{"family":"STKBureauSerif","size":80,"ls":-0.04,"lh":1},"body":{"family":"STKBureauSans","size":18},"freeDisplay":"Fraunces","radius":6,"pill":true,"sequence":["banner","navbar","cta","feature-split","testimonials","content","features","content","features","cta","features","cta","footer"]},"demo":[{"host":"shopify.com","url":"https://www.shopify.com/co/precios","theme":"dark","bg":"#02090A","text":"#FFFFFF","accent":"#95BF47","font":"Shopify-Inter","size":96,"ls":-0.025,"free":"Inter","isFree":true,"radius":"24px","heading":"Tienes planes. Nosotros también.","reasons":["4 precios con periodo (4)","título de planes + columnas"],"columns":4,"sequence":["navbar","pricing","team","feature-split","testimonials","content","features"]},{"host":"mural.co","url":"https://www.mural.co/pricing","theme":"light","bg":"#FFFFFF","text":"#000000","accent":"#00C27A","font":"STK Bureau","size":80,"ls":-0.04,"free":"Inter","isFree":false,"radius":"12px","heading":"Free","reasons":["5 precios con periodo (7)","título de planes + columnas"],"columns":4,"sequence":["hero","pricing","logos","content","features","content","features"]},{"host":"grain.com","url":"https://grain.com/pricing","theme":"light","bg":"#FAFAFA","text":"#000000","accent":"#009959","font":"Inter Variablefont Slnt Wght","size":48,"ls":-0.005,"free":"Inter","isFree":true,"radius":"2px","heading":"Pricing","reasons":["6 precios con periodo (4)","título de planes + columnas"],"columns":4,"sequence":["navbar","pricing","content","navbar","features","content","features"]}],"composition":{"sites":26,"types":[{"type":"navbar","presence":0.92},{"type":"features","presence":0.88},{"type":"footer","presence":0.88},{"type":"hero","presence":0.69},{"type":"feature-split","presence":0.62},{"type":"logos","presence":0.62},{"type":"cta","presence":0.54}],"typical":["navbar","banner","hero","logos","feature-split","features","showcase","cta","testimonials","footer"]},"fonts":[{"family":"saans","sites":3,"free":"Geist"},{"family":"UntitledSansFont","sites":2,"free":"Inter"},{"family":"Matter","sites":1,"free":"Plus Jakarta Sans"},{"family":"Apercu","sites":1,"free":"Work Sans"},{"family":"Monaco","sites":1,"free":"JetBrains Mono"}],"critiqueExample":{"target":"vercel.com","reference":"linear.app","summary":"6 hallazgos (1 altos). Composición parecida en 42%.","findings":[{"severity":"high","area":"color","message":"Tema claro contra referencia oscura.","fix":"Si buscas el look de linear.app, cambia la base a #08090A."},{"severity":"low","area":"color","message":"El acento es de otra familia de color que el de la referencia.","fix":"Está bien si es tu marca; si no, acércalo a la referencia."},{"severity":"low","area":"shape","message":"Sombras: subtle vs heavy.","fix":"Usa una sombra tipo: rgba(0, 0, 0, 0.2) 0px 0px 12px 0px inset"},{"severity":"low","area":"layout","message":"Ancho de contenido 1080px vs 1416px.","fix":"max-width ≈ 1416px."}]},"sectionExample":{"host":"linear.app","idx":1,"type":"hero","confidence":0.68,"reasons":["primer bloque de contenido en el primer pantallazo","titular de 64px"],"heading":"The product development system for teams and agents The product development system for teams and agents","columns":2,"bg":"#08090A","dark":true,"height":1024,"sequence":["navbar","hero","content","features","integrations","content","features","content","features"]},"pricingPages":65} || { spectrum: [], demo: [], brands: 0, pages: 0, mobile: 0, sections: 0 };
   const PKG = "github:ruloCode/matiz-mcp";
-  const $ = (s, el = document) => el.querySelector(s);
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const fmt = (n) => Number(n).toLocaleString("es-CO");
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fmt = (n) => Number(n || 0).toLocaleString("es-CO");
+  const lum = (hex) => { const n = parseInt(String(hex).slice(1), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
   document.querySelectorAll("[data-pkg]").forEach((el) => (el.textContent = PKG));
 
   // ---------- copiar ----------
-  function copyText(text, btn) {
-    const done = () => { const t = btn.textContent; btn.textContent = "Copiado"; setTimeout(() => (btn.textContent = t), 1400); };
+  function copy(text, btn, selectEl) {
+    const label = btn.textContent;
+    const ok = () => { btn.textContent = "Copiado"; setTimeout(() => (btn.textContent = label), 1400); };
     const fallback = () => {
-      const src = btn.previousElementSibling || btn.parentElement;
-      const r = document.createRange(); r.selectNodeContents(src);
-      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      if (selectEl) { const r = document.createRange(); r.selectNodeContents(selectEl); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
       btn.textContent = "Selecciona y copia";
+      setTimeout(() => (btn.textContent = label), 2200);
     };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
     else fallback();
   }
   document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-copy-from], [data-copy]");
-    if (!btn) return;
-    const text = btn.dataset.copy ?? document.getElementById(btn.dataset.copyFrom).textContent.replace(/^\$\s*/, "");
-    copyText(text.trim(), btn);
+    const b = e.target.closest("[data-copy-target]");
+    if (!b) return;
+    const el = document.getElementById(b.dataset.copyTarget);
+    copy(el.textContent.trim(), b, el);
   });
 
-  // ---------- ficha de ejemplo ----------
-  const S = D.sample;
-  if (S) {
-    $("#spec-host").textContent = S.host;
-    const chips = [["fondo", S.background], ["texto", S.text], ["acento", S.accent], ["acento 2", S.accent2]].filter((c) => c[1]);
-    $("#spec-chips").innerHTML = chips
-      .map(([k, hex]) => {
-        const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-        const light = (0.299 * r + 0.587 * g + 0.114 * b) > 150;
-        return `<div style="background:${hex};color:${light ? "#12141a" : "#ffffff"}">${k}<br>${hex}</div>`;
-      })
-      .join("");
-    const rows = [
-      ["tema", S.theme === "dark" ? "oscuro" : "claro"],
-      S.display && ["display", `${S.display.family} ${S.display.size}px · ${S.display.ls}em · lh ${S.display.lh}`],
-      S.freeDisplay && ["libre", `${S.freeDisplay} (equivalente)`],
-      S.body && ["texto", `${S.body.family} ${S.body.size}px`],
-      ["radio", S.pill ? `${S.radius}px · botones pill` : `${S.radius}px`],
-      ["orden", S.sequence.join(" → ")],
-    ].filter(Boolean);
-    $("#spec-dl").innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
-    $("#spec-foot").textContent = "Medido del sitio en vivo · la referencia de esta página";
-    $("#matiz-json").textContent = JSON.stringify(
-      {
-        ref_id: S.host,
-        colors: { background: S.background, text: S.text, accent: S.accent },
-        type: S.display ? { display: `${S.display.family} ${S.display.size}px`, free_alternative: S.freeDisplay } : undefined,
-        radius: S.pill ? "pill" : S.radius,
-        sequence: S.sequence.slice(0, 5),
-        section: { type: "hero", reasons: ["primer bloque de contenido", `titular de ${S.display ? S.display.size : "?"}px`] },
-      },
-      null,
-      2,
-    );
-  } else $("#spec").hidden = true;
+  // ---------- hero: muestras reales dentro del titular (el gesto de los íconos de Mobbin) ----------
+  const pick = (h) => D.spectrum[Math.floor(D.spectrum.length * h)];
+  const chips = [pick(0.04), pick(0.42), pick(0.7)].filter(Boolean);
+  if (chips.length === 3) {
+    const c = chips.map((s) => `<span class="chip" style="background:${s.hex}" title="${esc(s.hex)} · ${esc(s.host)}" aria-hidden="true"></span>`);
+    $("#hero-title").innerHTML = `Referencias de diseño ${c[0]} que tu agente ${c[1]} puede medir ${c[2]}`;
+  }
+  if (D.brands) $("#hero-sub").textContent = `Colores con su rol, tipografía real, composición y DESIGN.md de ${fmt(D.brands)} marcas y ${fmt(D.pages)} páginas, listos para Claude, Codex o Cursor.`;
 
-  // ---------- franja de acentos ----------
+  // ---------- ventana de producto: tarjetas hechas de datos, no de capturas ----------
+  $("#results").innerHTML = (D.demo || [])
+    .map((r) => {
+      const plans = [0, 1, 0].map((on) => `<span style="background:${on ? r.accent : r.text};opacity:${on ? 1 : 0.12}"></span>`).join("");
+      const radius = r.radius === "pill" ? "999px" : r.radius;
+      const onAccent = lum(r.accent) > 0.6 ? "#141414" : "#ffffff";
+      const heading = r.heading && r.heading.length > 6 ? r.heading : "Elige tu plan";
+      return `<div class="res">
+        <div class="mini" style="background:${r.bg};color:${r.text}">
+          <h4 style="letter-spacing:${Math.min(r.ls ?? -0.03, -0.01)}em">${esc(heading)}</h4>
+          <div class="plans">${plans}</div>
+          <span class="cta" style="background:${r.accent};color:${onAccent};border-radius:${radius}">Empezar</span>
+        </div>
+        <div class="meta">
+          <div class="host"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.host)}</a><span class="sw" aria-hidden="true"><b style="background:${r.bg}"></b><b style="background:${r.text}"></b><b style="background:${r.accent}"></b></span></div>
+          <dl class="kv">
+            <dt>tema</dt><dd>${r.theme === "dark" ? "oscuro" : "claro"} · acento ${esc(r.accent)}</dd>
+            <dt>display</dt><dd>${esc(r.font)} ${r.size ?? ""}px${r.isFree ? " · libre" : ` → ${esc(r.free)}`}</dd>
+            <dt>sección</dt><dd>pricing · ${r.columns} columnas</dd>
+            <dt>por qué</dt><dd>${esc(r.reasons[0] ?? "")}</dd>
+            <dt>radio</dt><dd>${esc(r.radius)}</dd>
+          </dl>
+        </div>
+      </div>`;
+    })
+    .join("");
+  if (D.pricingPages) $("#demo-said").textContent = `Encontré ${D.pricingPages} páginas de precios. Estas tres cubren tema oscuro, serif y sans. Tomo sus medidas:`;
+
+  // ---------- bento ----------
+  const S = D.sectionExample;
+  if (S) {
+    $("#meta-visual").innerHTML = `<dl>
+        <dt>ref_id</dt><dd>${esc(S.host)}#${S.idx ?? 0}</dd>
+        <dt>tipo</dt><dd>${esc(S.type)} · ${Math.round(S.confidence * 100)}%</dd>
+        <dt>motivos</dt><dd>${esc(S.reasons.join(" · "))}</dd>
+        <dt>columnas</dt><dd>${S.columns}</dd>
+        <dt>fondo</dt><dd>${esc(S.bg)} · ${S.dark ? "oscuro" : "claro"}</dd>
+        <dt>alto</dt><dd>${S.height}px</dd>
+      </dl>
+      <div class="wire" aria-label="Orden de secciones de ${esc(S.host)}">${(S.sequence || []).map((t) => `<div class="${t === S.type ? "on" : ""}">${esc(t)}</div>`).join("")}</div>`;
+  }
+  const C = D.composition;
+  if (C) {
+    $("#bars").innerHTML = C.types
+      .map((t) => `<div class="bar-row"><code>${esc(t.type)}</code><span class="track"><span class="fill" style="width:${Math.round(t.presence * 100)}%"></span></span><span class="v">${Math.round(t.presence * 100)}%</span></div>`)
+      .join("");
+    $("#bars-txt").textContent = `En ${C.sites} sitios de herramientas para desarrolladores, así de seguido aparece cada sección. Orden típico: ${C.typical.filter((t) => t !== "banner").join(" → ")}.`;
+  }
+  $("#fonts").innerHTML = (D.fonts || [])
+    .map((f) => `<div class="font-row"><span class="from">${esc(f.family)}</span><span class="arrow">→</span><span class="to">${esc(f.free)}</span></div>`)
+    .join("");
+  const K = D.critiqueExample;
+  if (K) {
+    $("#finds").innerHTML = K.findings
+      .map((f) => `<div class="find"><span class="sev ${f.severity}">${f.severity === "high" ? "alto" : f.severity === "medium" ? "medio" : "bajo"}</span><span>${esc(f.message)}</span><span class="fix">${esc(f.fix)}</span></div>`)
+      .join("");
+    $("#finds-txt").textContent = `Mide tu página, también en localhost, y te dice qué corregir con los valores de los dos lados. Arriba: ${K.target} revisado contra ${K.reference}.`;
+  }
+
+  // franja de acentos
   const strip = $("#strip"), readout = $("#readout");
   const show = (s) => (readout.innerHTML = s ? `<b>${esc(s.hex)}</b> · ${esc(s.host)}` : `${D.spectrum.length} acentos de ${fmt(D.brands)} marcas`);
   D.spectrum.forEach((s) => {
@@ -450,96 +507,73 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; gap: 10
     b.setAttribute("aria-label", `${s.hex}, ${s.host}`);
     b.addEventListener("mouseenter", () => show(s));
     b.addEventListener("focus", () => show(s));
-    b.addEventListener("click", () => copyText(s.hex, { textContent: "", previousElementSibling: null, parentElement: readout }));
     strip.appendChild(b);
   });
   strip.addEventListener("mouseleave", () => show());
   show();
 
+  // ---------- prompts ----------
+  const prompts = [
+    ["Busca heros oscuros de fintech con tipografía serif y dime qué tienen en común.", "search_references"],
+    ["¿Qué secciones lleva un landing de herramientas para desarrolladores y en qué orden?", "get_composition"],
+    ["Dame el DESIGN.md de linear.app y adáptalo a mi marca, que es verde.", "get_design_md"],
+    ["Muéstrame páginas de precios con 3 planes y toggle mensual/anual.", "search_references"],
+    ["Propón un par tipográfico libre parecido al de stripe.com.", "suggest_type_pairings"],
+    ["Revisa http://localhost:3000 contra la referencia que elegimos y dime qué corregir.", "critique_against_reference"],
+  ];
+  $("#prompts").innerHTML = prompts
+    .map(([p, t], i) => `<div class="prompt"><p id="pr-${i}">${esc(p)}</p><div class="row"><span>${t}</span><button class="icon-btn" type="button" data-copy-target="pr-${i}">Copiar</button></div></div>`)
+    .join("");
+
   // ---------- cómo se diseñó (consultas reales, en orden) ----------
   const calls = [
-    { tool: 'get_composition { industry: "devtools" }', why: "¿Qué estructura usan las herramientas para desarrolladores?", ans: "26 sitios. Orden típico:", seq: ["navbar", "hero", "logos", "feature-split", "features", "showcase", "testimonials", "cta", "footer"] },
-    { tool: 'search_references { section_type: "hero", industry: "devtools" }', why: "Referencias de hero con comando de instalación.", ans: "Replicate: titular grande y código con pestañas. Incident: serif centrado de 80px, botones pill." },
-    { tool: 'suggest_type_pairings { pairing: "display+sans" }', why: "¿Qué pares display + sans se usan de verdad, y cuáles son libres?", ans: "Bricolage Grotesque + Plus Jakarta Sans (Platzi), ambas libres. Los demás pares eran comerciales." },
-    { tool: 'suggest_palettes { theme: "light" }', why: "¿Cómo resuelven el color los sitios claros del corpus?", ans: "Neutros con un solo acento fuerte. Aquí el acento lo ponen los datos: la franja de arriba." },
-    { tool: 'get_design_md { ref_id: "incident.io" }', why: "Calibrar escala, tracking y radios con una referencia completa.", ans: "Display 80px · −0,04em · interlineado 1 · radios 6/8/12px y pill." },
+    ['capture_site { url: "mobbin.com/mcp" } · { url: "refero.design/mcp" }', "Capturar las dos páginas que nos gustan.", "Dos páginas medidas, con sus secciones y capturas."],
+    ['get_reference { ref_id: "mobbin.com-mcp" }', "¿Cómo están hechas?", "Fondo blanco y tinta #141414, sin acento, botones pill, tarjetas grises con radios de 16 a 30 px y display de 80 px."],
+    ["suggest_type_pairings", "Su fuente (Saans) es comercial: ¿cuál uso?", "Geist, la alternativa libre que propone Matiz."],
+    ['get_composition { industry: "devtools" }', "¿Qué secciones esperan los desarrolladores?", "En 26 sitios: hero, logos, imagen+texto, features, showcase y CTA."],
+    ['critique_against_reference { url: "localhost" }', "Revisar el resultado antes de publicar.", "Encontró tres fallos del propio Matiz, ya corregidos en el repo."],
   ];
-  $("#log").innerHTML = calls
-    .map(
-      (c, i) => `<div class="call"><span class="n">${i + 1}</span><div><code>${esc(c.tool)}</code><p>${esc(c.why)}</p></div><div class="ans">${esc(c.ans)}${
-        c.seq ? `<div class="seq">${c.seq.map((s) => `<span>${esc(s)}</span>`).join("")}</div>` : ""
-      }</div></div>`,
-    )
+  $("#calls").innerHTML = calls
+    .map((c, i) => `<div class="call"><span class="n">${i + 1}</span><div><code>${esc(c[0])}</code><p class="q">${esc(c[1])}</p></div><p class="a">${esc(c[2])}</p></div>`)
     .join("");
 
   // ---------- instalar ----------
   const json = (o) => JSON.stringify(o, null, 2);
   const server = { command: "npx", args: ["-y", PKG] };
   const clients = [
-    { id: "claude-code", name: "Claude Code", blocks: [
-      { cmd: `claude mcp add matiz --scope user -- npx -y ${PKG}` },
-    ], notes: [
-      "Con <code>--scope user</code> queda en todos tus proyectos. Usa <code>--scope project</code> para compartirlo por git en <code>.mcp.json</code>.",
-      "La primera vez npx descarga el paquete. Si el arranque se corta, abre Claude Code con <code>MCP_TIMEOUT=60000 claude</code>.",
-    ] },
-    { id: "claude-desktop", name: "Claude Desktop", blocks: [
-      { file: "macOS: ~/Library/Application Support/Claude/claude_desktop_config.json · Windows: %APPDATA%\\Claude\\claude_desktop_config.json", cmd: json({ mcpServers: { matiz: server } }) },
-    ], notes: ["Ábrelo desde Settings → Developer → Edit Config. Cierra Claude Desktop por completo y vuelve a abrirlo."] },
-    { id: "codex", name: "Codex", blocks: [
-      { cmd: `codex mcp add matiz -- npx -y ${PKG}` },
-      { file: "o a mano en ~/.codex/config.toml", cmd: `[mcp_servers.matiz]\ncommand = "npx"\nargs = ["-y", "${PKG}"]\nstartup_timeout_sec = 60` },
-    ], notes: ["Sube <code>startup_timeout_sec</code>: el primer arranque descarga el paquete y el valor por defecto es 10 s. Dentro de Codex, <code>/mcp</code> muestra los servidores activos."] },
-    { id: "cursor", name: "Cursor", blocks: [
-      { file: "~/.cursor/mcp.json (global) o .cursor/mcp.json (proyecto)", cmd: json({ mcpServers: { matiz: { type: "stdio", ...server } } }) },
-    ], notes: ["Actívalo en Settings → MCP."] },
-    { id: "vscode", name: "VS Code", blocks: [
-      { cmd: `code --add-mcp '${JSON.stringify({ name: "matiz", ...server })}'` },
-      { file: "o en .vscode/mcp.json (la clave es servers)", cmd: json({ servers: { matiz: { type: "stdio", ...server } } }) },
-    ], notes: ["Para GitHub Copilot en modo agente."] },
-    { id: "gemini", name: "Gemini CLI", blocks: [
-      { file: "~/.gemini/settings.json (usuario) o .gemini/settings.json (proyecto)", cmd: json({ mcpServers: { matiz: server } }) },
-    ], notes: ["También existe <code>gemini mcp add</code>. Editar el JSON evita que el CLI confunda <code>-y</code> con una opción suya."] },
-    { id: "windsurf", name: "Windsurf", blocks: [
-      { file: "mcp_config.json (Cascade → … → Open MCP config file)", cmd: json({ mcpServers: { matiz: server } }) },
-    ], notes: ["El botón de Cascade abre el archivo que tu instalación usa de verdad."] },
-    { id: "zed", name: "Zed", blocks: [
-      { file: "settings.json (comando: zed: open settings file)", cmd: json({ context_servers: { matiz: server } }) },
-    ], notes: [] },
+    { id: "claude-code", name: "Claude Code", blocks: [{ cmd: `claude mcp add matiz --scope user -- npx -y ${PKG}` }], notes: ["Con <code>--scope user</code> queda en todos tus proyectos. Si el primer arranque se corta mientras npx descarga, abre Claude Code con <code>MCP_TIMEOUT=60000 claude</code>."] },
+    { id: "codex", name: "Codex", blocks: [{ cmd: `codex mcp add matiz -- npx -y ${PKG}` }, { file: "~/.codex/config.toml", cmd: `[mcp_servers.matiz]\ncommand = "npx"\nargs = ["-y", "${PKG}"]\nstartup_timeout_sec = 60` }], notes: ["Sube <code>startup_timeout_sec</code>: la primera vez npx descarga el paquete y el valor por defecto es 10 s."] },
+    { id: "cursor", name: "Cursor", blocks: [{ file: "~/.cursor/mcp.json", cmd: json({ mcpServers: { matiz: { type: "stdio", ...server } } }) }], notes: ["Actívalo en Settings → MCP."] },
+    { id: "claude-desktop", name: "Claude Desktop", blocks: [{ file: "macOS: ~/Library/Application Support/Claude/claude_desktop_config.json · Windows: %APPDATA%\\Claude\\claude_desktop_config.json", cmd: json({ mcpServers: { matiz: server } }) }], notes: ["Settings → Developer → Edit Config. Luego cierra la app por completo y ábrela de nuevo."] },
+    { id: "vscode", name: "VS Code", blocks: [{ cmd: `code --add-mcp '${JSON.stringify({ name: "matiz", ...server })}'` }], notes: ["Para GitHub Copilot en modo agente. En un proyecto también sirve <code>.vscode/mcp.json</code> con la clave <code>servers</code>."] },
+    { id: "gemini", name: "Gemini CLI", blocks: [{ file: "~/.gemini/settings.json", cmd: json({ mcpServers: { matiz: server } }) }], notes: [] },
+    { id: "windsurf", name: "Windsurf", blocks: [{ file: "mcp_config.json (Cascade → … → Open MCP config file)", cmd: json({ mcpServers: { matiz: server } }) }], notes: [] },
+    { id: "zed", name: "Zed", blocks: [{ file: "settings.json (zed: open settings file)", cmd: json({ context_servers: { matiz: server } }) }], notes: [] },
   ];
-  const tabs = $("#tabs"), panel = $("#panel");
-  let current = 0;
-  try { const saved = localStorage.getItem("matiz-client"); const i = clients.findIndex((c) => c.id === saved); if (i >= 0) current = i; } catch (e) {}
+  let cur = 0;
+  try { const i = clients.findIndex((c) => c.id === localStorage.getItem("matiz-client")); if (i >= 0) cur = i; } catch (e) {}
+  const tools = $("#tools"), panel = $("#tool-panel");
   function render() {
-    tabs.innerHTML = clients
-      .map((c, i) => `<button type="button" role="tab" id="tab-${c.id}" aria-selected="${i === current}" aria-controls="panel" tabindex="${i === current ? 0 : -1}">${c.name}</button>`)
-      .join("");
-    const c = clients[current];
-    panel.setAttribute("aria-labelledby", `tab-${c.id}`);
+    tools.innerHTML = clients.map((c, i) => `<button type="button" aria-pressed="${i === cur}" data-i="${i}">${c.name}</button>`).join("");
+    const c = clients[cur];
     panel.innerHTML =
-      c.blocks
-        .map((b, j) => `<div class="snippet">${b.file ? `<span class="file">${esc(b.file)}</span>` : ""}<pre id="snip-${j}">${esc(b.cmd)}</pre><button class="copy" type="button" data-copy-from="snip-${j}">Copiar</button></div>`)
-        .join("") + c.notes.map((n) => `<p>${n}</p>`).join("");
+      c.blocks.map((b, j) => `<div class="snippet">${b.file ? `<span class="file">${esc(b.file)}</span>` : ""}<pre id="sn-${j}">${esc(b.cmd)}</pre><button class="icon-btn" type="button" data-copy-target="sn-${j}">Copiar</button></div>`).join("") +
+      c.notes.map((n) => `<p class="note">${n}</p>`).join("");
   }
-  tabs.addEventListener("click", (e) => {
-    const b = e.target.closest("[role=tab]");
+  tools.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-i]");
     if (!b) return;
-    current = [...tabs.children].indexOf(b);
-    try { localStorage.setItem("matiz-client", clients[current].id); } catch (e) {}
+    cur = +b.dataset.i;
+    try { localStorage.setItem("matiz-client", clients[cur].id); } catch (e) {}
     render();
-    tabs.children[current].focus();
-  });
-  tabs.addEventListener("keydown", (e) => {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-    current = (current + (e.key === "ArrowRight" ? 1 : clients.length - 1)) % clients.length;
-    render();
-    tabs.children[current].focus();
+    tools.querySelector(`[data-i="${cur}"]`).focus();
   });
   render();
 
   // ---------- cifras ----------
   if (D.accuracy != null)
-    $("#faq-acc").textContent += ` Hoy: ${String(D.accuracy).replace(".", ",")}% sobre ${D.evalN} secciones, y la cifra se publica en el repo con cada cambio.`;
-  $("#foot-stats").textContent = `${fmt(D.brands)} marcas · ${fmt(D.pages)} páginas · ${fmt(D.mobile)} versiones móviles · ${fmt(D.sections)} secciones · datos del ${D.generated ?? ""}`;
+    $("#faq-acc").textContent += ` Hoy acierta el ${String(D.accuracy).replace(".", ",")}% sobre ${D.evalN} secciones${D.evalHoldout ? " que nunca vio al ajustarse" : ""}; la evaluación completa está en el repo.`;
+  $("#foot-stats").textContent = `${fmt(D.brands)} marcas · ${fmt(D.pages)} páginas · ${fmt(D.mobile)} móviles · ${fmt(D.sections)} secciones · datos del ${D.generated ?? ""}`;
 })();
 </script>
 

@@ -5,8 +5,11 @@ import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { getSite } from "../src/db.js";
 
 type Label = { ref_id: string; label: string; secondary: string | null; note?: string };
+// pnpm eval [ajuste|holdout] [salida.json]
+const set = process.argv[2] === "holdout" ? "holdout" : "ajuste";
+const prefix = set === "holdout" ? "holdout-labels-" : "labels-";
 const labels: Label[] = readdirSync("research/eval")
-  .filter((f) => /^labels-\d+\.json$/.test(f))
+  .filter((f) => f.startsWith(prefix) && /-\d+\.json$/.test(f))
   .flatMap((f) => JSON.parse(readFileSync(`research/eval/${f}`, "utf8")));
 
 const rows: Array<{ ref: string; gold: string; second: string | null; pred: string }> = [];
@@ -50,8 +53,9 @@ const report = {
   per_type: per,
   top_confusions: [...conf.entries()].sort((a, b) => b[1] - a[1]).slice(0, 15).map(([k, v]) => ({ confusion: k, n: v })),
 };
-writeFileSync(process.argv[2] ?? "research/eval/report.json", JSON.stringify(report, null, 1));
-console.log(`n=${n} (fuera ${unclear} unclear, ${missing} sin sección)`);
+const outFile = process.argv[3] ?? (set === "holdout" ? "research/eval/report-holdout.json" : "research/eval/report.json");
+writeFileSync(outFile, JSON.stringify({ set, ...report }, null, 1));
+console.log(`[${set}] n=${n} (fuera ${unclear} unclear, ${missing} sin sección)`);
 console.log(`exactitud ${(report.accuracy * 100).toFixed(1)}% · con secundaria ${(report.accuracy_with_secondary * 100).toFixed(1)}% · "content" predicho ${(report.content_rate_predicted * 100).toFixed(1)}%`);
 for (const p of per) console.log(`  ${p.type.padEnd(14)} gold ${String(p.gold).padStart(2)} pred ${String(p.predicted).padStart(2)}  P ${p.precision ?? "—"}  R ${p.recall ?? "—"}`);
 console.log("confusiones:", report.top_confusions.map((c) => `${c.confusion} (${c.n})`).join(" · "));

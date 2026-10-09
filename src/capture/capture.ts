@@ -102,6 +102,10 @@ const COOKIE_BUTTONS = [
   "#onetrust-accept-btn-handler",
   "button#accept-cookies",
   "[data-testid*=cookie] button",
+  "#didomi-notice-agree-button",
+  "[id*=cookie i] button:has-text('Accept')",
+  "button:has-text('Accept all cookies')",
+  "button:has-text('Allow all cookies')",
   "button:has-text('Accept all')",
   "button:has-text('Accept All')",
   "button:has-text('Allow all')",
@@ -129,11 +133,16 @@ async function clearOverlays(page: Page) {
       document
         .querySelectorAll("#intercom-container, .intercom-lightweight-app, #hubspot-messages-iframe-container, iframe[title*='chat' i], #crisp-chatbox, .drift-frame-controller")
         .forEach(kill);
-      for (const el of Array.from(document.querySelectorAll("body *")).slice(0, 4000)) {
+      // banners de consentimiento: fijos/sticky o diálogos con lenguaje de cookies/datos.
+      // Se revisa el texto propio del bloque (no se exige que sea corto: los paneles de
+      // preferencias traen listas largas y por eso sobrevivían).
+      const consent = /cookie|consent|gdpr|we use cookies|usamos cookies|your data|tus datos|ad personali[sz]ation|personalizaci[oó]n de anuncios|privacy preferences|preferencias de privacidad/;
+      for (const el of Array.from(document.querySelectorAll("body *")).slice(0, 6000)) {
         const s = getComputedStyle(el);
-        if (s.position !== "fixed" && s.position !== "sticky") continue;
+        const dialog = el.getAttribute("role") === "dialog" || el.getAttribute("aria-modal") === "true";
+        if (s.position !== "fixed" && s.position !== "sticky" && !dialog) continue;
         const t = (el.textContent || "").toLowerCase();
-        if (/cookie|consent|privacy|gdpr|we use cookies|usamos cookies/.test(t) && t.length < 1500) kill(el);
+        if (consent.test(t) && t.length < 8000) kill(el);
       }
     })
     .catch(() => {});
