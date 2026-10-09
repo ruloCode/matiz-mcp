@@ -239,4 +239,9 @@ export interface SiteRecord {
   industry: string[];
   dna: Dna;
   shots: { full?: string; hero?: string; heroThumb?: string };
+  /** home, pricing, signup… (ver src/pages.ts) */
+  page?: string;
+  /** dominio sin www: agrupa la portada, sus páginas internas y su versión móvil */
+  host?: string;
+  viewport?: "desktop" | "mobile";
 }

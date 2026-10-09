@@ -14,6 +14,9 @@ const r = await seed({
   limit: opt("limit") ? Number(opt("limit")) : undefined,
   force: args.includes("--force"),
   imagesOnly: args.includes("--images"),
+  pages: args.includes("--pages"),
+  mobile: args.includes("--mobile"),
+  maxPages: opt("max-pages") ? Number(opt("max-pages")) : undefined,
 });
 await closeBrowser();
 console.log(`Listo: ${r.done} capturados, ${r.failures.length} fallidos`);

@@ -10,7 +10,8 @@
   "files": [
     "dist",
     "data/corpus-pack.json.gz",
-    "data/seed-sites.json"
+    "data/seed-sites.json",
+    "data/free-fonts.json"
   ],
   "keywords": ["mcp", "mcp-server", "design", "design-tokens", "design-md", "ui", "references", "claude", "codex", "cursor"],
   "repository": { "type": "git", "url": "git+https://github.com/ruloCode/matiz-mcp.git" },
@@ -23,6 +24,8 @@
     "build": "tsc -p tsconfig.build.json && node -e \"require('fs').copyFileSync('src/capture/extract.browser.js','dist/capture/extract.browser.js')\"",
     "prepare": "npm run build",
     "export-pack": "tsx scripts/export-pack.ts",
+    "build:fonts": "tsx scripts/build-fonts.ts",
+    "eval": "tsx scripts/eval.ts",
     "typecheck": "tsc -p . --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
     "capture": "tsx scripts/capture.ts",

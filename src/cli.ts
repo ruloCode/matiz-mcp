@@ -42,7 +42,7 @@ async function main() {
         "  npx -y matiz-mcp init [--images] prepara la máquina (corpus + Chromium + DESIGN.md)",
         "  npx -y matiz-mcp doctor          diagnóstico",
         "  npx -y matiz-mcp capture <url>   agrega un sitio",
-        "  npx -y matiz-mcp seed [--limit N] [--only fintech] [--images]",
+        "  npx -y matiz-mcp seed [--limit N] [--only fintech] [--images] [--pages] [--mobile]",
         "  npx -y matiz-mcp stats",
         "",
         "Datos en ~/.matiz (cámbialo con MATIZ_HOME).",
@@ -116,6 +116,9 @@ async function main() {
       only: opt("only"),
       force: flag("force"),
       imagesOnly: flag("images"),
+      pages: flag("pages"),
+      mobile: flag("mobile"),
+      maxPages: opt("max-pages") ? Number(opt("max-pages")) : undefined,
       concurrency: Number(opt("concurrency") ?? 3),
       log: say,
     });

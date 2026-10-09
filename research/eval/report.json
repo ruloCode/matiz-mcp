@@ -1,0 +1,234 @@
+{
+ "date": "2026-10-09",
+ "evaluated": 140,
+ "excluded_unclear": 16,
+ "missing": 0,
+ "accuracy": 0.643,
+ "accuracy_with_secondary": 0.693,
+ "content_rate_predicted": 0.121,
+ "per_type": [
+  {
+   "type": "banner",
+   "gold": 6,
+   "predicted": 6,
+   "precision": 1,
+   "recall": 1
+  },
+  {
+   "type": "bento",
+   "gold": 3,
+   "predicted": 2,
+   "precision": 1,
+   "recall": 0.67
+  },
+  {
+   "type": "blog",
+   "gold": 5,
+   "predicted": 6,
+   "precision": 0.83,
+   "recall": 1
+  },
+  {
+   "type": "comparison",
+   "gold": 2,
+   "predicted": 3,
+   "precision": 0.33,
+   "recall": 0.5
+  },
+  {
+   "type": "contact",
+   "gold": 1,
+   "predicted": 4,
+   "precision": 0.25,
+   "recall": 1
+  },
+  {
+   "type": "content",
+   "gold": 15,
+   "predicted": 17,
+   "precision": 0.53,
+   "recall": 0.6
+  },
+  {
+   "type": "cta",
+   "gold": 17,
+   "predicted": 15,
+   "precision": 0.6,
+   "recall": 0.53
+  },
+  {
+   "type": "faq",
+   "gold": 5,
+   "predicted": 6,
+   "precision": 0.83,
+   "recall": 1
+  },
+  {
+   "type": "feature-split",
+   "gold": 15,
+   "predicted": 9,
+   "precision": 0.56,
+   "recall": 0.33
+  },
+  {
+   "type": "features",
+   "gold": 9,
+   "predicted": 13,
+   "precision": 0.38,
+   "recall": 0.56
+  },
+  {
+   "type": "footer",
+   "gold": 5,
+   "predicted": 5,
+   "precision": 1,
+   "recall": 1
+  },
+  {
+   "type": "gallery",
+   "gold": 2,
+   "predicted": 1,
+   "precision": 1,
+   "recall": 0.5
+  },
+  {
+   "type": "hero",
+   "gold": 8,
+   "predicted": 6,
+   "precision": 1,
+   "recall": 0.75
+  },
+  {
+   "type": "integrations",
+   "gold": 1,
+   "predicted": 1,
+   "precision": 0,
+   "recall": 0
+  },
+  {
+   "type": "logos",
+   "gold": 7,
+   "predicted": 7,
+   "precision": 0.86,
+   "recall": 0.86
+  },
+  {
+   "type": "navbar",
+   "gold": 7,
+   "predicted": 7,
+   "precision": 1,
+   "recall": 1
+  },
+  {
+   "type": "newsletter",
+   "gold": 2,
+   "predicted": 3,
+   "precision": 0.67,
+   "recall": 1
+  },
+  {
+   "type": "pricing",
+   "gold": 0,
+   "predicted": 4,
+   "precision": 0,
+   "recall": null
+  },
+  {
+   "type": "showcase",
+   "gold": 12,
+   "predicted": 7,
+   "precision": 0.57,
+   "recall": 0.33
+  },
+  {
+   "type": "stats",
+   "gold": 6,
+   "predicted": 5,
+   "precision": 0.8,
+   "recall": 0.67
+  },
+  {
+   "type": "steps",
+   "gold": 2,
+   "predicted": 3,
+   "precision": 0.33,
+   "recall": 0.5
+  },
+  {
+   "type": "team",
+   "gold": 1,
+   "predicted": 1,
+   "precision": 1,
+   "recall": 1
+  },
+  {
+   "type": "testimonials",
+   "gold": 9,
+   "predicted": 9,
+   "precision": 0.56,
+   "recall": 0.56
+  }
+ ],
+ "top_confusions": [
+  {
+   "confusion": "cta → content",
+   "n": 4
+  },
+  {
+   "confusion": "content → cta",
+   "n": 3
+  },
+  {
+   "confusion": "feature-split → features",
+   "n": 3
+  },
+  {
+   "confusion": "feature-split → content",
+   "n": 2
+  },
+  {
+   "confusion": "cta → contact",
+   "n": 2
+  },
+  {
+   "confusion": "showcase → pricing",
+   "n": 2
+  },
+  {
+   "confusion": "showcase → steps",
+   "n": 1
+  },
+  {
+   "confusion": "content → steps",
+   "n": 1
+  },
+  {
+   "confusion": "feature-split → showcase",
+   "n": 1
+  },
+  {
+   "confusion": "showcase → logos",
+   "n": 1
+  },
+  {
+   "confusion": "integrations → content",
+   "n": 1
+  },
+  {
+   "confusion": "cta → feature-split",
+   "n": 1
+  },
+  {
+   "confusion": "gallery → features",
+   "n": 1
+  },
+  {
+   "confusion": "features → content",
+   "n": 1
+  },
+  {
+   "confusion": "feature-split → cta",
+   "n": 1
+  }
+ ]
+}

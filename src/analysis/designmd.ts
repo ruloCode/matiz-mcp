@@ -4,6 +4,7 @@
 import { stringify } from "yaml";
 import type { Dna, TypeLevel } from "../types.js";
 import { parseColor, tonalScale } from "./color.js";
+import { fontAvailability } from "./fonts.js";
 
 const px = (v: number) => `${Math.round(v * 100) / 100}px`;
 const em = (v: number) => `${Math.round(v * 1000) / 1000}em`;
@@ -118,6 +119,14 @@ export function toDesignMd(name: string, url: string, dna: Dna): string {
   lines.push("## Typography", "");
   lines.push(`- Combinación: **${t.pairing}**. Familias medidas: ${t.families.map((f) => `${f.family} (${f.class}, ${Math.round(f.share * 100)}%)`).join(", ")}.`);
   lines.push(`- Base ${t.baseSize}px, razón de escala ≈ ${t.scaleRatio}.`);
+  for (const f of t.families.filter((x) => x.share >= 0.05)) {
+    const av = fontAvailability(f.family);
+    lines.push(
+      av.free
+        ? `- ${f.family}: libre (${av.freeAs} en Google Fonts/Fontsource).`
+        : `- ${f.family}: comercial o propia del sitio; equivalentes libres: ${av.alternatives?.join(", ")}.`,
+    );
+  }
   if (t.display) lines.push(`- Display: ${t.display.family} ${Math.round(t.display.size)}px / ${t.display.weight}, interlineado ${t.display.lineHeight}, tracking ${t.display.letterSpacing}em.`);
   if (t.label) lines.push(`- Etiquetas en mayúsculas: ${t.label.family} ${t.label.size}px, tracking ${t.label.letterSpacing}em.`);
   lines.push("");

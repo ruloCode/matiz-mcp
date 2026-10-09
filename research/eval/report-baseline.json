@@ -1,0 +1,234 @@
+{
+ "date": "2026-10-09",
+ "evaluated": 140,
+ "excluded_unclear": 16,
+ "missing": 0,
+ "accuracy": 0.536,
+ "accuracy_with_secondary": 0.579,
+ "content_rate_predicted": 0.186,
+ "per_type": [
+  {
+   "type": "banner",
+   "gold": 6,
+   "predicted": 6,
+   "precision": 1,
+   "recall": 1
+  },
+  {
+   "type": "bento",
+   "gold": 3,
+   "predicted": 4,
+   "precision": 0.75,
+   "recall": 1
+  },
+  {
+   "type": "blog",
+   "gold": 5,
+   "predicted": 6,
+   "precision": 0.83,
+   "recall": 1
+  },
+  {
+   "type": "comparison",
+   "gold": 2,
+   "predicted": 3,
+   "precision": 0.33,
+   "recall": 0.5
+  },
+  {
+   "type": "contact",
+   "gold": 1,
+   "predicted": 5,
+   "precision": 0.2,
+   "recall": 1
+  },
+  {
+   "type": "content",
+   "gold": 15,
+   "predicted": 26,
+   "precision": 0.31,
+   "recall": 0.53
+  },
+  {
+   "type": "cta",
+   "gold": 17,
+   "predicted": 6,
+   "precision": 0.67,
+   "recall": 0.24
+  },
+  {
+   "type": "faq",
+   "gold": 5,
+   "predicted": 6,
+   "precision": 0.83,
+   "recall": 1
+  },
+  {
+   "type": "feature-split",
+   "gold": 15,
+   "predicted": 6,
+   "precision": 0.67,
+   "recall": 0.27
+  },
+  {
+   "type": "features",
+   "gold": 9,
+   "predicted": 5,
+   "precision": 0.4,
+   "recall": 0.22
+  },
+  {
+   "type": "footer",
+   "gold": 5,
+   "predicted": 5,
+   "precision": 1,
+   "recall": 1
+  },
+  {
+   "type": "gallery",
+   "gold": 2,
+   "predicted": 3,
+   "precision": 0.33,
+   "recall": 0.5
+  },
+  {
+   "type": "hero",
+   "gold": 8,
+   "predicted": 6,
+   "precision": 1,
+   "recall": 0.75
+  },
+  {
+   "type": "integrations",
+   "gold": 1,
+   "predicted": 5,
+   "precision": 0,
+   "recall": 0
+  },
+  {
+   "type": "logos",
+   "gold": 7,
+   "predicted": 5,
+   "precision": 0.8,
+   "recall": 0.57
+  },
+  {
+   "type": "navbar",
+   "gold": 7,
+   "predicted": 6,
+   "precision": 1,
+   "recall": 0.86
+  },
+  {
+   "type": "newsletter",
+   "gold": 2,
+   "predicted": 5,
+   "precision": 0.4,
+   "recall": 1
+  },
+  {
+   "type": "pricing",
+   "gold": 0,
+   "predicted": 6,
+   "precision": 0,
+   "recall": null
+  },
+  {
+   "type": "showcase",
+   "gold": 12,
+   "predicted": 6,
+   "precision": 0.33,
+   "recall": 0.17
+  },
+  {
+   "type": "stats",
+   "gold": 6,
+   "predicted": 5,
+   "precision": 0.8,
+   "recall": 0.67
+  },
+  {
+   "type": "steps",
+   "gold": 2,
+   "predicted": 6,
+   "precision": 0.33,
+   "recall": 1
+  },
+  {
+   "type": "team",
+   "gold": 1,
+   "predicted": 5,
+   "precision": 0.2,
+   "recall": 1
+  },
+  {
+   "type": "testimonials",
+   "gold": 9,
+   "predicted": 4,
+   "precision": 0.75,
+   "recall": 0.33
+  }
+ ],
+ "top_confusions": [
+  {
+   "confusion": "cta → content",
+   "n": 7
+  },
+  {
+   "confusion": "cta → newsletter",
+   "n": 3
+  },
+  {
+   "confusion": "showcase → pricing",
+   "n": 3
+  },
+  {
+   "confusion": "feature-split → content",
+   "n": 3
+  },
+  {
+   "confusion": "feature-split → steps",
+   "n": 2
+  },
+  {
+   "confusion": "feature-split → showcase",
+   "n": 2
+  },
+  {
+   "confusion": "features → content",
+   "n": 2
+  },
+  {
+   "confusion": "content → cta",
+   "n": 2
+  },
+  {
+   "confusion": "features → team",
+   "n": 2
+  },
+  {
+   "confusion": "testimonials → team",
+   "n": 2
+  },
+  {
+   "confusion": "content → integrations",
+   "n": 2
+  },
+  {
+   "confusion": "logos → content",
+   "n": 2
+  },
+  {
+   "confusion": "cta → contact",
+   "n": 2
+  },
+  {
+   "confusion": "showcase → steps",
+   "n": 1
+  },
+  {
+   "confusion": "content → steps",
+   "n": 1
+  }
+ ]
+}

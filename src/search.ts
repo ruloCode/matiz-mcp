@@ -51,6 +51,8 @@ export interface SearchOptions {
   theme?: "light" | "dark";
   industry?: string;
   project?: string; // aplica la memoria de gusto de ese proyecto
+  page?: string;
+  viewport?: "desktop" | "mobile";
   limit?: number;
   offset?: number;
   excludeSites?: string[];
@@ -110,6 +112,8 @@ export function search(o: SearchOptions): { hits: SearchHit[]; total: number; in
     if (o.excludeSites?.includes(siteId)) continue;
     const s = site(siteId);
     if (!s) continue;
+    if ((s.viewport ?? "desktop") !== (o.viewport ?? "desktop")) continue;
+    if (o.page && (s.page ?? "home") !== o.page) continue;
     const why: string[] = [];
     // BM25 de FTS5 es negativo (más negativo = mejor): normalizado a 0..1
     let score = minRank < 0 ? r.rank / minRank : 0.5;
@@ -152,11 +156,12 @@ export function search(o: SearchOptions): { hits: SearchHit[]; total: number; in
   }
 
   hits.sort((a, b) => b.score - a.score);
-  // diversidad: máximo 2 resultados del mismo sitio (Mobbin repite la fuente; aquí no)
+  // diversidad: máximo 2 resultados de la misma MARCA (portada + páginas internas cuentan juntas)
   const perSite = new Map<string, number>();
   const diverse = hits.filter((h) => {
-    const n = perSite.get(h.siteId) ?? 0;
-    perSite.set(h.siteId, n + 1);
+    const key = h.site.host ?? h.siteId;
+    const n = perSite.get(key) ?? 0;
+    perSite.set(key, n + 1);
     return n < 2;
   });
   const offset = o.offset ?? 0;

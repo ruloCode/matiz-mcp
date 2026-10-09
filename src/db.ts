@@ -18,6 +18,7 @@ export function openDb(path = join(HOME, "corpus.db")): DatabaseSync {
   db = new DatabaseSync(path);
   db.exec(`
     PRAGMA journal_mode = WAL;
+    PRAGMA busy_timeout = 15000;
     PRAGMA foreign_keys = ON;
     CREATE TABLE IF NOT EXISTS sites (
       id TEXT PRIMARY KEY,
@@ -65,6 +66,13 @@ export function openDb(path = join(HOME, "corpus.db")): DatabaseSync {
       tokenize = 'unicode61 remove_diacritics 2'
     );
   `);
+  // migraciones aditivas (corpus creados antes de páginas internas y móvil)
+  const cols = new Set((db.prepare("PRAGMA table_info(sites)").all() as Array<{ name: string }>).map((c) => c.name));
+  if (!cols.has("page")) db.exec("ALTER TABLE sites ADD COLUMN page TEXT NOT NULL DEFAULT 'home'");
+  if (!cols.has("host")) db.exec("ALTER TABLE sites ADD COLUMN host TEXT");
+  if (!cols.has("viewport")) db.exec("ALTER TABLE sites ADD COLUMN viewport TEXT NOT NULL DEFAULT 'desktop'");
+  db.exec("UPDATE sites SET host = lower(replace(replace(replace(url, 'https://', ''), 'http://', ''), 'www.', '')) WHERE host IS NULL");
+  db.exec("UPDATE sites SET host = substr(host, 1, instr(host || '/', '/') - 1) WHERE host LIKE '%/%'");
   return db;
 }
 
@@ -93,12 +101,16 @@ export function saveSite(rec: SiteRecord) {
     d.prepare("DELETE FROM refs_fts WHERE ref_id = ? OR ref_id LIKE ?").run(rec.id, `${rec.id}#%`);
     d.prepare("DELETE FROM sections WHERE site_id = ?").run(rec.id);
     d.prepare(
-      `INSERT INTO sites (id,url,name,title,description,captured_at,tags,industry,dna,shots)
-       VALUES (?,?,?,?,?,?,?,?,?,?)
+      `INSERT INTO sites (id,url,name,title,description,captured_at,tags,industry,dna,shots,page,host,viewport)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
        ON CONFLICT(id) DO UPDATE SET url=excluded.url, name=excluded.name, title=excluded.title,
          description=excluded.description, captured_at=excluded.captured_at, tags=excluded.tags,
-         industry=excluded.industry, dna=excluded.dna, shots=excluded.shots`,
-    ).run(rec.id, rec.url, rec.name, rec.title, rec.description, rec.capturedAt, j(rec.tags), j(rec.industry), j(rec.dna), j(rec.shots));
+         industry=excluded.industry, dna=excluded.dna, shots=excluded.shots, page=excluded.page,
+         host=excluded.host, viewport=excluded.viewport`,
+    ).run(
+      rec.id, rec.url, rec.name, rec.title, rec.description, rec.capturedAt, j(rec.tags), j(rec.industry), j(rec.dna), j(rec.shots),
+      rec.page ?? "home", rec.host ?? hostOf(rec.url), rec.viewport ?? "desktop",
+    );
 
     const ins = d.prepare(
       "INSERT INTO sections (id,site_id,idx,type,confidence,heading,body,dark,shot,thumb) VALUES (?,?,?,?,?,?,?,?,?,?)",
@@ -111,12 +123,12 @@ export function saveSite(rec: SiteRecord) {
       rec.name,
       rec.title,
       [rec.description, ...dna.sections.map((s) => s.heading)].join(" "),
-      [...rec.tags, ...rec.industry, ...dna.sequence, ...dna.keywords].join(" "),
+      [...rec.tags, ...rec.industry, ...dna.sequence, ...dna.keywords, `page-${rec.page ?? "home"}`, rec.page ?? "home", rec.viewport ?? "desktop"].join(" "),
     );
     for (const s of dna.sections) {
       const sid = `${rec.id}#${s.idx}`;
       ins.run(sid, rec.id, s.idx, s.type, s.confidence, s.heading, s.text, s.dark ? 1 : 0, s.shot ?? null, s.thumb ?? null);
-      fts.run(sid, "section", rec.name, s.heading, s.text, [...rec.tags, ...rec.industry, sectionTags(s, dna)].join(" "));
+      fts.run(sid, "section", rec.name, s.heading, s.text, [...rec.tags, ...rec.industry, sectionTags(s, dna), rec.page ?? "home", rec.viewport ?? "desktop"].join(" "));
     }
     d.exec("COMMIT");
   } catch (e) {
@@ -136,6 +148,9 @@ interface SiteRow {
   industry: string;
   dna: string;
   shots: string;
+  page?: string;
+  host?: string;
+  viewport?: string;
 }
 
 export function rowToSite(r: SiteRow): SiteRecord {
@@ -150,7 +165,23 @@ export function rowToSite(r: SiteRow): SiteRecord {
     industry: JSON.parse(r.industry),
     dna: JSON.parse(r.dna),
     shots: JSON.parse(r.shots),
+    page: r.page ?? "home",
+    host: r.host ?? hostOf(r.url),
+    viewport: (r.viewport as SiteRecord["viewport"]) ?? "desktop",
   };
+}
+
+export function hostOf(url: string): string {
+  try {
+    return new URL(/^https?:/.test(url) ? url : `https://${url}`).hostname.replace(/^www\./, "").toLowerCase();
+  } catch {
+    return url;
+  }
+}
+
+/** Una referencia por marca: la portada de escritorio (para paletas, tipografía, similares). */
+export function homeSites(): SiteRecord[] {
+  return allSites().filter((s) => (s.page ?? "home") === "home" && (s.viewport ?? "desktop") === "desktop");
 }
 
 export function getSite(id: string): SiteRecord | undefined {

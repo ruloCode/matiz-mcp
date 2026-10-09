@@ -1,0 +1,470 @@
+[
+ {
+  "ref_id": "deel.com#0",
+  "label": "navbar",
+  "secondary": "banner",
+  "note": "promo bar above nav"
+ },
+ {
+  "ref_id": "clerk.com#7",
+  "label": "feature-split",
+  "secondary": null,
+  "note": "text left, pricing UI mock right"
+ },
+ {
+  "ref_id": "brex.com#2",
+  "label": "logos",
+  "secondary": null,
+  "note": "only 'Trusted by' heading visible"
+ },
+ {
+  "ref_id": "givingli.com#11",
+  "label": "steps",
+  "secondary": "feature-split",
+  "note": "Step 01 of 03, card + text"
+ },
+ {
+  "ref_id": "twenty.com#9",
+  "label": "faq",
+  "secondary": "cta",
+  "note": "CTA headline over question list"
+ },
+ {
+  "ref_id": "replicate.com#9",
+  "label": "features",
+  "secondary": "bento",
+  "note": "grid of feature cards with charts"
+ },
+ {
+  "ref_id": "bold.co#3",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank gradient"
+ },
+ {
+  "ref_id": "deno.com#24",
+  "label": "stats",
+  "secondary": "logos",
+  "note": "two metric cards, trusted-by line"
+ },
+ {
+  "ref_id": "incident.io#1",
+  "label": "navbar",
+  "secondary": null,
+  "note": "logo + links + login"
+ },
+ {
+  "ref_id": "tailwindcss.com#6",
+  "label": "content",
+  "secondary": null,
+  "note": "heading strip only"
+ },
+ {
+  "ref_id": "supabase.com#4",
+  "label": "showcase",
+  "secondary": "features",
+  "note": "tabs over large dashboard screenshot"
+ },
+ {
+  "ref_id": "epidemicsound.com#11",
+  "label": "faq",
+  "secondary": null,
+  "note": "accordion questions"
+ },
+ {
+  "ref_id": "convex.dev#5",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "big quote plus two quote cards"
+ },
+ {
+  "ref_id": "monday.com#2",
+  "label": "logos",
+  "secondary": null,
+  "note": "Fortune 500 logo row"
+ },
+ {
+  "ref_id": "planetscale.com#5",
+  "label": "content",
+  "secondary": "testimonials",
+  "note": "tabbed explainer with diagram and quote"
+ },
+ {
+  "ref_id": "lovable.dev#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "logo, links, buttons"
+ },
+ {
+  "ref_id": "sequencehq.com#15",
+  "label": "faq",
+  "secondary": null,
+  "note": "FAQ accordion"
+ },
+ {
+  "ref_id": "sequencehq.com#13",
+  "label": "feature-split",
+  "secondary": "faq",
+  "note": "use-case accordion with image"
+ },
+ {
+  "ref_id": "spline.design#14",
+  "label": "cta",
+  "secondary": null,
+  "note": "headline + get started button"
+ },
+ {
+  "ref_id": "bold.co#10",
+  "label": "footer",
+  "secondary": null,
+  "note": "link columns, legal, social"
+ },
+ {
+  "ref_id": "getyourguide.com#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "logo and account icons"
+ },
+ {
+  "ref_id": "attio.com#22",
+  "label": "cta",
+  "secondary": null,
+  "note": "dev CTA with View docs"
+ },
+ {
+  "ref_id": "cursor.com#10",
+  "label": "blog",
+  "secondary": null,
+  "note": "recent posts cards with dates"
+ },
+ {
+  "ref_id": "cakeequity.com#10",
+  "label": "features",
+  "secondary": "gallery",
+  "note": "persona photo cards"
+ },
+ {
+  "ref_id": "trawelt.com#7",
+  "label": "blog",
+  "secondary": null,
+  "note": "From the Blog carousel"
+ },
+ {
+  "ref_id": "paraform.com#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "thin announcement bar"
+ },
+ {
+  "ref_id": "incommonwith.com#8",
+  "label": "newsletter",
+  "secondary": null,
+  "note": "email signup"
+ },
+ {
+  "ref_id": "duolingo.com#6",
+  "label": "cta",
+  "secondary": "feature-split",
+  "note": "Super Duolingo promo with button"
+ },
+ {
+  "ref_id": "figma.com#9",
+  "label": "gallery",
+  "secondary": null,
+  "note": "template category image carousel"
+ },
+ {
+  "ref_id": "jitter.video#9",
+  "label": "cta",
+  "secondary": "features",
+  "note": "heading + explore features button"
+ },
+ {
+  "ref_id": "tailwindcss.com#2",
+  "label": "logos",
+  "secondary": null,
+  "note": "'Supported by the best' heading only"
+ },
+ {
+  "ref_id": "inngest.com#4",
+  "label": "unclear",
+  "secondary": null,
+  "note": "solid blue decorative band"
+ },
+ {
+  "ref_id": "revolut.com#1",
+  "label": "logos",
+  "secondary": "stats",
+  "note": "award and rating badges"
+ },
+ {
+  "ref_id": "warp.dev#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "thin event announcement bar"
+ },
+ {
+  "ref_id": "platzi.com#6",
+  "label": "cta",
+  "secondary": null,
+  "note": "headline + Comenzar button"
+ },
+ {
+  "ref_id": "clerk.com#10",
+  "label": "footer",
+  "secondary": null,
+  "note": "link columns, copyright"
+ },
+ {
+  "ref_id": "coursera.org#9",
+  "label": "content",
+  "secondary": null,
+  "note": "intent selector chips"
+ },
+ {
+  "ref_id": "relume.ai#11",
+  "label": "cta",
+  "secondary": "hero",
+  "note": "prompt input getting started"
+ },
+ {
+  "ref_id": "aboard.com#6",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank"
+ },
+ {
+  "ref_id": "ramp.com#4",
+  "label": "cta",
+  "secondary": null,
+  "note": "URL input for recommendations"
+ },
+ {
+  "ref_id": "merchants.doordash.com-en-us#0",
+  "label": "navbar",
+  "secondary": null,
+  "note": "logo, menus, get started"
+ },
+ {
+  "ref_id": "lusion.co#0",
+  "label": "unclear",
+  "secondary": null,
+  "note": "all black"
+ },
+ {
+  "ref_id": "attio.com#8",
+  "label": "content",
+  "secondary": null,
+  "note": "short intro paragraph"
+ },
+ {
+  "ref_id": "sentry.io-welcome#9",
+  "label": "newsletter",
+  "secondary": null,
+  "note": "email newsletter form"
+ },
+ {
+  "ref_id": "clickup.com#14",
+  "label": "logos",
+  "secondary": "features",
+  "note": "compliance certification badges"
+ },
+ {
+  "ref_id": "cursor.com#2",
+  "label": "feature-split",
+  "secondary": null,
+  "note": "text left, app screenshot right"
+ },
+ {
+  "ref_id": "convex.dev#1",
+  "label": "hero",
+  "secondary": null,
+  "note": "big headline, CTAs, product panel"
+ },
+ {
+  "ref_id": "stripe.com#4",
+  "label": "showcase",
+  "secondary": "feature-split",
+  "note": "large product UI, small heading"
+ },
+ {
+  "ref_id": "hex.tech#8",
+  "label": "feature-split",
+  "secondary": "testimonials",
+  "note": "text + quote left, screenshot right"
+ },
+ {
+  "ref_id": "framer.com#1",
+  "label": "hero",
+  "secondary": null,
+  "note": "headline + AI prompt box"
+ },
+ {
+  "ref_id": "sprig.com#8",
+  "label": "feature-split",
+  "secondary": "logos",
+  "note": "compliance badges + text"
+ },
+ {
+  "ref_id": "huggingface.co#2",
+  "label": "content",
+  "secondary": null,
+  "note": "trending models/spaces/datasets lists"
+ },
+ {
+  "ref_id": "openai.com#3",
+  "label": "blog",
+  "secondary": null,
+  "note": "recent news with dates"
+ },
+ {
+  "ref_id": "teachable.com#4",
+  "label": "stats",
+  "secondary": null,
+  "note": "three big metrics"
+ },
+ {
+  "ref_id": "honeybook.com#14",
+  "label": "feature-split",
+  "secondary": "cta",
+  "note": "text + button, photo gallery mock"
+ },
+ {
+  "ref_id": "ouraring.com#6",
+  "label": "blog",
+  "secondary": null,
+  "note": "press articles cards"
+ },
+ {
+  "ref_id": "firecrawl.dev#9",
+  "label": "content",
+  "secondary": "integrations",
+  "note": "section intro heading only"
+ },
+ {
+  "ref_id": "stripe.com#17",
+  "label": "stats",
+  "secondary": null,
+  "note": "three big numbers"
+ },
+ {
+  "ref_id": "monday.com#11",
+  "label": "showcase",
+  "secondary": "cta",
+  "note": "headline, button, workflow diagram"
+ },
+ {
+  "ref_id": "superhuman.com#1",
+  "label": "banner",
+  "secondary": null,
+  "note": "thin announcement bar"
+ },
+ {
+  "ref_id": "calendly.com#8",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank"
+ },
+ {
+  "ref_id": "aesop.com#0",
+  "label": "hero",
+  "secondary": "navbar",
+  "note": "full-bleed image with headline"
+ },
+ {
+  "ref_id": "mixpanel.com-home#0",
+  "label": "banner",
+  "secondary": null,
+  "note": "thin announcement bar"
+ },
+ {
+  "ref_id": "on.co-es-co#1",
+  "label": "hero",
+  "secondary": null,
+  "note": "full-bleed photo with headline"
+ },
+ {
+  "ref_id": "vizcom.com#8",
+  "label": "features",
+  "secondary": "gallery",
+  "note": "scattered image feature cards"
+ },
+ {
+  "ref_id": "dub.co#12",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "single customer quote"
+ },
+ {
+  "ref_id": "deel.com#2",
+  "label": "logos",
+  "secondary": "cta",
+  "note": "logo wall under CTA pill"
+ },
+ {
+  "ref_id": "resend.com#14",
+  "label": "testimonials",
+  "secondary": null,
+  "note": "single quote with author"
+ },
+ {
+  "ref_id": "mercury.com#6",
+  "label": "unclear",
+  "secondary": null,
+  "note": "blank dark"
+ },
+ {
+  "ref_id": "cal.com#3",
+  "label": "features",
+  "secondary": null,
+  "note": "icon feature card grid"
+ },
+ {
+  "ref_id": "sequencehq.com#9",
+  "label": "showcase",
+  "secondary": null,
+  "note": "headline over large product UI"
+ },
+ {
+  "ref_id": "webflow.com#8",
+  "label": "contact",
+  "secondary": "feature-split",
+  "note": "multi-field sales form + screenshot"
+ },
+ {
+  "ref_id": "robot.com#3",
+  "label": "content",
+  "secondary": null,
+  "note": "statement text with thumbnail"
+ },
+ {
+  "ref_id": "arc.net#9",
+  "label": "footer",
+  "secondary": "cta",
+  "note": "download CTA above footer links"
+ },
+ {
+  "ref_id": "attio.com#2",
+  "label": "content",
+  "secondary": null,
+  "note": "section intro text"
+ },
+ {
+  "ref_id": "sprig.com#7",
+  "label": "showcase",
+  "secondary": "features",
+  "note": "tabs over large visual"
+ },
+ {
+  "ref_id": "resend.com#9",
+  "label": "content",
+  "secondary": null,
+  "note": "heading strip only"
+ },
+ {
+  "ref_id": "stripe.com#3",
+  "label": "bento",
+  "secondary": "feature-split",
+  "note": "text, bullets, mixed cards with stat"
+ }
+]

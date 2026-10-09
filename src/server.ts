@@ -6,7 +6,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { readFileSync, existsSync } from "node:fs";
 import { z } from "zod";
-import { HOME, allSites, findSite, openDb } from "./db.js";
+import { HOME, allSites, findSite, homeSites, openDb } from "./db.js";
+import { PAGE_TYPES } from "./pages.js";
+import { fontAvailability } from "./analysis/fonts.js";
 import { corpusIsEmpty, importPack } from "./pack.js";
 import { designDocCount, seedDesignDocs } from "./design-docs.js";
 import { search, searchDesignDocs } from "./search.js";
@@ -104,6 +106,8 @@ server.registerTool(
       theme: z.enum(["light", "dark"]).optional(),
       industry: z.string().optional().describe("ai, devtools, fintech, productivity, design, ecommerce, health, education, marketing, media, travel, agency, hardware"),
       project: z.string().optional().describe("Aplica la memoria de gusto de este proyecto al ranking"),
+      page: z.enum(PAGE_TYPES).optional().describe("Solo esta clase de página (pricing, signup, about…). Sin filtro busca en todas"),
+      viewport: z.enum(["desktop", "mobile"]).default("desktop").describe("mobile = capturas a 390 px"),
       limit: z.number().int().min(1).max(20).default(6),
       offset: z.number().int().min(0).default(0),
       images: z.boolean().default(true).describe("Incluir miniaturas inline"),
@@ -117,6 +121,8 @@ server.registerTool(
       theme: a.theme,
       industry: a.industry,
       project: a.project,
+      page: a.page,
+      viewport: a.viewport,
       limit: a.limit,
       offset: a.offset,
     });
@@ -129,6 +135,8 @@ server.registerTool(
         ref_id: h.refId,
         site: h.name,
         url: h.url,
+        page: h.site.page,
+        viewport: h.site.viewport,
         section_type: h.sectionType,
         heading: h.heading,
         section: sec && { columns: sec.columns, dark: sec.dark, bg: sec.bg, height: sec.height, reasons: sec.reasons },
@@ -244,8 +252,8 @@ server.registerTool(
   guard(async (a) => {
     const base = findSite(a.ref_id);
     if (!base) return fail(`No está en el corpus: ${a.ref_id}`);
-    const ranked = allSites()
-      .filter((s) => s.id !== base.id)
+    const ranked = homeSites()
+      .filter((s) => s.id !== base.id && s.host !== base.host)
       .filter((s) => !a.same_industry || s.industry.some((i) => base.industry.includes(i)))
       .map((s) => ({ s, sim: similarity(base.dna, s.dna) }))
       .sort((x, y) => y.sim.score - x.sim.score)
@@ -262,8 +270,11 @@ server.registerTool(
 );
 
 // ---------------------------------------------------------------- composición e identidad
-function pickSites(a: { query?: string; industry?: string; theme?: "light" | "dark"; tags?: string[] }): SiteRecord[] {
-  let sites = allSites();
+function pickSites(a: { query?: string; industry?: string; theme?: "light" | "dark"; tags?: string[]; page?: string; viewport?: "desktop" | "mobile" }): SiteRecord[] {
+  // por defecto una referencia por marca: su portada de escritorio
+  const page = a.page ?? "home";
+  const viewport = a.viewport ?? "desktop";
+  let sites = allSites().filter((s) => (s.page ?? "home") === page && (s.viewport ?? "desktop") === viewport);
   if (a.query) {
     const ids = new Set(search({ query: a.query, kind: "site", limit: 30 }).hits.map((h) => h.siteId));
     sites = sites.filter((s) => ids.has(s.id));
@@ -279,6 +290,8 @@ const filterShape = {
   industry: z.string().optional(),
   theme: z.enum(["light", "dark"]).optional(),
   tags: z.array(z.string()).optional(),
+  page: z.enum(PAGE_TYPES).optional().describe("Tipo de página (home por defecto): pricing, signup, about, customers, features, blog, changelog…"),
+  viewport: z.enum(["desktop", "mobile"]).optional().describe("desktop por defecto; mobile = versión de 390 px"),
 };
 
 server.registerTool(
@@ -339,8 +352,18 @@ server.registerTool(
         pairs: [...pairs.values()]
           .sort((x, y) => y.sites.length - x.sites.length)
           .slice(0, a.limit)
-          .map((p) => ({ heading: p.heading, body: p.body, pairing: p.pairing, used_by: p.sites, avg_display_px: avg(p.display), avg_display_tracking_em: avg(p.tracking), avg_base_px: avg(p.base) })),
-        note: "Las familias comerciales (Söhne, GT, etc.) pueden requerir licencia; busca equivalentes libres por clase (serif/sans/mono).",
+          .map((p) => ({
+            heading: p.heading,
+            body: p.body,
+            pairing: p.pairing,
+            heading_font: fontAvailability(p.heading),
+            body_font: fontAvailability(p.body),
+            used_by: p.sites,
+            avg_display_px: avg(p.display),
+            avg_display_tracking_em: avg(p.tracking),
+            avg_base_px: avg(p.base),
+          })),
+        note: "heading_font/body_font dicen si la familia es libre (Google Fonts/Fontsource) y, si no, sus equivalentes libres.",
       }),
     ]);
   }),
@@ -520,6 +543,9 @@ server.registerTool(
         industries: count(sites.flatMap((s) => s.industry)),
         tags: count(sites.flatMap((s) => s.tags)),
         themes: count(sites.map((s) => s.dna.theme)),
+        brands: new Set(sites.map((s) => s.host)).size,
+        pages: count(sites.map((s) => s.page ?? "home")),
+        viewports: count(sites.map((s) => s.viewport ?? "desktop")),
         latest: sites.slice(0, 10).map((s) => s.id),
       }),
     ]);

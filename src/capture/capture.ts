@@ -6,7 +6,8 @@ import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildDna } from "../analysis/dna.js";
-import { SHOTS, saveSite, siteIdFromUrl } from "../db.js";
+import { SHOTS, hostOf, saveSite, siteIdFromUrl } from "../db.js";
+import { pageTypeFromUrl, pickInnerPages, type PageType } from "../pages.js";
 import type { RawPage, SiteRecord } from "../types.js";
 import { installChromium, isMissingBrowser } from "../browser-install.js";
 
@@ -66,6 +67,28 @@ export interface CaptureOptions {
   colorScheme?: "light" | "dark";
   /** Máximo de secciones con recorte propio. */
   maxSectionShots?: number;
+  /** Tipo de página (home, pricing…); por defecto se deduce de la URL pedida. */
+  page?: string;
+  /** mobile = iPhone de 390 px (registro aparte, id con sufijo @m). */
+  viewport?: "desktop" | "mobile";
+}
+
+const MOBILE_UA =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1";
+
+/** Enlaces internos de una portada → las páginas que vale la pena capturar (pricing, signup…). */
+export async function discoverPages(input: string, max = 6): Promise<Array<{ type: PageType; url: string }>> {
+  const b = await getBrowser();
+  const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, userAgent: UA, locale: "en-US" });
+  const page = await ctx.newPage();
+  try {
+    await page.goto(normalizeUrl(input), { waitUntil: "domcontentloaded", timeout: 30_000 });
+    await page.waitForTimeout(1500);
+    const hrefs = await page.evaluate(() => Array.from(document.querySelectorAll("a[href]")).map((a) => (a as HTMLAnchorElement).href));
+    return pickInnerPages(page.url(), hrefs, max);
+  } finally {
+    await ctx.close().catch(() => {});
+  }
 }
 
 export function normalizeUrl(url: string): string {
@@ -174,13 +197,12 @@ export async function captureSite(input: string, opts: CaptureOptions = {}): Pro
   const url = normalizeUrl(input);
   const store = opts.store !== false;
   const b = await getBrowser();
-  const ctx = await b.newContext({
-    viewport: { width: opts.width ?? 1440, height: opts.height ?? 900 },
-    deviceScaleFactor: 1,
-    userAgent: UA,
-    locale: "en-US",
-    colorScheme: opts.colorScheme ?? "light",
-  });
+  const mobile = opts.viewport === "mobile";
+  const ctx = await b.newContext(
+    mobile
+      ? { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: MOBILE_UA, locale: "en-US", colorScheme: opts.colorScheme ?? "light", reducedMotion: "reduce" }
+      : { viewport: { width: opts.width ?? 1440, height: opts.height ?? 900 }, deviceScaleFactor: 1, userAgent: UA, locale: "en-US", colorScheme: opts.colorScheme ?? "light", reducedMotion: "reduce" },
+  );
   const page = await ctx.newPage();
   try {
     const res = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
@@ -195,7 +217,7 @@ export async function captureSite(input: string, opts: CaptureOptions = {}): Pro
     const raw = (await page.evaluate(EXTRACT)) as RawPage;
     if (!raw.sections.length) throw new Error("La página no tiene bloques medibles (¿bloqueo anti-bot o render vacío?)");
     const finalUrl = page.url();
-    const id = siteIdFromUrl(finalUrl.split("?")[0]);
+    const id = siteIdFromUrl(finalUrl.split("?")[0]) + (mobile ? "@m" : "");
     const dna = buildDna(raw, { industry: opts.industry });
 
     const shots: SiteRecord["shots"] = {};
@@ -235,6 +257,9 @@ export async function captureSite(input: string, opts: CaptureOptions = {}): Pro
       industry: dna.industry,
       dna,
       shots,
+      page: opts.page ?? pageTypeFromUrl(url) ?? "home",
+      host: hostOf(finalUrl),
+      viewport: mobile ? "mobile" : "desktop",
     };
     if (store) saveSite(record);
     return { record, raw, ms: Date.now() - t0 };
