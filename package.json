@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').copyFileSync('src/capture/extract.browser.js','dist/capture/extract.browser.js')\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html')\"",
     "prepare": "npm run build",
     "export-pack": "tsx scripts/export-pack.ts",
     "build:fonts": "tsx scripts/build-fonts.ts",
@@ -34,6 +34,7 @@
     "seed": "tsx scripts/seed.ts",
     "seed:design-md": "tsx scripts/seed-design-md.ts",
     "smoke": "tsx scripts/smoke.ts",
+    "gallery": "tsx src/cli.ts gallery",
     "reanalyze": "tsx scripts/reanalyze.ts",
     "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts"
   },

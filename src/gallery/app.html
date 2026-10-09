@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matiz · Galería</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #ffffff; --soft: #f3f3f4; --soft-2: #e9e9eb; --ink: #141414; --muted: #66666c; --line: #e4e4e7; --mark: #2f6bff;
+  --font: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0b0b0c; --soft: #161618; --soft-2: #222225; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e; --mark: #86a6ff; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: 6px; }
+code, .mono { font-family: var(--mono); }
+
+header { position: sticky; top: 0; z-index: 10; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.top { display: flex; align-items: center; gap: 16px; padding: 12px 20px; }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: -0.03em; font-size: 17px; white-space: nowrap; }
+.logo i { width: 18px; height: 18px; border-radius: 5px; background: conic-gradient(from 210deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
+.search { flex: 1; max-width: 640px; display: flex; align-items: center; gap: 8px; background: var(--soft); border-radius: 999px; padding: 9px 16px; }
+.search input { border: 0; background: transparent; outline: none; width: 100%; }
+.seg { display: inline-flex; background: var(--soft); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: transparent; border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.meta { margin-left: auto; color: var(--muted); font-size: 13px; white-space: nowrap; }
+.filters { display: flex; gap: 8px; padding: 0 20px 12px; overflow-x: auto; scrollbar-width: none; align-items: center; }
+.filters::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 500; }
+.chip span { color: var(--muted); font-weight: 400; margin-left: 4px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] span { color: inherit; opacity: .7; }
+.filters select { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 6px 10px; font-size: 13px; }
+.sep { flex: none; width: 1px; height: 22px; background: var(--line); margin-inline: 4px; }
+
+main { padding: 20px; }
+.grid { columns: 4 300px; column-gap: 16px; }
+.grid.mobile { columns: 6 200px; }
+.item { break-inside: avoid; margin-bottom: 16px; cursor: pointer; display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 0; }
+.shot { background: var(--soft); border-radius: 14px; overflow: hidden; border: 1px solid var(--line); position: relative; }
+.shot img { display: block; width: 100%; height: auto; }
+.shot .ph { aspect-ratio: 16 / 9; display: grid; place-items: center; gap: 6px; padding: 16px; color: var(--muted); font-size: 12px; text-align: center; }
+.item:hover .shot { border-color: color-mix(in oklab, var(--ink) 30%, transparent); }
+.cap { display: flex; align-items: center; gap: 8px; padding: 8px 2px 0; font-size: 13px; }
+.cap b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cap .t { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); background: var(--soft); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; border: 1px solid var(--line); }
+.more { display: block; margin: 12px auto 40px; }
+.empty { text-align: center; color: var(--muted); padding: 80px 20px; }
+
+/* panel de detalle */
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 20; }
+aside { position: fixed; top: 0; right: 0; bottom: 0; width: min(1100px, 100%); background: var(--bg); z-index: 21; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); box-shadow: -20px 0 60px rgba(0,0,0,.18); }
+@media (max-width: 900px) { aside { grid-template-columns: minmax(0, 1fr); overflow-y: auto; } }
+.pane-img { background: var(--soft); overflow-y: auto; padding: 24px; }
+.pane-img img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; background: var(--bg); }
+.pane-img .stack { display: grid; gap: 10px; }
+.pane-info { overflow-y: auto; padding: 24px; display: grid; gap: 22px; align-content: start; border-left: 1px solid var(--line); }
+.pane-info h2 { margin: 0; font-size: 22px; letter-spacing: -0.03em; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer; font-weight: 500; font-size: 13px; background: var(--soft); text-decoration: none; display: inline-flex; gap: 6px; align-items: center; }
+.btn:hover { background: var(--soft-2); }
+.btn.ink { background: var(--ink); color: var(--bg); }
+.close { position: absolute; top: 14px; right: 14px; z-index: 2; }
+h3 { margin: 0 0 8px; font-size: 12px; font-family: var(--mono); color: var(--muted); font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.sw { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; cursor: pointer; background: var(--bg); text-align: left; padding: 0; }
+.sw i { display: block; height: 44px; }
+.sw span { display: block; padding: 6px 8px; font-family: var(--mono); font-size: 11px; line-height: 1.35; }
+.sw small { color: var(--muted); }
+dl.kv { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; font-size: 13px; }
+dl.kv dt { color: var(--muted); }
+dl.kv dd { margin: 0; overflow-wrap: anywhere; }
+.reasons { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+.seq { display: flex; flex-wrap: wrap; gap: 6px; }
+.seq button { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; background: var(--bg); cursor: pointer; }
+.seq button[aria-current="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.seq button:disabled { opacity: .5; cursor: default; }
+.sims { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.sims button { border: 0; padding: 0; background: transparent; cursor: pointer; text-align: left; font-size: 12px; }
+.sims img, .sims .ph { width: 100%; border-radius: 8px; border: 1px solid var(--line); display: block; aspect-ratio: 16/10; object-fit: cover; object-position: top; background: var(--soft); }
+pre.code { margin: 0; background: #141414; color: #ededee; border-radius: 12px; padding: 14px; font-size: 12px; line-height: 1.55; overflow: auto; max-height: 360px; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 13px; z-index: 30; }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="logo"><i aria-hidden="true"></i>Matiz</div>
+    <label class="search"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Busca: pricing con 3 planes, hero oscuro con serif, login…" autocomplete="off"></label>
+    <div class="seg" role="group" aria-label="Qué ver"><button type="button" data-kind="section" aria-pressed="true">Secciones</button><button type="button" data-kind="page" aria-pressed="false">Páginas</button></div>
+    <div class="seg" role="group" aria-label="Versión"><button type="button" data-vp="desktop" aria-pressed="true">Escritorio</button><button type="button" data-vp="mobile" aria-pressed="false">Móvil</button></div>
+    <span class="meta" id="meta"></span>
+  </div>
+  <div class="filters" id="filters"></div>
+</header>
+<main>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden>Nada con esos filtros. Prueba otra búsqueda o quita un filtro.</p>
+  <button class="btn more" id="more" type="button" hidden>Cargar más</button>
+</main>
+<div class="scrim" id="scrim" hidden></div>
+<aside id="panel" hidden aria-label="Detalle"></aside>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const TYPES_ES = { hero: "Hero", navbar: "Navbar", logos: "Logos", features: "Features", "feature-split": "Imagen + texto", bento: "Bento", steps: "Pasos", stats: "Cifras", testimonials: "Testimonios", pricing: "Precios", comparison: "Comparativa", faq: "FAQ", cta: "CTA", newsletter: "Newsletter", integrations: "Integraciones", team: "Equipo", blog: "Blog", contact: "Contacto", gallery: "Galería", video: "Video", showcase: "Showcase", footer: "Footer", content: "Contenido", banner: "Banner", page: "Página" };
+  const PAGES_ES = { home: "Portada", pricing: "Precios", signup: "Registro", login: "Login", about: "Nosotros", customers: "Clientes", features: "Producto", changelog: "Changelog", blog: "Blog", integrations: "Integraciones", careers: "Empleos", contact: "Contacto", security: "Seguridad", enterprise: "Empresas", docs: "Docs" };
+  const state = { q: "", kind: "section", viewport: "desktop", type: "", page: "", industry: "", theme: "", offset: 0, total: 0 };
+  const toast = (m) => { const t = document.createElement("div"); t.className = "toast"; t.textContent = m; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); };
+  const copy = async (text, label) => { try { await navigator.clipboard.writeText(text); toast(`${label} copiado`); } catch { toast("No pude copiar al portapapeles"); } };
+  const api = (p) => fetch(p).then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(new Error(e.error || r.status)))));
+
+  // ---------- filtros ----------
+  let F = null;
+  async function loadFacets() {
+    F = await api("/api/facets");
+    $("#meta").textContent = `${F.brands} marcas · ${F.sites} páginas`;
+    renderFilters();
+  }
+  function renderFilters() {
+    const types = F.types.filter((t) => t.value !== "content" && t.value !== "banner");
+    $("#filters").innerHTML =
+      (state.kind === "section"
+        ? `<button class="chip" data-type="" aria-pressed="${!state.type}">Destacadas</button>` +
+          types.map((t) => `<button class="chip" data-type="${t.value}" aria-pressed="${state.type === t.value}">${TYPES_ES[t.value] || t.value}<span>${t.n}</span></button>`).join("") +
+          `<span class="sep"></span>`
+        : "") +
+      `<select id="f-page" aria-label="Página"><option value="">Todas las páginas</option>${F.pages.map((p) => `<option value="${p.value}" ${state.page === p.value ? "selected" : ""}>${PAGES_ES[p.value] || p.value} (${p.n})</option>`).join("")}</select>` +
+      `<select id="f-ind" aria-label="Industria"><option value="">Todas las industrias</option>${F.industries.map((p) => `<option value="${p.value}" ${state.industry === p.value ? "selected" : ""}>${p.value} (${p.n})</option>`).join("")}</select>` +
+      `<select id="f-theme" aria-label="Tema"><option value="">Claro y oscuro</option><option value="light" ${state.theme === "light" ? "selected" : ""}>Claro</option><option value="dark" ${state.theme === "dark" ? "selected" : ""}>Oscuro</option></select>`;
+  }
+  $("#filters").addEventListener("click", (e) => {
+    const c = e.target.closest("[data-type]");
+    if (!c) return;
+    state.type = c.dataset.type;
+    renderFilters();
+    reload();
+  });
+  $("#filters").addEventListener("change", (e) => {
+    if (e.target.id === "f-page") state.page = e.target.value;
+    if (e.target.id === "f-ind") state.industry = e.target.value;
+    if (e.target.id === "f-theme") state.theme = e.target.value;
+    reload();
+  });
+  document.querySelectorAll("[data-kind]").forEach((b) => b.addEventListener("click", () => {
+    state.kind = b.dataset.kind; state.type = "";
+    document.querySelectorAll("[data-kind]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    renderFilters(); reload();
+  }));
+  document.querySelectorAll("[data-vp]").forEach((b) => b.addEventListener("click", () => {
+    state.viewport = b.dataset.vp;
+    document.querySelectorAll("[data-vp]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    reload();
+  }));
+  let qt;
+  $("#q").addEventListener("input", (e) => { clearTimeout(qt); qt = setTimeout(() => { state.q = e.target.value; reload(); }, 280); });
+
+  // ---------- grilla ----------
+  const tile = (it) => `<button class="item" type="button" data-ref="${esc(it.ref_id)}">
+      <div class="shot">${it.has_image ? `<img loading="lazy" src="/img/${encodeURIComponent(it.ref_id)}" alt="${esc(TYPES_ES[it.type] || it.type)} de ${esc(it.name)}" width="${it.w}" height="${it.h}">` : `<div class="ph"><span class="dot" style="background:${it.accent || it.bg}"></span>Sin captura en esta máquina<br>Ábrela para capturarla</div>`}</div>
+      <div class="cap"><span class="dot" style="background:${it.accent || it.bg}"></span><b>${esc(it.name)}</b><span class="t">${esc(TYPES_ES[it.type] || it.type)}${it.page && it.page !== "home" ? ` · ${esc(PAGES_ES[it.page] || it.page)}` : ""}</span></div>
+    </button>`;
+  async function load(append) {
+    const p = new URLSearchParams({ q: state.q, kind: state.kind, viewport: state.viewport, type: state.type, page: state.page, industry: state.industry, theme: state.theme, offset: state.offset, limit: 48 });
+    const r = await api(`/api/items?${p}`);
+    state.total = r.total;
+    const html = r.items.map(tile).join("");
+    if (append) $("#grid").insertAdjacentHTML("beforeend", html); else $("#grid").innerHTML = html;
+    $("#grid").classList.toggle("mobile", state.viewport === "mobile");
+    $("#empty").hidden = r.total > 0;
+    $("#more").hidden = state.offset + r.items.length >= r.total;
+  }
+  function reload() { state.offset = 0; load(false); }
+  $("#more").addEventListener("click", () => { state.offset += 48; load(true); });
+  const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && !$("#more").hidden && $("#more").click()), { rootMargin: "600px" });
+  io.observe($("#more"));
+
+  // ---------- detalle ----------
+  $("#grid").addEventListener("click", (e) => { const b = e.target.closest("[data-ref]"); if (b) open(b.dataset.ref); });
+  $("#scrim").addEventListener("click", close);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#panel").hidden) close(); });
+  function close() { $("#panel").hidden = true; $("#scrim").hidden = true; }
+
+  async function open(ref) {
+    const d = await api(`/api/ref/${encodeURIComponent(ref)}`);
+    const P = d.palette, T = d.typography;
+    const roles = [["Fondo", P.background], ["Superficie", P.surface], ["Texto", P.text], ["Secundario", P.mutedText], ["Acento", P.accent], ["Acento 2", P.accent2], ["Borde", P.border]].filter((x) => x[1]);
+    const lv = (k, v) => v ? `<dt>${k}</dt><dd>${esc(v.family)} ${Math.round(v.size)}px / ${v.weight}${v.letterSpacing ? ` · ${v.letterSpacing}em` : ""}</dd>` : "";
+    const fams = T.families.filter((f) => f.share >= 0.05).map((f) => `<dt>${esc(f.family)}</dt><dd>${f.availability.free ? `libre (${esc(f.availability.freeAs)})` : `→ ${esc((f.availability.alternatives || []).join(", "))}`}</dd>`).join("");
+    const isSection = ref.includes("#");
+    $("#panel").innerHTML = `
+      <button class="btn close" type="button" id="x">Cerrar ✕</button>
+      <div class="pane-img">${isSection
+        ? (d.has_image ? `<img src="/img/${encodeURIComponent(ref)}?size=full" alt="Sección completa">` : `<div class="shot"><div class="ph">Sin captura en esta máquina<br><button class="btn ink" type="button" id="cap">Capturar ahora (~10 s)</button></div></div>`)
+        : `<div class="stack">${d.sections.filter((s) => s.has_image).map((s) => `<img loading="lazy" src="/img/${encodeURIComponent(s.ref_id)}?size=full" alt="${esc(s.type)}">`).join("") || `<div class="shot"><div class="ph">Sin capturas en esta máquina<br><button class="btn ink" type="button" id="cap">Capturar ahora (~10 s)</button></div></div>`}</div>`}</div>
+      <div class="pane-info">
+        <div style="display:grid;gap:8px">
+          <h2>${esc(d.name)}</h2>
+          <div class="row" style="font-size:13px;color:var(--muted)"><span>${esc(TYPES_ES[d.type] || d.type)}${d.section ? ` · ${Math.round(d.section.confidence * 100)}%` : ""}</span><span>·</span><span>${esc(PAGES_ES[d.page] || d.page)}</span><span>·</span><span>${d.viewport === "mobile" ? "móvil" : "escritorio"}</span><span>·</span><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.host)} ↗</a></div>
+          <div class="row">${isSection ? `<button class="btn ink" type="button" id="bp">Copiar blueprint</button>` : ""}<button class="btn" type="button" id="md">Copiar DESIGN.md</button><button class="btn" type="button" id="refid">Copiar ref_id</button></div>
+        </div>
+        ${d.section ? `<div><h3>Por qué es ${esc(TYPES_ES[d.section.type] || d.section.type)}</h3><ul class="reasons">${d.section.reasons.map((r) => `<li>${esc(r)}</li>`).join("")}</ul></div>` : ""}
+        <div><h3>Paleta</h3><div class="swatches">${roles.map(([k, h]) => `<button class="sw" type="button" data-hex="${h}"><i style="background:${h}"></i><span>${h}<br><small>${k}</small></span></button>`).join("")}</div></div>
+        <div><h3>Tipografía</h3><dl class="kv">${lv("Display", T.levels.display)}${lv("Títulos", T.levels.heading)}${lv("Texto", T.levels.body)}${lv("Etiquetas", T.levels.label)}<dt>Base</dt><dd>${T.base}px · razón ${T.ratio}</dd>${fams}</dl></div>
+        <div><h3>Forma y layout</h3><dl class="kv"><dt>Radio</dt><dd>${d.shape.radius >= 999 ? "pill" : d.shape.radius + "px"}${d.shape.pill ? " · usa pill" : ""}</dd><dt>Sombras</dt><dd>${esc(d.shape.shadows)}</dd><dt>Ancho</dt><dd>${d.layout.contentWidth}px · ${esc(d.layout.density)}</dd>${d.buttons[0] ? `<dt>Botón</dt><dd>${esc(d.buttons[0].bg)} / ${esc(d.buttons[0].text)} · radio ${d.buttons[0].radius >= 999 ? "pill" : d.buttons[0].radius + "px"}</dd>` : ""}</dl></div>
+        <div><h3>Página completa</h3><div class="seq">${d.sections.map((s) => `<button type="button" data-open="${esc(s.ref_id)}" aria-current="${s.ref_id === ref}" ${s.has_image ? "" : ""}>${esc(TYPES_ES[s.type] || s.type)}</button>`).join("")}</div></div>
+        <div id="bp-out"></div>
+        <div><h3>Parecidas</h3><div class="sims" id="sims">Buscando…</div></div>
+      </div>`;
+    $("#panel").hidden = false; $("#scrim").hidden = false;
+    $("#x").onclick = close;
+    $("#refid").onclick = () => copy(ref, "ref_id");
+    $("#md").onclick = async () => copy(await fetch(`/api/designmd/${encodeURIComponent(d.site_id)}`).then((r) => r.text()), "DESIGN.md");
+    $("#panel").querySelectorAll("[data-hex]").forEach((b) => (b.onclick = () => copy(b.dataset.hex, b.dataset.hex)));
+    $("#panel").querySelectorAll("[data-open]").forEach((b) => (b.onclick = () => open(b.dataset.open)));
+    const capBtn = $("#cap");
+    if (capBtn) capBtn.onclick = async () => { capBtn.textContent = "Capturando…"; capBtn.disabled = true; try { await fetch(`/api/capture/${encodeURIComponent(d.site_id)}`, { method: "POST" }); open(ref); } catch { capBtn.textContent = "No se pudo capturar"; } };
+    const bp = $("#bp");
+    if (bp) bp.onclick = async () => {
+      bp.textContent = "Midiendo la sección…"; bp.disabled = true;
+      try {
+        const r = await api(`/api/blueprint/${encodeURIComponent(ref)}`);
+        $("#bp-out").innerHTML = `<h3>Blueprint</h3><pre class="code">${esc(r.outline)}</pre><div class="row" style="margin-top:8px"><button class="btn" type="button" id="cp-jsx">Copiar JSX</button><button class="btn" type="button" id="cp-out">Copiar esquema</button></div>`;
+        $("#cp-jsx").onclick = () => copy(r.jsx, "JSX");
+        $("#cp-out").onclick = () => copy(r.outline, "Esquema");
+        copy(r.jsx, "Blueprint (JSX)");
+        bp.textContent = "Copiar blueprint";
+      } catch (e) { $("#bp-out").innerHTML = `<p class="reasons">${esc(e.message)}</p>`; bp.textContent = "Reintentar blueprint"; }
+      bp.disabled = false;
+    };
+    api(`/api/similar/${encodeURIComponent(d.site_id)}`).then((sims) => {
+      $("#sims").innerHTML = sims.map((s) => `<button type="button" data-open="${esc(s.ref_id)}">${s.has_image ? `<img loading="lazy" src="/img/${encodeURIComponent(s.ref_id)}" alt="">` : `<div class="ph"></div>`}<span>${esc(s.name)} · ${Math.round(s.score * 100)}%</span></button>`).join("");
+      $("#sims").querySelectorAll("[data-open]").forEach((b) => (b.onclick = () => open(b.dataset.open)));
+    });
+  }
+
+  loadFacets().then(reload);
+})();
+</script>
+</body>
+</html>

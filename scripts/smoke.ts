@@ -37,6 +37,7 @@ await call("remember_taste", { project: "smoke", verdict: "like", ref_id: "linea
 await call("remember_taste", { project: "smoke", verdict: "rule", note: "sin gradientes" });
 await call("get_taste", { project: "smoke" }, 600);
 await call("critique_against_reference", { url: "https://vercel.com", ref_id: "linear.app", images: false }, 1500);
+await call("get_section_blueprint", { ref_id: "linear.app#3", format: "outline" }, 500);
 await call("get_reference", { ref_id: "no-existe.xyz" }, 200);
 await client.close();
 console.log(`\n${failures} llamadas con isError (se espera 1: la de no-existe.xyz)`);

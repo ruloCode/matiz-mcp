@@ -12,10 +12,11 @@ import { fontAvailability } from "./analysis/fonts.js";
 import { corpusIsEmpty, importPack } from "./pack.js";
 import { designDocCount, seedDesignDocs } from "./design-docs.js";
 import { search, searchDesignDocs } from "./search.js";
-import { captureSite } from "./capture/capture.js";
+import { captureSite, extractSectionTree } from "./capture/capture.js";
 import { similarity } from "./analysis/similarity.js";
 import { aggregateComposition } from "./analysis/composition.js";
 import { critique } from "./analysis/critique.js";
+import { blueprint, type TreeNode } from "./analysis/blueprint.js";
 import { toDesignMd, toDtcg } from "./analysis/designmd.js";
 import { parseColor, tonalScale } from "./analysis/color.js";
 import { SECTION_TYPES } from "./analysis/sections.js";
@@ -231,6 +232,50 @@ server.registerTool(
     const out: Content[] = [];
     if (a.format !== "dtcg") out.push(text(toDesignMd(name, site.url, site.dna)));
     if (a.format !== "design.md") out.push(text(toDtcg(name, site.dna)));
+    return ok(out);
+  }),
+);
+
+server.registerTool(
+  "get_section_blueprint",
+  {
+    title: "Blueprint de una sección",
+    description:
+      "Convierte una sección de referencia en su esqueleto: rejilla, columnas, gaps, padding, ancho máximo, jerarquía " +
+      "tipográfica y bloques repetidos, más un componente React + Tailwind con esas medidas. El texto es de relleno: " +
+      "toma la estructura, no el copy. La primera vez mide la sección en vivo (~8 s); después sale de caché.",
+    inputSchema: {
+      ref_id: z.string().describe("Sección, p. ej. 'linear.app#3' (los ref_id de search_references)"),
+      format: z.enum(["outline", "jsx", "both"]).default("both"),
+      component_name: z.string().regex(/^[A-Z][A-Za-z0-9]*$/).default("Seccion"),
+      refresh: z.boolean().default(false).describe("Volver a medir aunque haya caché"),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: true },
+  },
+  guard(async (a) => {
+    if (!a.ref_id.includes("#")) return fail("Pasa el ref_id de una SECCIÓN (sitio#índice); usa get_reference para ver las secciones de un sitio.");
+    const site = findSite(a.ref_id);
+    if (!site) return fail(`No está en el corpus: ${a.ref_id}`);
+    const idx = +a.ref_id.split("#")[1];
+    const sec = site.dna.sections.find((s) => s.idx === idx);
+    if (!sec) return fail(`${site.id} no tiene la sección ${idx}. Secciones: ${site.dna.sections.map((s) => `#${s.idx} ${s.type}`).join(", ")}`);
+    const key = `${site.id}#${idx}`;
+    const db = openDb();
+    let tree: TreeNode | null = null;
+    const cached = !a.refresh && (db.prepare("SELECT tree FROM trees WHERE ref_id = ?").get(key) as { tree: string } | undefined);
+    if (cached) tree = JSON.parse(cached.tree);
+    else {
+      tree = (await serial(() => extractSectionTree(site.url, { top: sec.top, height: sec.height }, site.viewport ?? "desktop"))) as TreeNode | null;
+      if (!tree) return fail(`No pude ubicar la sección en la página en vivo (¿el sitio cambió desde ${site.capturedAt.slice(0, 10)}?). Recaptúralo con capture_site y vuelve a intentar.`);
+      db.prepare("INSERT INTO trees (ref_id, tree, captured_at) VALUES (?,?,?) ON CONFLICT(ref_id) DO UPDATE SET tree=excluded.tree, captured_at=excluded.captured_at").run(key, JSON.stringify(tree), new Date().toISOString());
+    }
+    if (!tree) return fail("Sin árbol para esa sección.");
+    const bp = blueprint(tree, a.component_name);
+    const out: Content[] = [
+      text({ ref_id: key, site: site.name, url: site.url, section_type: sec.type, tokens: tokens(site.dna), note: "Medidas reales; texto de relleno. Ajusta colores y fuentes a tu marca (o usa get_design_md)." }),
+    ];
+    if (a.format !== "jsx") out.push(text(bp.outline));
+    if (a.format !== "outline") out.push(text(bp.jsx));
     return ok(out);
   }),
 );
@@ -523,6 +568,32 @@ server.registerTool(
     inputSchema: { project: z.string().min(1) },
   },
   guard(async (a) => ok([text(tasteProfile(a.project))])),
+);
+
+let galleryUrl: string | undefined;
+server.registerTool(
+  "open_gallery",
+  {
+    title: "Abrir la galería",
+    description:
+      "Abre la galería local de Matiz (estilo Mobbin) en el navegador del usuario: grilla de secciones y páginas con " +
+      "filtros, ficha de datos, blueprint y DESIGN.md por referencia. Úsala cuando el usuario quiera VER referencias.",
+    inputSchema: { query: z.string().optional().describe("Búsqueda inicial (opcional)") },
+    annotations: { readOnlyHint: true },
+  },
+  guard(async () => {
+    if (!galleryUrl) {
+      const { startGallery } = await import("./gallery/server.js");
+      galleryUrl = await startGallery(Number(process.env.MATIZ_GALLERY_PORT ?? 4040)).catch(async (e) => {
+        if (/EADDRINUSE/.test(String(e))) return `http://localhost:${process.env.MATIZ_GALLERY_PORT ?? 4040}`;
+        throw e;
+      });
+    }
+    const { spawn } = await import("node:child_process");
+    const opener = process.platform === "darwin" ? "open" : process.platform === "win32" ? "explorer" : "xdg-open";
+    spawn(opener, [galleryUrl], { stdio: "ignore", detached: true }).unref();
+    return ok([text(`Galería abierta en ${galleryUrl}`)]);
+  }),
 );
 
 server.registerTool(

@@ -363,6 +363,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
         <details><summary>¿En qué se diferencia de Mobbin o Refero?</summary><p>Mobbin y Refero son catálogos curados enormes, con apps de iOS y flujos completos. Matiz mide sitios web públicos: te da tokens, composición, alternativas libres y la revisión de tu build, corre en tu máquina y es gratis. Se pueden usar juntos.</p></details>
         <details><summary>¿De dónde salen las referencias?</summary><p>De sitios públicos que Matiz abre con un navegador y mide. No copia catálogos de servicios de pago. Las capturas se guardan solo en tu máquina, y cada resultado cita la URL original.</p></details>
         <details><summary>¿Qué tan exacto es?</summary><p id="faq-acc">Colores, tamaños, tracking y radios se leen directo del navegador. El tipo de cada sección es una clasificación, y medimos su exactitud contra secciones etiquetadas a ciegas.</p></details>
+        <details><summary>¿Hay una galería para ver las referencias?</summary><p>Sí. <code>npx -y <span data-pkg></span> gallery</code> abre en tu navegador una galería estilo Mobbin con todo tu corpus: filtros, ficha de datos y botones para copiar el blueprint o el DESIGN.md. Corre solo en tu máquina.</p></details>
         <details><summary>¿Puedo agregar los sitios que me gustan?</summary><p>Sí. Pídele a tu agente <code>capture_site</code> con la URL, o corre <code>npx -y <span data-pkg></span> capture https://…</code>.</p></details>
         <details><summary>¿Funciona sin internet?</summary><p>Buscar, comparar y exportar funcionan offline. Capturar sitios nuevos y revisar una URL necesitan red.</p></details>
         <details><summary>¿Y en Windows?</summary><p>Funciona con Node 22.13+. Si tu cliente no encuentra <code>npx</code>, usa <code>cmd</code> como comando y <code>/c npx -y …</code> como argumentos.</p></details>
@@ -508,7 +509,8 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
     ["¿Qué secciones lleva un landing de herramientas para desarrolladores y en qué orden?", "get_composition"],
     ["Dame el DESIGN.md de linear.app y adáptalo a mi marca, que es verde.", "get_design_md"],
     ["Muéstrame páginas de precios con 3 planes y toggle mensual/anual.", "search_references"],
-    ["Propón un par tipográfico libre parecido al de stripe.com.", "suggest_type_pairings"],
+    ["Dame el blueprint en React + Tailwind de la sección de precios de clerk.com.", "get_section_blueprint"],
+    ["Abre la galería y muéstrame heros oscuros de herramientas para desarrolladores.", "open_gallery"],
     ["Revisa http://localhost:3000 contra la referencia que elegimos y dime qué corregir.", "critique_against_reference"],
   ];
   $("#prompts").innerHTML = prompts

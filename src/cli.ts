@@ -43,6 +43,7 @@ async function main() {
         "  npx -y matiz-mcp doctor          diagnóstico",
         "  npx -y matiz-mcp capture <url>   agrega un sitio",
         "  npx -y matiz-mcp seed [--limit N] [--only fintech] [--images] [--pages] [--mobile]",
+        "  npx -y matiz-mcp gallery [--port 4040] [--no-open]   galería local estilo Mobbin",
         "  npx -y matiz-mcp stats",
         "",
         "Datos en ~/.matiz (cámbialo con MATIZ_HOME).",
@@ -125,6 +126,20 @@ async function main() {
     await closeBrowser();
     say(`Listo: ${r.done} capturados, ${r.failures.length} fallidos.`);
     return;
+  }
+
+  if (cmd === "gallery") {
+    const { startGallery } = await import("./gallery/server.js");
+    const { importPack, corpusIsEmpty } = await import("./pack.js");
+    if (corpusIsEmpty()) importPack();
+    const url = await startGallery(Number(opt("port") ?? 4040));
+    say(`Galería de Matiz en ${url}  (Ctrl+C para cerrar)`);
+    if (!flag("no-open")) {
+      const { spawn } = await import("node:child_process");
+      const opener = process.platform === "darwin" ? "open" : process.platform === "win32" ? "explorer" : "xdg-open";
+      spawn(opener, [url], { stdio: "ignore", detached: true }).unref();
+    }
+    await new Promise(() => {}); // queda sirviendo
   }
 
   if (cmd === "stats") {

@@ -61,6 +61,11 @@ export function openDb(path = join(HOME, "corpus.db")): DatabaseSync {
       note TEXT,
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS trees (
+      ref_id TEXT PRIMARY KEY,
+      tree TEXT NOT NULL,
+      captured_at TEXT NOT NULL
+    );
     CREATE VIRTUAL TABLE IF NOT EXISTS refs_fts USING fts5(
       ref_id UNINDEXED, kind UNINDEXED, name, heading, body, tags,
       tokenize = 'unicode61 remove_diacritics 2'

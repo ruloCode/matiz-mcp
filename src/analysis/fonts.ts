@@ -26,7 +26,7 @@ export function normalizeFamily(family: string): string {
     .replace(/_[0-9a-f]{5,}$/i, "")
     .toLowerCase()
     .replace(/[^a-z0-9]/g, "")
-    .replace(/(variable|var|vf|web|webfont|font|text|regular|fallback)$/g, "")
+    .replace(/(variable|var|vf|web|webfont|font|text|regular|fallback|numbers)$/g, "")
     .replace(/(variable|var|vf)$/g, "");
 }
 

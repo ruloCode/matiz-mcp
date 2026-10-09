@@ -13,6 +13,7 @@ import { installChromium, isMissingBrowser } from "../browser-install.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const EXTRACT = readFileSync(join(here, "extract.browser.js"), "utf8");
+const TREE = readFileSync(join(here, "tree.browser.js"), "utf8").replace(/^\s*\/\/.*$/gm, "").trim();
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36";
@@ -193,6 +194,35 @@ function prettyName(raw: RawPage, url: string): string {
   const base = host.split(".")[0];
   if (fromTitle && fromTitle.length <= 28 && fromTitle.toLowerCase().includes(base.slice(0, 4))) return fromTitle;
   return base.charAt(0).toUpperCase() + base.slice(1);
+}
+
+/**
+ * Árbol de layout de UNA sección, medido en vivo (para get_section_blueprint). Se ubica la
+ * sección por la caja que guardó la captura (top/alto), con el mismo viewport.
+ */
+export async function extractSectionTree(
+  input: string,
+  box: { top: number; height: number },
+  viewport: "desktop" | "mobile" = "desktop",
+): Promise<unknown | null> {
+  const b = await getBrowser();
+  const mobile = viewport === "mobile";
+  const ctx = await b.newContext(
+    mobile
+      ? { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: MOBILE_UA, locale: "en-US", reducedMotion: "reduce" }
+      : { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, userAgent: UA, locale: "en-US", reducedMotion: "reduce" },
+  );
+  const page = await ctx.newPage();
+  try {
+    await page.goto(normalizeUrl(input), { waitUntil: "domcontentloaded", timeout: 45_000 });
+    await page.waitForLoadState("load", { timeout: 15_000 }).catch(() => {});
+    await page.waitForTimeout(1200);
+    await clearOverlays(page);
+    await autoScroll(page);
+    return await page.evaluate(`(${TREE})(${JSON.stringify(box)})`);
+  } finally {
+    await ctx.close().catch(() => {});
+  }
 }
 
 export interface CaptureResult {
