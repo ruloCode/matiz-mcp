@@ -216,7 +216,7 @@ async function autoScroll(page: Page) {
 }
 
 /** Miniatura JPEG reescalada en una pestaña en blanco (sin CSP del sitio). */
-async function thumbnail(ctx: BrowserContext, jpeg: Buffer, width = 640): Promise<Buffer> {
+export async function thumbnail(ctx: BrowserContext, jpeg: Buffer, width = 640): Promise<Buffer> {
   const p = await ctx.newPage();
   try {
     const dataUrl = await p.evaluate(

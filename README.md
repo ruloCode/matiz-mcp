@@ -15,6 +15,8 @@ Además responde preguntas que ninguna galería responde:
 - *¿Mi build se parece a la referencia? ¿Qué le falta?* Lo mide sobre tu `localhost`.
 - *¿Qué me gustó en este proyecto?* Guarda una memoria de gusto que reordena las búsquedas.
 
+Y desde la 0.2.0 tiene un **Estudio**: un lienzo tipo Figma donde tu agente diseña las pantallas *antes* de tocar el código del proyecto, con el sistema de una marca medida, y donde tú comentas sobre cualquier elemento. Matiz no diseña ni llama a ningún modelo: diseña el modelo que ya usas, con los datos de Matiz.
+
 El corpus se arma con **sitios públicos que capturas tú** (Playwright) y con **DESIGN.md de repos con licencia MIT**. No copia catálogos de servicios pagos.
 
 ## Instalar
@@ -45,6 +47,18 @@ Las rutas exactas de cada archivo de configuración están en [matiz-mcp.vercel.
 - Botones para copiar el blueprint o el DESIGN.md.
 - Escucha solo en `127.0.0.1`: las capturas no salen de tu máquina.
 
+### Estudio: diseñar antes del código
+
+Pídele a tu agente algo como *"diseña en el Estudio de Matiz la landing de mi producto"* (o usa el prompt `design_in_studio`). El flujo:
+
+1. `create_board` fija el sistema del tablero. Con `base_ref` toma la marca medida de un sitio del corpus (colores con rol, tipografías con alternativa libre, radio, ancho) y verifica que se lea: si un rol medido no pasa AA o falta, lo deriva y lo anota. Devuelve la guía de clases (`bg-background`, `text-muted`, `bg-primary`, `font-heading`, `rounded-brand`, `max-w-content`…) con el contraste real de cada combinación.
+2. `put_screen` dibuja una pantalla: el agente escribe el `<body>` en HTML + Tailwind v4 y Matiz lo renderiza en Chromium (escritorio 1440, tablet 834 o móvil 390), le devuelve la **miniatura** para que vea lo que hizo y le dice lo que se rompió: desborde horizontal con el elemento culpable, contraste texto por texto, imágenes rotas, fuentes que no cargaron, botones táctiles chicos. Cada llamada es una **versión** nueva; `variant_of` pone variantes debajo de la original para compararlas.
+3. `check_screen` mide la pantalla como si fuera un sitio del corpus: colores fuera del sistema del tablero (el `text-gray-500` de siempre), tipografías y radio que no son los del tablero y la crítica completa contra la marca de referencia. Puntaje 0–100.
+4. `open_board` te abre el lienzo: zoom y desplazamiento, capas, variantes lado a lado, vista en vivo interactiva, historial de versiones, **Aprobar / Descartar**, y comentarios con **C**: haces clic sobre un elemento y el agente recibe con `get_board` qué elemento señalaste (etiqueta, texto, clases y selector).
+5. `export_board` entrega a código: HTML autónomo por pantalla, capturas, `theme.css` con el `@theme` de Tailwind v4 y `handoff.md` con tokens, pantallas, notas y comentarios.
+
+`npx -y matiz-mcp studio` abre el lienzo sin pasar por el agente. Todo vive en `~/.matiz` (tableros en la misma SQLite, capturas en `~/.matiz/studio/`). Las pantallas se renderizan sin red salvo Google Fonts e imágenes https, y la vista en vivo corre aislada (iframe con sandbox y CSP sin `connect-src`).
+
 ### CLI
 
 ```bash
@@ -55,13 +69,15 @@ npx -y matiz-mcp doctor     # diagnóstico
 npx -y matiz-mcp capture https://ejemplo.com
 npx -y matiz-mcp capture https://ejemplo.com --deep   # + componentes con hover real, ritmo y movimiento
 npx -y matiz-mcp seed --pages --mobile   # páginas internas y versión móvil
+npx -y matiz-mcp studio     # el lienzo del Estudio
 ```
 
 ### Desarrollo
 
 ```bash
 pnpm install && pnpm test
-pnpm smoke                 # las 16 tools por MCP real
+pnpm smoke                 # las tools de referencias por MCP real
+pnpm build && pnpm smoke:studio   # el Estudio de punta a punta (MATIZ_HOME aislado; --keep deja el lienzo arriba)
 pnpm eval                  # exactitud del clasificador contra research/eval
 pnpm ask <tool> '<json>'   # llama una tool y guarda sus imágenes en .ask/
 pnpm export-pack           # empaqueta el corpus actual para distribuir
@@ -88,7 +104,21 @@ pnpm build:site            # regenera la landing con las cifras reales del corpu
 | `remember_taste` / `get_taste` | Memoria de gusto por proyecto: like, dislike y reglas propias. |
 | `corpus_stats` | Qué hay en el corpus. |
 
-También trae un prompt, `design_from_references`, que guía al agente por el flujo completo: composición → referencias → identidad → DESIGN.md → construir → criticar.
+**Estudio**
+
+| Tool | Para qué |
+|---|---|
+| `create_board` | Crea o actualiza un tablero con su sistema: marca medida (`base_ref`) y/o tema a mano. Devuelve la guía de clases con contrastes reales. |
+| `put_screen` | Dibuja una pantalla (HTML + Tailwind v4) en desktop, tablet o móvil. Devuelve la miniatura y los problemas medidos. Cada llamada = versión nueva. |
+| `get_screen` | El HTML de una pantalla (actual o anterior), su historial y sus comentarios abiertos. |
+| `check_screen` | Mide la pantalla contra el sistema del tablero y una referencia del corpus. Puntaje 0–100 con dónde y qué cambiar. |
+| `get_board` | Pantallas, estados que marcó el humano y comentarios con el elemento exacto; vista general en una imagen. |
+| `open_board` | Abre el lienzo en el navegador. |
+| `manage_screen` | Aprobar, descartar, restaurar una versión, mover o borrar. |
+| `resolve_comment` | Cierra un comentario con la respuesta de qué cambió. |
+| `export_board` | Entrega a código: HTML por pantalla, capturas, `theme.css` y `handoff.md`. |
+
+También trae dos prompts: `design_from_references` (composición → referencias → identidad → DESIGN.md → construir → criticar) y `design_in_studio` (lo mismo, pero diseñando primero en el lienzo y entregando a código al final).
 
 ## Cómo funciona
 

@@ -4,7 +4,6 @@
 // tools para composición, pares tipográficos, paletas con evidencia, crítica y gusto.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { readFileSync, existsSync } from "node:fs";
 import { z } from "zod";
 import { HOME, allSites, findSite, homeSites, openDb } from "./db.js";
 import { PAGE_TYPES } from "./pages.js";
@@ -26,28 +25,10 @@ import { deepAnalyze } from "./capture/deep.js";
 import { SECTION_TYPES } from "./analysis/sections.js";
 import { remember, forget, tasteProfile } from "./taste.js";
 import type { Dna, SectionType, SiteRecord } from "./types.js";
+import { registerStudioPrompt, registerStudioTools } from "./studio/tools.js";
 
-type Content =
-  | { type: "text"; text: string }
-  | { type: "image"; data: string; mimeType: string };
-
-const text = (v: unknown): Content => ({ type: "text", text: typeof v === "string" ? v : JSON.stringify(v, null, 1) });
-function image(path?: string): Content[] {
-  if (!path || !existsSync(path)) return [];
-  return [{ type: "image", data: readFileSync(path).toString("base64"), mimeType: "image/jpeg" }];
-}
-const ok = (content: Content[]) => ({ content });
-const fail = (msg: string) => ({ content: [text(msg)], isError: true });
-
-function guard<A>(fn: (a: A) => Promise<{ content: Content[]; isError?: boolean }> | { content: Content[]; isError?: boolean }) {
-  return async (a: A) => {
-    try {
-      return await fn(a);
-    } catch (e) {
-      return fail(`Error: ${(e as Error).message}`);
-    }
-  };
-}
+import { existsSync } from "node:fs";
+import { fail, guard, image, ok, text, type Content } from "./mcp-util.js";
 
 /** Resumen compacto del DNA: lo que un agente necesita para construir, sin ruido. */
 function tokens(d: Dna) {
@@ -83,7 +64,7 @@ function tokens(d: Dna) {
 const MAX_IMAGES = 8;
 
 const server = new McpServer(
-  { name: "matiz", version: "0.1.0" },
+  { name: "matiz", version: "0.2.0" },
   {
     instructions:
       "Referencias de diseño como datos. Flujo recomendado para diseñar algo nuevo: " +
@@ -91,7 +72,11 @@ const server = new McpServer(
       "(mira las imágenes: los tokens dicen el qué, la imagen el cómo); 3) suggest_palettes y suggest_type_pairings " +
       "para fijar la identidad con evidencia; 4) get_design_md de la referencia elegida como base de tokens; " +
       "5) al terminar, critique_against_reference con la URL local del build. Cita siempre la URL original del sitio. " +
-      "Si el corpus no cubre lo que necesitas, capture_site agrega cualquier sitio público.",
+      "Si el corpus no cubre lo que necesitas, capture_site agrega cualquier sitio público. " +
+      "ESTUDIO (diseñar pantallas antes del código, como en Figma): create_board fija el sistema (base_ref = marca medida), " +
+      "put_screen dibuja cada pantalla en HTML + Tailwind con esos tokens y te devuelve la miniatura, check_screen la mide " +
+      "contra el sistema y la referencia, open_board la muestra al humano en un lienzo, get_board trae sus comentarios " +
+      "(con el elemento exacto) y export_board entrega a código. Matiz no diseña: diseñas tú con sus datos.",
   },
 );
 
@@ -654,7 +639,6 @@ server.registerTool(
   guard(async (a) => ok([text(tasteProfile(a.project))])),
 );
 
-let galleryUrl: string | undefined;
 server.registerTool(
   "open_gallery",
   {
@@ -666,13 +650,8 @@ server.registerTool(
     annotations: { readOnlyHint: true },
   },
   guard(async () => {
-    if (!galleryUrl) {
-      const { startGallery } = await import("./gallery/server.js");
-      galleryUrl = await startGallery(Number(process.env.MATIZ_GALLERY_PORT ?? 4040)).catch(async (e) => {
-        if (/EADDRINUSE/.test(String(e))) return `http://localhost:${process.env.MATIZ_GALLERY_PORT ?? 4040}`;
-        throw e;
-      });
-    }
+    const { ensureGallery } = await import("./gallery/server.js");
+    const galleryUrl = await ensureGallery();
     const { spawn } = await import("node:child_process");
     const opener = process.platform === "darwin" ? "open" : process.platform === "win32" ? "explorer" : "xdg-open";
     spawn(opener, [galleryUrl], { stdio: "ignore", detached: true }).unref();
@@ -713,6 +692,9 @@ server.registerTool(
     ]);
   }),
 );
+
+registerStudioTools(server);
+registerStudioPrompt(server);
 
 // ---------------------------------------------------------------- prompt
 server.registerPrompt(

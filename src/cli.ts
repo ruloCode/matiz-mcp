@@ -5,6 +5,7 @@
 //   matiz-mcp doctor          diagnóstico
 //   matiz-mcp capture <url…> [--deep]  agrega sitios al corpus (y su análisis profundo)
 //   matiz-mcp seed [--limit N] [--only industria] [--images]
+//   matiz-mcp studio          el lienzo del Estudio (tableros que dibuja el agente)
 //   matiz-mcp stats
 
 const [maj, min] = process.versions.node.split(".").map(Number);
@@ -44,6 +45,7 @@ async function main() {
         "  npx -y matiz-mcp capture <url> [--deep]   agrega un sitio (--deep: componentes con hover real, ritmo, movimiento)",
         "  npx -y matiz-mcp seed [--limit N] [--only fintech] [--images] [--pages] [--mobile]",
         "  npx -y matiz-mcp gallery [--port 4040] [--no-open]   galería local estilo Mobbin",
+        "  npx -y matiz-mcp studio  [--port 4040] [--no-open]   Estudio: el lienzo donde tu agente diseña pantallas",
         "  npx -y matiz-mcp stats",
         "",
         "Datos en ~/.matiz (cámbialo con MATIZ_HOME).",
@@ -133,7 +135,7 @@ async function main() {
     return;
   }
 
-  if (cmd === "gallery") {
+  if (cmd === "gallery" || cmd === "studio") {
     const { startGallery } = await import("./gallery/server.js");
     const { importPack, corpusIsEmpty } = await import("./pack.js");
     if (corpusIsEmpty()) importPack();
@@ -142,7 +144,7 @@ async function main() {
     if (!flag("no-open")) {
       const { spawn } = await import("node:child_process");
       const opener = process.platform === "darwin" ? "open" : process.platform === "win32" ? "explorer" : "xdg-open";
-      spawn(opener, [url], { stdio: "ignore", detached: true }).unref();
+      spawn(opener, [cmd === "studio" ? `${url}/studio` : url], { stdio: "ignore", detached: true }).unref();
     }
     await new Promise(() => {}); // queda sirviendo
   }

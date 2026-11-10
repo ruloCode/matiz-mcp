@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matiz · Estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #ffffff; --canvas: #f0f0f1; --dot: #d9d9dc; --soft: #f3f3f4; --soft-2: #e9e9eb; --ink: #141414; --muted: #66666c; --line: #e4e4e7;
+  --mark: #2f6bff; --ok: #1a7f4b; --warn: #b26a00; --bad: #c4302b; --pin: #ff5b2e;
+  --font: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111113; --canvas: #0b0b0c; --dot: #26262a; --soft: #19191c; --soft-2: #232327; --ink: #f2f2f3; --muted: #a1a1a7; --line: #2a2a2e; --mark: #86a6ff; --ok: #4cc38a; --warn: #f5a524; --bad: #ff6b65; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 13px/1.45 var(--font); -webkit-font-smoothing: antialiased; overflow: hidden; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: 6px; }
+.mono { font-family: var(--mono); }
+
+.app { display: grid; grid-template-rows: 48px minmax(0, 1fr); height: 100%; }
+#view { min-height: 0; height: 100%; }
+.main { height: 100%; }
+.bar { display: flex; align-items: center; gap: 10px; padding: 0 12px; border-bottom: 1px solid var(--line); background: var(--bg); z-index: 5; min-width: 0; }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: -0.03em; font-size: 15px; white-space: nowrap; color: inherit; text-decoration: none; }
+.logo i { width: 16px; height: 16px; border-radius: 5px; background: conic-gradient(from 210deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
+.logo span { color: var(--muted); font-weight: 500; }
+.crumb { color: var(--muted); }
+.crumb b { color: var(--ink); font-weight: 600; }
+.seg { display: inline-flex; background: var(--soft); border-radius: 8px; padding: 2px; }
+.seg button { border: 0; background: transparent; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-weight: 500; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.seg kbd { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.grow { flex: 1; }
+.btn { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 5px 10px; cursor: pointer; font-weight: 500; display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; text-decoration: none; color: inherit; }
+.btn:hover { background: var(--soft); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.ok[aria-pressed="true"] { background: var(--ok); color: #fff; border-color: var(--ok); }
+.btn.bad[aria-pressed="true"] { background: var(--bad); color: #fff; border-color: var(--bad); }
+.btn.mid[aria-pressed="true"] { background: var(--soft-2); }
+.zoom { font-family: var(--mono); font-size: 12px; min-width: 52px; text-align: center; color: var(--muted); }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); display: inline-block; }
+.status-txt { color: var(--muted); font-size: 12px; white-space: nowrap; }
+
+.main { display: grid; grid-template-columns: 248px minmax(0, 1fr) 300px; min-height: 0; }
+.main.no-right { grid-template-columns: 248px minmax(0, 1fr) 0; }
+.side { border-right: 1px solid var(--line); background: var(--bg); overflow-y: auto; padding: 12px 10px; display: grid; gap: 18px; align-content: start; }
+.right { border-left: 1px solid var(--line); background: var(--bg); overflow-y: auto; padding: 14px 14px 30px; display: grid; gap: 18px; align-content: start; }
+.main.no-right .right { display: none; }
+h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: none; letter-spacing: 0; padding-inline: 6px; }
+.layer { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: transparent; padding: 6px; border-radius: 6px; cursor: pointer; text-align: left; }
+.layer:hover { background: var(--soft); }
+.layer[aria-current="true"] { background: color-mix(in oklab, var(--mark) 14%, transparent); }
+.layer .nm { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.layer .v { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.layer.var { padding-left: 22px; }
+.ico { width: 14px; height: 14px; flex: none; color: var(--muted); }
+.sdot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--line); }
+.sdot.approved { background: var(--ok); }
+.sdot.discarded { background: var(--bad); }
+.badge { font-size: 10px; font-weight: 600; border-radius: 999px; padding: 1px 6px; background: var(--pin); color: #fff; }
+.sw { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-inline: 6px; }
+.sw div { display: grid; gap: 3px; font-size: 10px; color: var(--muted); min-width: 0; }
+.sw i { display: block; height: 26px; border-radius: 6px; border: 1px solid var(--line); }
+.sw span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; padding-inline: 6px; font-size: 12px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.src { padding-inline: 6px; font-size: 12px; color: var(--muted); }
+.src a { color: var(--mark); }
+
+/* lienzo */
+.stage { position: relative; overflow: hidden; background-color: var(--canvas); background-image: radial-gradient(var(--dot) 1px, transparent 1px); background-size: 20px 20px; cursor: default; touch-action: none; }
+.stage.panning, .stage.space { cursor: grab; }
+.stage.panning:active { cursor: grabbing; }
+.stage.commenting .board-img { cursor: crosshair; }
+.world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.art { position: absolute; }
+.art .lbl { position: absolute; left: 0; bottom: 100%; display: flex; gap: 6px; align-items: center; white-space: nowrap; transform-origin: 0 100%; transform: scale(var(--inv)); padding-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 500; cursor: move; user-select: none; }
+.art .lbl b { color: var(--ink); font-weight: 600; }
+.art .lbl .tag { font-family: var(--mono); font-size: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.art .lbl .st { font-size: 10px; font-weight: 600; border-radius: 4px; padding: 0 5px; color: #fff; }
+.art .lbl .st.approved { background: var(--ok); }
+.art .lbl .st.discarded { background: var(--bad); }
+.art .frame { position: relative; background: #fff; box-shadow: 0 0 0 calc(1px * var(--inv)) rgba(0,0,0,.08), 0 2px 10px rgba(0,0,0,.06); overflow: hidden; }
+.art.sel .frame { box-shadow: 0 0 0 calc(2px * var(--inv)) var(--mark); }
+.art.discarded .frame { opacity: .35; }
+.board-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; user-select: none; -webkit-user-drag: none; }
+.art .ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: calc(14px * var(--inv)); text-align: center; padding: 20px; }
+.pin { position: absolute; width: 26px; height: 26px; margin: -26px 0 0 0; transform-origin: 0 100%; transform: scale(var(--inv)); border-radius: 13px 13px 13px 2px; background: var(--pin); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); cursor: pointer; border: 2px solid #fff; }
+.pin.resolved { background: var(--muted); opacity: .7; }
+.pin.hot { outline: 3px solid color-mix(in oklab, var(--pin) 40%, transparent); }
+.hl { position: absolute; border: calc(2px * var(--inv)) solid var(--pin); background: color-mix(in oklab, var(--pin) 10%, transparent); pointer-events: none; border-radius: 2px; }
+.pop { position: absolute; z-index: 8; width: 280px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.18); padding: 10px; display: grid; gap: 8px; }
+.pop textarea { width: 100%; min-height: 70px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: var(--bg); outline: none; }
+.pop textarea:focus { border-color: var(--mark); }
+.pop .on { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pop .row { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+.pop .row small { color: var(--muted); margin-right: auto; }
+.hint { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); background: var(--ink); color: var(--bg); border-radius: 999px; padding: 6px 12px; font-size: 12px; pointer-events: none; opacity: .92; }
+
+/* panel derecho */
+.r-title { display: grid; gap: 2px; }
+.r-title b { font-size: 16px; letter-spacing: -0.02em; }
+.r-title span { color: var(--muted); font-size: 12px; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.note { background: var(--soft); border-radius: 8px; padding: 8px 10px; font-size: 12px; }
+.find { display: grid; gap: 2px; padding: 8px 10px; border-radius: 8px; background: var(--soft); font-size: 12px; }
+.find b { font-weight: 600; }
+.find .sev { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.find .sev.high { color: var(--bad); }
+.find .sev.medium { color: var(--warn); }
+.find .sev.low { color: var(--muted); }
+.find small { color: var(--muted); }
+.cmt { display: grid; gap: 4px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); font-size: 12px; cursor: pointer; }
+.cmt:hover { border-color: var(--pin); }
+.cmt.resolved { opacity: .65; }
+.cmt .who { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 11px; }
+.cmt .on { color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cmt .reply { border-left: 2px solid var(--ok); padding-left: 8px; color: var(--ink); }
+.cmt .act { display: flex; gap: 6px; }
+.cmt .act button { border: 0; background: transparent; color: var(--mark); cursor: pointer; padding: 0; font-size: 11px; }
+.vers { display: grid; gap: 2px; }
+.vers button { display: flex; gap: 8px; width: 100%; border: 0; background: transparent; padding: 5px 6px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px; }
+.vers button:hover { background: var(--soft); }
+.vers button[aria-current="true"] { background: var(--soft-2); }
+.vers .v { font-family: var(--mono); color: var(--muted); width: 26px; flex: none; }
+.vers .n { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.empty-r { color: var(--muted); font-size: 12px; padding-inline: 2px; }
+
+/* lista de tableros */
+.boards { padding: 28px; overflow-y: auto; height: 100%; }
+.boards h1 { margin: 0 0 4px; font-size: 24px; letter-spacing: -0.03em; }
+.boards p.sub { margin: 0 0 22px; color: var(--muted); font-size: 14px; max-width: 70ch; }
+.bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.bcard { display: grid; gap: 8px; text-decoration: none; color: inherit; }
+.bcard .im { aspect-ratio: 16/10; border-radius: 12px; border: 1px solid var(--line); background: var(--canvas); overflow: hidden; display: grid; place-items: center; color: var(--muted); }
+.bcard .im img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.bcard:hover .im { border-color: color-mix(in oklab, var(--ink) 30%, transparent); }
+.bcard .m { display: flex; gap: 8px; align-items: center; }
+.bcard .m b { font-weight: 600; font-size: 14px; }
+.bcard .m .cnt { margin-left: auto; color: var(--muted); font-size: 12px; white-space: nowrap; }
+.bcard .dots { display: flex; gap: 3px; }
+.bcard .dots i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--line); }
+.emptyst { max-width: 560px; margin: 12vh auto 0; text-align: center; color: var(--muted); display: grid; gap: 10px; font-size: 14px; }
+.emptyst b { color: var(--ink); font-size: 18px; letter-spacing: -0.02em; }
+.emptyst code { font-family: var(--mono); background: var(--soft); border-radius: 6px; padding: 8px 12px; color: var(--ink); text-align: left; white-space: pre-wrap; font-size: 12px; }
+
+/* vista en vivo */
+.modal { position: fixed; inset: 0; z-index: 30; background: rgba(10,10,12,.94); display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.modal .mbar { display: flex; gap: 10px; align-items: center; padding: 10px 14px; color: #fff; }
+.modal .mbar b { font-weight: 600; }
+.modal .mbar span { opacity: .7; }
+.modal .mbar .btn { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.18); color: #fff; }
+.modal .wrap { display: grid; place-items: center; overflow: hidden; padding: 0 20px 20px; }
+.modal .device { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); transform-origin: center; }
+.modal .device.mobile { border-radius: 28px; border: 8px solid #1b1b1d; }
+.modal iframe { border: 0; display: block; background: #fff; }
+
+@media (max-width: 1100px) { .main { grid-template-columns: 0 minmax(0, 1fr) 280px; } .side { display: none; } .main.no-right { grid-template-columns: 0 minmax(0,1fr) 0; } }
+@media (max-width: 760px) { .main, .main.no-right { grid-template-columns: minmax(0,1fr); } .right { display: none; } .bar .seg, .bar .zoomctl { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar">
+    <a class="logo" href="/studio"><i></i>Matiz <span>Estudio</span></a>
+    <span class="crumb" id="crumb"></span>
+    <div class="grow"></div>
+    <div class="seg" id="tools" hidden>
+      <button data-tool="move" aria-pressed="true" title="Mover y seleccionar (V)">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l9 5-4 1.2L6.5 12z"/></svg>Mover <kbd>V</kbd></button>
+      <button data-tool="comment" aria-pressed="false" title="Comentar sobre un elemento (C)">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/></svg>Comentar <kbd>C</kbd></button>
+    </div>
+    <div class="row zoomctl" id="zoomctl" hidden>
+      <button class="btn" id="zout" title="Alejar (−)">−</button>
+      <span class="zoom" id="zoomv">100%</span>
+      <button class="btn" id="zin" title="Acercar (+)">+</button>
+      <button class="btn" id="fit" title="Ver todo (⇧1)">Ver todo</button>
+    </div>
+    <span class="status-txt" id="sync" title="El lienzo se actualiza solo cuando el agente dibuja"><span class="live-dot"></span> en vivo</span>
+    <a class="btn" href="/" title="Galería de referencias">Referencias</a>
+  </div>
+  <div id="view" style="min-height:0"></div>
+</div>
+
+<template id="t-board">
+  <div class="main no-right" id="main">
+    <aside class="side">
+      <div><h3>Pantallas</h3><div id="layers"></div></div>
+      <div><h3>Sistema del tablero</h3><div class="sw" id="swatches"></div></div>
+      <dl class="kv" id="tokens"></dl>
+      <div class="src" id="source"></div>
+    </aside>
+    <div class="stage" id="stage" tabindex="0" aria-label="Lienzo">
+      <div class="world" id="world"></div>
+      <div class="hint" id="hint" hidden></div>
+    </div>
+    <aside class="right" id="right"></aside>
+  </div>
+</template>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const api = (p, body) =>
+    fetch(p, body ? { method: "POST", headers: { "content-type": "application/json", "x-matiz": "1" }, body: JSON.stringify(body) } : undefined).then(async (r) => {
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || r.statusText);
+      return j;
+    });
+  const ago = (iso) => {
+    const s = (Date.now() - new Date(iso)) / 1000;
+    if (s < 60) return "ahora";
+    if (s < 3600) return `hace ${Math.round(s / 60)} min`;
+    if (s < 86400) return `hace ${Math.round(s / 3600)} h`;
+    return new Date(iso).toLocaleDateString("es-CO", { day: "numeric", month: "short" });
+  };
+  const STATUS = { approved: "Aprobada", discarded: "Descartada", draft: "Borrador" };
+  const view = $("#view");
+  const boardId = decodeURIComponent((location.pathname.match(/^\/studio\/([^/]+)/) || [])[1] || "");
+
+  // ---------------------------------------------------------------- lista de tableros
+  async function showBoards() {
+    $("#crumb").innerHTML = "";
+    const boards = await api("/studio/api/boards").catch(() => []);
+    if (!boards.length) {
+      view.innerHTML = `<div class="boards"><div class="emptyst"><b>Todavía no hay tableros</b>
+        <span>El Estudio es donde tu agente dibuja las pantallas antes de tocar el código. Pídele algo así:</span>
+        <code>Diseña en el Estudio de Matiz la landing de mi producto: usa get_composition, elige una marca base con create_board y dibuja con put_screen.</code>
+        <span>El lienzo se abre aquí y se actualiza solo mientras el agente dibuja.</span></div></div>`;
+      return;
+    }
+    view.innerHTML = `<div class="boards"><h1>Tableros</h1><p class="sub">Cada tablero es un lienzo donde el agente dibuja pantallas con un sistema de diseño medido. Comenta sobre cualquier elemento y el agente lo lee con get_board.</p>
+      <div class="bgrid">${boards
+        .map(
+          (b) => `<a class="bcard" href="/studio/${encodeURIComponent(b.id)}">
+          <div class="im">${b.thumb ? `<img src="${b.thumb}" alt="">` : "sin pantallas aún"}</div>
+          <div class="m"><span class="dots">${["background", "foreground", "primary", "surface"].filter((k) => b.colors?.[k]).map((k) => `<i style="background:${esc(b.colors[k])}"></i>`).join("")}</span>
+          <b>${esc(b.name)}</b><span class="cnt">${b.screens} pantalla${b.screens === 1 ? "" : "s"}${b.openComments ? ` · ${b.openComments} 💬` : ""}</span></div></a>`,
+        )
+        .join("")}</div></div>`;
+  }
+
+  // ---------------------------------------------------------------- tablero
+  const S = {
+    data: null,
+    cam: { x: 80, y: 80, z: 0.4 },
+    sel: null,
+    tool: "move",
+    hot: null, // comentario resaltado
+    fitted: false,
+  };
+  let stage, world;
+
+  function applyCam() {
+    const { x, y, z } = S.cam;
+    world.style.transform = `translate(${x}px, ${y}px) scale(${z})`;
+    world.style.setProperty("--inv", String(1 / z));
+    $("#zoomv").textContent = `${Math.round(z * 100)}%`;
+    // imágenes: miniatura si se ven pequeñas, completa si se acerca
+    for (const img of world.querySelectorAll(".board-img")) {
+      const want = z * Number(img.dataset.w) > 950 ? img.dataset.full : img.dataset.thumb;
+      if (want && img.getAttribute("src") !== want) img.setAttribute("src", want);
+    }
+  }
+
+  function bounds(list) {
+    const items = list.length ? list : S.data.screens;
+    if (!items.length) return null;
+    const minX = Math.min(...items.map((s) => s.x));
+    const minY = Math.min(...items.map((s) => s.y)) - 40;
+    const maxX = Math.max(...items.map((s) => s.x + s.width));
+    const maxY = Math.max(...items.map((s) => s.y + Math.min(s.height, 6000)));
+    return { minX, minY, maxX, maxY };
+  }
+  function fitTo(list, maxZ = 1) {
+    const b = bounds(list);
+    if (!b) return;
+    const r = stage.getBoundingClientRect();
+    const pad = 60;
+    const z = Math.min(maxZ, (r.width - pad * 2) / (b.maxX - b.minX), (r.height - pad * 2) / (b.maxY - b.minY));
+    S.cam.z = Math.max(0.02, z);
+    S.cam.x = (r.width - (b.maxX - b.minX) * S.cam.z) / 2 - b.minX * S.cam.z;
+    S.cam.y = Math.max(pad, (r.height - (b.maxY - b.minY) * S.cam.z) / 2) - b.minY * S.cam.z;
+    applyCam();
+  }
+  function focusScreen(slug, opts = {}) {
+    const s = S.data.screens.find((x) => x.slug === slug);
+    if (!s) return;
+    select(slug);
+    const r = stage.getBoundingClientRect();
+    const z = Math.min(1, (r.width - 120) / s.width, opts.whole ? (r.height - 120) / Math.min(s.height, 6000) : 10);
+    S.cam.z = Math.max(0.05, z);
+    S.cam.x = (r.width - s.width * S.cam.z) / 2 - s.x * S.cam.z;
+    S.cam.y = 60 - s.y * S.cam.z + (opts.y ? -opts.y * S.cam.z + r.height / 2 - 60 : 0);
+    applyCam();
+  }
+  function zoomAt(factor, cx, cy) {
+    const z = Math.min(4, Math.max(0.02, S.cam.z * factor));
+    const k = z / S.cam.z;
+    S.cam.x = cx - (cx - S.cam.x) * k;
+    S.cam.y = cy - (cy - S.cam.y) * k;
+    S.cam.z = z;
+    applyCam();
+  }
+  const toWorld = (cx, cy) => ({ x: (cx - S.cam.x) / S.cam.z, y: (cy - S.cam.y) / S.cam.z });
+
+  function select(slug) {
+    S.sel = slug;
+    for (const a of world.querySelectorAll(".art")) a.classList.toggle("sel", a.dataset.slug === slug);
+    for (const l of document.querySelectorAll(".layer")) l.setAttribute("aria-current", String(l.dataset.slug === slug));
+    $("#main").classList.toggle("no-right", !slug);
+    renderRight();
+    if (slug) history.replaceState(null, "", `#${slug}`);
+  }
+
+  function renderWorld() {
+    const { screens, comments } = S.data;
+    world.innerHTML = screens
+      .map((s) => {
+        const pins = comments
+          .filter((c) => c.slug === s.slug)
+          .map((c, i) => `<div class="pin ${c.status}${S.hot === c.id ? " hot" : ""}" data-cid="${c.id}" style="left:${c.x}px;top:${c.y}px" title="${esc(c.text)}">${i + 1}</div>`)
+          .join("");
+        const hotC = comments.find((c) => c.id === S.hot && c.slug === s.slug && c.target);
+        const hl = hotC ? `<div class="hl" style="left:${hotC.target.box[0]}px;top:${hotC.target.box[1]}px;width:${hotC.target.box[2]}px;height:${hotC.target.box[3]}px"></div>` : "";
+        const st = s.status !== "draft" ? `<span class="st ${s.status}">${STATUS[s.status]}</span>` : "";
+        const body = s.thumb
+          ? `<img class="board-img" alt="${esc(s.name)}" draggable="false" data-w="${s.width}" data-thumb="${s.thumb}" data-full="${s.shot}" src="${s.thumb}">`
+          : `<div class="ph">${s.renderError ? `No se pudo renderizar: ${esc(s.renderError)}` : "Renderizando…"}</div>`;
+        return `<div class="art ${s.status}${S.sel === s.slug ? " sel" : ""}" data-slug="${esc(s.slug)}" style="left:${s.x}px;top:${s.y}px;width:${s.width}px">
+          <div class="lbl" data-drag="${esc(s.slug)}"><b>${esc(s.name)}</b><span class="tag">${s.viewport} · ${s.width}</span><span class="tag">v${s.version}</span>${st}</div>
+          <div class="frame" style="height:${s.height}px">${body}${hl}${pins}</div></div>`;
+      })
+      .join("");
+    applyCam();
+  }
+
+  function renderLayers() {
+    const { screens, comments, board } = S.data;
+    const roots = screens.filter((s) => !s.variantOf || !screens.some((x) => x.slug === s.variantOf));
+    const kids = (slug) => screens.filter((s) => s.variantOf === slug);
+    const open = (slug) => comments.filter((c) => c.slug === slug && c.status === "open").length;
+    const icon = (vp) =>
+      vp === "mobile"
+        ? `<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/></svg>`
+        : `<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="3" width="13" height="9" rx="1.2"/><path d="M5.5 14h5"/></svg>`;
+    const row = (s, isVar) =>
+      `<button class="layer${isVar ? " var" : ""}" data-slug="${esc(s.slug)}" aria-current="${S.sel === s.slug}">${icon(s.viewport)}<span class="sdot ${s.status}"></span><span class="nm">${esc(s.name)}</span>${open(s.slug) ? `<span class="badge">${open(s.slug)}</span>` : ""}<span class="v">v${s.version}</span></button>`;
+    const walk = (s, d = 0) => row(s, d > 0) + kids(s.slug).map((k) => walk(k, d + 1)).join("");
+    $("#layers").innerHTML = screens.length ? roots.map((s) => walk(s)).join("") : `<p class="empty-r" style="padding-inline:6px">Sin pantallas todavía.</p>`;
+    const t = board.theme;
+    $("#swatches").innerHTML = Object.entries(t.colors)
+      .map(([k, v]) => `<div title="${esc(k)} · ${esc(v)}"><i style="background:${esc(v)}"></i><span>${esc(k)}</span></div>`)
+      .join("");
+    $("#tokens").innerHTML = `<dt>Títulos</dt><dd>${esc(t.fonts.heading)}</dd><dt>Texto</dt><dd>${esc(t.fonts.body)}</dd><dt>Radio</dt><dd>${t.radius}px</dd><dt>Ancho</dt><dd>${t.contentWidth}px</dd><dt>Tema</dt><dd>${t.scheme === "dark" ? "oscuro" : "claro"}</dd>`;
+    $("#source").innerHTML =
+      (t.source ? `Marca base medida: <a href="${esc(t.source.url)}" target="_blank" rel="noopener">${esc(t.source.name)}</a>` : "") +
+      (t.adjusted?.length ? `<details style="margin-top:6px"><summary>${t.adjusted.length} ajuste(s) para que se lea</summary><ul style="margin:6px 0 0;padding-left:16px">${t.adjusted.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></details>` : "");
+  }
+
+  function renderRight() {
+    const el = $("#right");
+    const s = S.data?.screens.find((x) => x.slug === S.sel);
+    if (!s) { el.innerHTML = ""; return; }
+    const cs = S.data.comments.filter((c) => c.slug === s.slug);
+    const findings = (s.findings || []).filter((f) => f.severity !== "low");
+    el.innerHTML = `
+      <div class="r-title"><b>${esc(s.name)}</b><span>${s.viewport} · ${s.width}px · v${s.version} · ${ago(s.updatedAt)}</span></div>
+      <div class="row">
+        <button class="btn ok" data-status="approve" aria-pressed="${s.status === "approved"}">✓ Aprobar</button>
+        <button class="btn bad" data-status="discard" aria-pressed="${s.status === "discarded"}">✕ Descartar</button>
+        <button class="btn mid" data-status="draft" aria-pressed="${s.status === "draft"}">Borrador</button>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="live">▶ Ver en vivo</button>
+        <a class="btn" href="${s.live}" target="_blank" rel="noopener">Abrir en pestaña ↗</a>
+      </div>
+      ${s.note ? `<div class="note">${esc(s.note)}</div>` : ""}
+      <div><h3>Comentarios ${cs.length ? `(${cs.filter((c) => c.status === "open").length} abiertos)` : ""}</h3>
+        <div style="display:grid;gap:6px">${
+          cs.length
+            ? cs
+                .map(
+                  (c, i) => `<div class="cmt ${c.status}" data-cid="${c.id}">
+                  <div class="who"><span class="badge" style="background:${c.status === "open" ? "var(--pin)" : "var(--muted)"}">${i + 1}</span> ${c.author === "agent" ? "Agente" : "Tú"} · ${ago(c.createdAt)} · v${c.version}</div>
+                  <div>${esc(c.text)}</div>
+                  ${c.target ? `<div class="on">en &lt;${esc(c.target.tag)}&gt; ${c.target.text ? `«${esc(c.target.text.slice(0, 60))}»` : ""}</div>` : ""}
+                  ${c.reply ? `<div class="reply">${esc(c.reply)}</div>` : ""}
+                  <div class="act">${c.status === "open" ? `<button data-resolve="${c.id}">Resolver</button>` : `<button data-reopen="${c.id}">Reabrir</button>`}</div>
+                </div>`,
+                )
+                .join("")
+            : `<p class="empty-r">Pulsa <b>C</b> y haz clic sobre cualquier elemento de la pantalla para dejarle una nota al agente.</p>`
+        }</div></div>
+      <div><h3>Problemas medidos ${findings.length ? `(${findings.length})` : ""}</h3>
+        <div style="display:grid;gap:6px">${
+          findings.length
+            ? findings.map((f) => `<div class="find"><span class="sev ${f.severity}">${f.severity === "high" ? "alta" : "media"} · ${esc(f.area)}</span><b>${esc(f.message)}</b>${f.where ? `<small>${esc(f.where)}</small>` : ""}<small>→ ${esc(f.fix)}</small></div>`).join("")
+            : `<p class="empty-r">Nada importante. El agente corre check_screen para la medición completa contra la marca.</p>`
+        }</div></div>
+      <div><h3>Versiones</h3><div class="vers">${s.versions
+        .map((v) => `<button data-ver="${v.version}" aria-current="${v.version === s.version}"><span class="v">v${v.version}</span><span class="n">${esc(v.note || (v.version === 1 ? "primera versión" : "sin nota"))}</span><span class="n" style="margin-left:auto">${ago(v.at)}</span></button>`)
+        .join("")}</div></div>`;
+  }
+
+  async function load(first) {
+    const data = await api(`/studio/api/board/${encodeURIComponent(boardId)}`).catch((e) => ({ error: e.message }));
+    if (data.error) {
+      view.innerHTML = `<div class="boards"><div class="emptyst"><b>No encontré ese tablero</b><span>${esc(data.error)}</span><a class="btn" href="/studio" style="justify-self:center">Ver tableros</a></div></div>`;
+      return false;
+    }
+    S.data = data;
+    $("#crumb").innerHTML = `/ <b>${esc(data.board.name)}</b>`;
+    document.title = `${data.board.name} · Matiz Estudio`;
+    renderLayers();
+    renderWorld();
+    renderRight();
+    if (first) {
+      const want = decodeURIComponent(location.hash.slice(1));
+      if (want && data.screens.some((s) => s.slug === want)) focusScreen(want, { whole: true });
+      else fitTo([], 0.6);
+      $("#hint").hidden = !!data.screens.length;
+      $("#hint").textContent = "El agente aún no dibuja. Este lienzo se actualiza solo.";
+    }
+    return true;
+  }
+
+  async function poll() {
+    if (!S.data || document.hidden) return;
+    const { stamp } = await api(`/studio/api/board/${encodeURIComponent(boardId)}/stamp`).catch(() => ({}));
+    $("#sync").style.opacity = stamp ? 1 : 0.4;
+    if (stamp && stamp !== S.data.stamp) {
+      const before = new Set(S.data.screens.map((s) => `${s.slug}@${s.version}`));
+      await load(false);
+      const changed = S.data.screens.find((s) => !before.has(`${s.slug}@${s.version}`));
+      $("#hint").hidden = true;
+      // la pantalla nueva o recién cambiada queda seleccionada, sin mover la cámara
+      if (changed && !S.sel) select(changed.slug);
+    }
+  }
+
+  // ---------------------------------------------------------------- comentario
+  let pop = null;
+  function closePop() { pop?.remove(); pop = null; }
+  function openPop(slug, wx, wy, cx, cy) {
+    closePop();
+    const s = S.data.screens.find((x) => x.slug === slug);
+    const lx = Math.round(wx - s.x), ly = Math.round(wy - s.y);
+    const r = stage.getBoundingClientRect();
+    pop = document.createElement("div");
+    pop.className = "pop";
+    pop.style.left = `${Math.min(cx - r.left + 12, r.width - 296)}px`;
+    pop.style.top = `${Math.min(cy - r.top + 12, r.height - 180)}px`;
+    pop.innerHTML = `<div class="on">${esc(s.name)} · (${lx}, ${ly})</div><textarea placeholder="¿Qué cambiarías aquí? El agente sabrá qué elemento señalaste."></textarea>
+      <div class="row"><small>⌘↵ enviar · Esc</small><button class="btn" data-x>Cancelar</button><button class="btn primary" data-ok>Comentar</button></div>`;
+    stage.appendChild(pop);
+    const ta = $("textarea", pop);
+    ta.focus();
+    const send = async () => {
+      const t = ta.value.trim();
+      if (!t) return;
+      $("[data-ok]", pop).disabled = true;
+      try {
+        await api(`/studio/api/board/${encodeURIComponent(boardId)}/comments`, { slug, x: lx, y: ly, text: t });
+        closePop();
+        await load(false);
+        select(slug);
+      } catch (e) {
+        $("[data-ok]", pop).disabled = false;
+        $(".on", pop).textContent = `No se guardó: ${e.message}`;
+      }
+    };
+    $("[data-ok]", pop).onclick = send;
+    $("[data-x]", pop).onclick = closePop;
+    ta.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) send();
+      if (e.key === "Escape") { e.stopPropagation(); closePop(); }
+    });
+  }
+
+  // ---------------------------------------------------------------- vista en vivo
+  function openLive(slug, version) {
+    const s = S.data.screens.find((x) => x.slug === slug);
+    const vh = s.viewportHeight;
+    const m = document.createElement("div");
+    m.className = "modal";
+    m.innerHTML = `<div class="mbar"><b>${esc(s.name)}</b><span>${s.viewport} · ${s.width}×${vh} · interactiva (hover, clics, scroll)</span><div class="grow"></div>
+      <a class="btn" href="${s.live}${version ? `?v=${version}` : ""}" target="_blank" rel="noopener">Abrir en pestaña ↗</a><button class="btn" data-x>Cerrar · Esc</button></div>
+      <div class="wrap"><div class="device ${s.viewport}"><iframe sandbox="allow-scripts" referrerpolicy="no-referrer" width="${s.width}" height="${vh}" src="${s.live}${version ? `?v=${version}` : ""}" title="${esc(s.name)}"></iframe></div></div>`;
+    document.body.appendChild(m);
+    const fit = () => {
+      const w = $(".wrap", m).getBoundingClientRect();
+      const k = Math.min(1, (w.width - 40) / (s.width + 16), (w.height - 20) / (vh + 16));
+      $(".device", m).style.transform = `scale(${k})`;
+    };
+    fit();
+    addEventListener("resize", fit);
+    const close = () => { m.remove(); removeEventListener("resize", fit); removeEventListener("keydown", onKey, true); };
+    const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+    addEventListener("keydown", onKey, true);
+    $("[data-x]", m).onclick = close;
+    m.addEventListener("click", (e) => { if (e.target === m || e.target.classList.contains("wrap")) close(); });
+  }
+
+  // ---------------------------------------------------------------- interacción
+  function setTool(t) {
+    S.tool = t;
+    for (const b of document.querySelectorAll("[data-tool]")) b.setAttribute("aria-pressed", String(b.dataset.tool === t));
+    stage.classList.toggle("commenting", t === "comment");
+    closePop();
+  }
+
+  function wire() {
+    stage = $("#stage");
+    world = $("#world");
+    let drag = null; // {kind:'pan'|'move', ...}
+    let space = false;
+
+    stage.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const r = stage.getBoundingClientRect();
+      if (e.ctrlKey || e.metaKey) zoomAt(Math.exp(-e.deltaY * 0.01), e.clientX - r.left, e.clientY - r.top);
+      else { S.cam.x -= e.deltaX; S.cam.y -= e.deltaY; applyCam(); }
+    }, { passive: false });
+
+    stage.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".pop")) return;
+      const r = stage.getBoundingClientRect();
+      const pin = e.target.closest(".pin");
+      if (pin) {
+        const c = S.data.comments.find((x) => x.id === Number(pin.dataset.cid));
+        S.hot = S.hot === c.id ? null : c.id;
+        select(c.slug);
+        renderWorld();
+        return;
+      }
+      const lbl = e.target.closest("[data-drag]");
+      if (lbl && !space && e.button === 0) {
+        const s = S.data.screens.find((x) => x.slug === lbl.dataset.drag);
+        drag = { kind: "move", slug: s.slug, sx: e.clientX, sy: e.clientY, ox: s.x, oy: s.y, moved: false };
+        select(s.slug);
+        stage.setPointerCapture(e.pointerId);
+        return;
+      }
+      const art = e.target.closest(".art");
+      if (art && S.tool === "comment" && !space && e.button === 0) {
+        const w = toWorld(e.clientX - r.left, e.clientY - r.top);
+        select(art.dataset.slug);
+        openPop(art.dataset.slug, w.x, w.y, e.clientX, e.clientY);
+        return;
+      }
+      closePop();
+      drag = { kind: "pan", sx: e.clientX, sy: e.clientY, ox: S.cam.x, oy: S.cam.y, moved: false, art: art?.dataset.slug };
+      stage.classList.add("panning");
+      stage.setPointerCapture(e.pointerId);
+    });
+    stage.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+      if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+      if (drag.kind === "pan") { S.cam.x = drag.ox + dx; S.cam.y = drag.oy + dy; applyCam(); }
+      else {
+        const s = S.data.screens.find((x) => x.slug === drag.slug);
+        s.x = Math.round(drag.ox + dx / S.cam.z);
+        s.y = Math.round(drag.oy + dy / S.cam.z);
+        const el = world.querySelector(`.art[data-slug="${CSS.escape(s.slug)}"]`);
+        el.style.left = `${s.x}px`;
+        el.style.top = `${s.y}px`;
+      }
+    });
+    stage.addEventListener("pointerup", async () => {
+      const d = drag;
+      drag = null;
+      stage.classList.remove("panning");
+      if (!d) return;
+      if (d.kind === "pan" && !d.moved) select(d.art || null);
+      if (d.kind === "move" && d.moved) {
+        const s = S.data.screens.find((x) => x.slug === d.slug);
+        const r = await api(`/studio/api/board/${encodeURIComponent(boardId)}/screens/${encodeURIComponent(s.slug)}`, { action: "move", x: s.x, y: s.y }).catch(() => null);
+        if (r?.stamp) S.data.stamp = r.stamp;
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.target.closest("textarea, input")) return;
+      if (e.key === " " && !space) { space = true; stage.classList.add("space"); e.preventDefault(); }
+      if (e.key === "v" || e.key === "V") setTool("move");
+      if (e.key === "c" || e.key === "C") setTool("comment");
+      if (e.key === "!" || (e.shiftKey && e.code === "Digit1")) fitTo([]);
+      if (e.key === "@" || (e.shiftKey && e.code === "Digit2")) S.sel && focusScreen(S.sel, { whole: true });
+      if (e.key === "+" || e.key === "=") zoomAt(1.25, stage.clientWidth / 2, stage.clientHeight / 2);
+      if (e.key === "-") zoomAt(0.8, stage.clientWidth / 2, stage.clientHeight / 2);
+      if (e.key === "Escape") { closePop(); if (S.tool === "comment") setTool("move"); else { S.hot = null; select(null); renderWorld(); } }
+    });
+    document.addEventListener("keyup", (e) => { if (e.key === " ") { space = false; stage.classList.remove("space"); } });
+
+    $("#zin").onclick = () => zoomAt(1.25, stage.clientWidth / 2, stage.clientHeight / 2);
+    $("#zout").onclick = () => zoomAt(0.8, stage.clientWidth / 2, stage.clientHeight / 2);
+    $("#fit").onclick = () => fitTo([]);
+    for (const b of document.querySelectorAll("[data-tool]")) b.onclick = () => setTool(b.dataset.tool);
+
+    $("#layers").addEventListener("click", (e) => {
+      const b = e.target.closest(".layer");
+      if (b) focusScreen(b.dataset.slug, { whole: true });
+    });
+    $("#right").addEventListener("click", async (e) => {
+      const s = S.data.screens.find((x) => x.slug === S.sel);
+      if (!s) return;
+      const st = e.target.closest("[data-status]");
+      if (st) {
+        await api(`/studio/api/board/${encodeURIComponent(boardId)}/screens/${encodeURIComponent(s.slug)}`, { action: st.dataset.status }).catch(() => null);
+        await load(false);
+        return;
+      }
+      if (e.target.closest("#live")) return openLive(s.slug);
+      const ver = e.target.closest("[data-ver]");
+      if (ver) return openLive(s.slug, Number(ver.dataset.ver));
+      const res = e.target.closest("[data-resolve]");
+      const reo = e.target.closest("[data-reopen]");
+      if (res || reo) {
+        e.stopPropagation();
+        await api(`/studio/api/board/${encodeURIComponent(boardId)}/comments/${(res || reo).dataset.resolve || (res || reo).dataset.reopen}`, { action: res ? "resolve" : "reopen" }).catch(() => null);
+        await load(false);
+        return;
+      }
+      const cm = e.target.closest(".cmt");
+      if (cm) {
+        const c = S.data.comments.find((x) => x.id === Number(cm.dataset.cid));
+        S.hot = c.id;
+        renderWorld();
+        renderRight();
+        const sc = S.data.screens.find((x) => x.slug === c.slug);
+        const r = stage.getBoundingClientRect();
+        const z = Math.max(S.cam.z, Math.min(1, (r.width - 120) / sc.width));
+        S.cam.z = z;
+        S.cam.x = r.width / 2 - (sc.x + c.x) * z;
+        S.cam.y = r.height / 2 - (sc.y + c.y) * z;
+        applyCam();
+      }
+    });
+    addEventListener("resize", () => applyCam());
+  }
+
+  async function showBoard() {
+    view.innerHTML = $("#t-board").innerHTML;
+    $("#tools").hidden = false;
+    $("#zoomctl").hidden = false;
+    wire();
+    if (await load(true)) setInterval(poll, 1500);
+  }
+
+  if (boardId) showBoard();
+  else { $("#sync").hidden = true; showBoards(); }
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "matiz-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Matiz: MCP de referencias de diseño: pantallas, secciones, marca y composición como DATOS (tokens, estructura, DESIGN.md), capturadas de la web pública.",
   "type": "module",
   "license": "MIT",
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree','brand','deep'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html')\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree','brand','deep'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html');f.copyFileSync('src/gallery/studio.html','dist/gallery/studio.html');f.copyFileSync('src/studio/probe.browser.js','dist/studio/probe.browser.js')\"",
     "prepare": "npm run build",
     "export-pack": "tsx scripts/export-pack.ts",
     "build:fonts": "tsx scripts/build-fonts.ts",
@@ -57,6 +57,7 @@
     "seed": "tsx scripts/seed.ts",
     "seed:design-md": "tsx scripts/seed-design-md.ts",
     "smoke": "tsx scripts/smoke.ts",
+    "smoke:studio": "tsx scripts/studio-smoke.ts",
     "gallery": "tsx src/cli.ts gallery",
     "reanalyze": "tsx scripts/reanalyze.ts",
     "inspect": "npx @modelcontextprotocol/inspector tsx src/cli.ts",
@@ -65,6 +66,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
+    "@tailwindcss/browser": "4.1.18",
     "playwright": "1.64.0",
     "yaml": "^2.9.1",
     "zod": "4.6.5"

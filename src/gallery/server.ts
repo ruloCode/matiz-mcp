@@ -5,7 +5,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SHOTS, allSites, findSite, homeSites, openDb } from "../db.js";
+import { HOME, SHOTS, allSites, findSite, homeSites, openDb } from "../db.js";
 import { search } from "../search.js";
 import { toDesignMd } from "../analysis/designmd.js";
 import { similarity } from "../analysis/similarity.js";
@@ -13,6 +13,7 @@ import { blueprint, type TreeNode } from "../analysis/blueprint.js";
 import { fontAvailability } from "../analysis/fonts.js";
 import { captureSite, extractSectionTree } from "../capture/capture.js";
 import type { SiteRecord } from "../types.js";
+import { handleStudio } from "./studio-routes.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const APP = () => readFileSync(join(here, "app.html"), "utf8");
@@ -222,6 +223,7 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
   const url = new URL(req.url ?? "/", "http://localhost");
   const p = url.pathname;
   try {
+    if (await handleStudio(req, res, url)) return;
     if (p === "/" || p === "/index.html") return send(res, 200, APP(), "text/html; charset=utf-8");
     if (p === "/api/facets") return send(res, 200, facets());
     if (p === "/api/items") return send(res, 200, browse(url.searchParams));
@@ -259,4 +261,30 @@ export function startGallery(port = 4040): Promise<string> {
     // solo localhost: la galería sirve capturas de terceros guardadas en tu máquina
     srv.listen(port, "127.0.0.1", () => ok(`http://localhost:${port}`));
   });
+}
+
+let running: string | undefined;
+/**
+ * La galería de ESTE proceso, o una que ya corra en el puerto con el Estudio y el mismo
+ * MATIZ_HOME (p. ej. `matiz-mcp gallery` abierto aparte). Si el puerto lo tiene otra cosa
+ * (o una versión vieja sin Estudio), prueba los siguientes.
+ */
+export async function ensureGallery(port = Number(process.env.MATIZ_GALLERY_PORT ?? 4040)): Promise<string> {
+  if (running) return running;
+  for (let p = port; p < port + 6; p++) {
+    try {
+      running = await startGallery(p);
+      return running;
+    } catch (e) {
+      if (!/EADDRINUSE/.test(String(e))) throw e;
+      const info = (await fetch(`http://127.0.0.1:${p}/studio/api/ping`, { signal: AbortSignal.timeout(1500) })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null)) as { matiz?: boolean; studio?: number; home?: string } | null;
+      if (info?.matiz && info.studio && info.home === HOME) {
+        running = `http://localhost:${p}`;
+        return running;
+      }
+    }
+  }
+  throw new Error(`Los puertos ${port}–${port + 5} están ocupados.`);
 }
