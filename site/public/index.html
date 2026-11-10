@@ -187,6 +187,29 @@ section.block { padding-block: clamp(56px, 9vw, 110px); }
 .readout { font-family: var(--mono); font-size: 0.8125rem; color: var(--muted); min-height: 1.5em; }
 .readout b { color: var(--ink); font-weight: 500; }
 
+/* ---------- estudio ---------- */
+.studio-shot { position: relative; border-radius: var(--r-card); background: var(--soft); padding: clamp(10px, 1.6vw, 18px); }
+.studio-shot img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+.studio-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+@media (max-width: 860px) { .studio-grid { grid-template-columns: minmax(0, 1fr); } }
+.studio-grid .visual { padding: 0; overflow: hidden; }
+.studio-grid .visual img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.crop { aspect-ratio: 4 / 3; }
+.crop-tall { aspect-ratio: 4 / 3; }
+.tells { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; padding: 18px; margin: 0; list-style: none; font-size: 0.875rem; }
+@media (max-width: 560px) { .tells { grid-template-columns: minmax(0, 1fr); } }
+.tells li { display: flex; gap: 8px; align-items: baseline; }
+.tells li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); opacity: .35; flex: none; transform: translateY(-2px); }
+.versus { display: flex; gap: 28px; padding: 0 18px 18px; align-items: baseline; flex-wrap: wrap; }
+.versus b { font-size: clamp(2.4rem, 5vw, 3.4rem); letter-spacing: -0.04em; line-height: 1; }
+.versus span { color: var(--muted); font-size: 0.875rem; display: block; margin-top: 4px; max-width: 16ch; }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+@media (max-width: 900px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .flow { grid-template-columns: minmax(0, 1fr); } }
+.flow div { border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; }
+.flow code { font-size: 0.8125rem; }
+.flow p { color: var(--muted); font-size: 0.9375rem; }
+
 /* ---------- prompts ---------- */
 .prompts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 900px) { .prompts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -331,6 +354,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
       <a href="/explorar/">Explorar</a>
       <a href="#demo">Cómo funciona</a>
       <a href="#datos">Herramientas</a>
+      <a href="#estudio">Estudio</a>
       <a href="#instalar">Instalar</a>
       <a href="#preguntas">Preguntas</a>
     </nav>
@@ -346,7 +370,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
     <div class="wrap">
       <span class="pill"><i aria-hidden="true"></i>MCP de diseño · sin cuenta ni API key</span>
       <h1 id="hero-title">Referencias de diseño que tu agente puede medir</h1>
-      <p class="sub" id="hero-sub">Colores con su rol, tipografía real, composición y DESIGN.md de sitios reales, listos para Claude, Codex o Cursor.</p>
+      <p class="sub" id="hero-sub">Colores con su rol, tipografía real, composición y DESIGN.md de sitios reales, y un Estudio donde tu agente diseña y mide pantallas antes de tocar el código.</p>
       <div class="ctas">
         <a class="btn btn-ink" href="#instalar">Conectar MCP</a>
         <a class="btn btn-soft" href="/explorar/">Explorar referencias →</a>
@@ -440,6 +464,47 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
     </div>
   </section>
 
+  <section class="block" id="estudio" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="pill">Nuevo en 0.3 · Estudio</span>
+        <h2>Diseña antes de tocar el código</h2>
+        <p>Tu agente dibuja las pantallas en un lienzo, con el sistema de una marca medida. Matiz las renderiza, las mide y te las muestra para que comentes sobre cualquier elemento.</p>
+      </div>
+      <figure class="studio-shot" style="margin:0">
+        <img src="/estudio/lienzo.jpg" width="2880" height="1720" loading="lazy" alt="El lienzo del Estudio: referencias medidas arriba, el wireframe, la pantalla de inicio con su variante, la versión móvil y el carrito unidos por flechas de flujo.">
+      </figure>
+      <div class="flow">
+        <div><code>draft_wireframe</code><p>La estructura en bloques grises, sacada de la composición medida de tu industria.</p></div>
+        <div><code>create_board</code><p>Colores, tipografía y radios de una marca real, revisados para que se lean.</p></div>
+        <div><code>put_screen</code><p>Cada pantalla en HTML y Tailwind. El agente ve la captura de lo que hizo.</p></div>
+        <div><code>export_board</code><p>HTML por pantalla, tema de Tailwind y un handoff para pasar a código.</p></div>
+      </div>
+      <div class="studio-grid">
+        <article class="card">
+          <div class="visual crop-tall"><img src="/estudio/chat.jpg" width="1720" height="3340" loading="lazy" alt="Resultado de check_screen en el chat: a 390 px dos etiquetas del gráfico se enciman, con el selector exacto."></div>
+          <div class="txt"><h3>Mide lo que dibuja</h3><p>check_screen la trata como un sitio del corpus: contraste texto por texto, desbordes y textos encimados también a 390 px, colores fuera del sistema y la comparación con la marca. En Claude se ve dentro del chat.</p></div>
+        </article>
+        <article class="card">
+          <div class="visual crop"><img src="/estudio/panel.jpg" width="2880" height="1720" loading="lazy" alt="Un comentario sobre el titular, con el elemento exacto resaltado, y el panel con versiones, flujo y problemas medidos."></div>
+          <div class="txt"><h3>Comentas sobre el elemento</h3><p>Pulsas C, haces clic en el titular y escribes. El agente recibe qué elemento señalaste, con su texto, clases y selector, lo corrige y te responde en el mismo pin.</p></div>
+        </article>
+        <article class="card wide">
+          <div class="txt"><h3>Caza lo que delata una página generada</h3><p>Los modelos ponen los mismos recursos sea cual sea el encargo. Matiz los cuenta en la página renderizada y dice dónde están, para que cada uno sea una decisión y no un reflejo.</p></div>
+          <div class="visual" style="padding:0">
+            <ul class="tells">
+              <li>Degradados de adorno, sobre todo morados</li><li>Etiqueta en mayúsculas sobre cada título</li>
+              <li>Una palabra del titular en otro color</li><li>Todo en tarjetas idénticas, un radio, una sombra</li>
+              <li>Emoji haciendo de ícono</li><li>Flecha al final de cada botón</li>
+              <li>01 / 02 / 03 sin que haya secuencia</li><li>Líneas de más de 85 caracteres</li>
+            </ul>
+            <div class="versus"><div><b>13</b><span>señales en una landing genérica de prueba</span></div><div><b>2</b><span>en una hecha con decisiones, con el mismo chequeo</span></div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="block" style="padding-top:0">
     <div class="wrap">
       <div class="section-head">
@@ -485,6 +550,8 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
         <details><summary>¿De dónde salen las referencias?</summary><p>De sitios públicos que Matiz abre con un navegador y mide. No copia catálogos de servicios de pago. Las capturas se guardan solo en tu máquina, y cada resultado cita la URL original.</p></details>
         <details><summary>¿Qué tan exacto es?</summary><p id="faq-acc">Colores, tamaños, tracking y radios se leen directo del navegador. El tipo de cada sección es una clasificación, y medimos su exactitud contra secciones etiquetadas a ciegas.</p></details>
         <details><summary>¿Hay una galería para ver las referencias?</summary><p>Sí. <code>npx -y <span data-pkg></span> gallery</code> abre en tu navegador una galería estilo Mobbin con todo tu corpus: filtros, ficha de datos y botones para copiar el blueprint o el DESIGN.md. Corre solo en tu máquina.</p></details>
+        <details><summary>¿Qué es el Estudio?</summary><p>Un lienzo local donde tu agente dibuja pantallas antes de escribir el código del proyecto: wireframe, versiones, variantes, flujos navegables y comentarios sobre elementos. Ábrelo con <code>npx -y <span data-pkg></span> studio</code> o pídele a tu agente <code>open_board</code>.</p></details>
+        <details><summary>¿Matiz diseña por mí?</summary><p>No. Diseña el modelo que ya usas (Claude, Codex…). Matiz no llama a ningún modelo ni pide API key: pone las referencias medidas, el lienzo, el render y la medición, y dice qué se rompió.</p></details>
         <details><summary>¿Puedo agregar los sitios que me gustan?</summary><p>Sí. Pídele a tu agente <code>capture_site</code> con la URL, o corre <code>npx -y <span data-pkg></span> capture https://…</code>.</p></details>
         <details><summary>¿Funciona sin internet?</summary><p>Buscar, comparar y exportar funcionan offline. Capturar sitios nuevos y revisar una URL necesitan red.</p></details>
         <details><summary>¿Y en Windows?</summary><p>Funciona con Node 22.13+. Si tu cliente no encuentra <code>npx</code>, usa <code>cmd</code> como comando y <code>/c npx -y …</code> como argumentos.</p></details>
@@ -751,6 +818,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
     ["Dame el blueprint en React + Tailwind de la sección de precios de clerk.com.", "get_section_blueprint"],
     ["Abre la galería y muéstrame heros oscuros de herramientas para desarrolladores.", "open_gallery"],
     ["Revisa http://localhost:3000 contra la referencia que elegimos y dime qué corregir.", "critique_against_reference"],
+    ["Diseña en el Estudio de Matiz la página de mi producto: wireframe primero, después la versión real. Mídela antes de mostrármela.", "design_in_studio"],
   ];
   $("#prompts").innerHTML = prompts
     .map(([p, t], i) => `<div class="prompt"><p id="pr-${i}">${esc(p)}</p><div class="row"><span>${t}</span><button class="icon-btn" type="button" data-copy-target="pr-${i}">Copiar</button></div></div>`)

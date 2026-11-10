@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matiz Estudio</title>
+<style>
+:root { --bg: #ffffff; --soft: #f4f4f5; --ink: #141414; --muted: #66666c; --line: #e4e4e7; --mark: #2f6bff; --ok: #1a7f4b; --warn: #b26a00; --bad: #c4302b; color-scheme: light; }
+:root[data-theme="dark"] { --bg: #18181b; --soft: #222226; --ink: #f2f2f3; --muted: #a1a1a7; --line: #323238; --mark: #86a6ff; --ok: #4cc38a; --warn: #f5a524; --bad: #ff6b65; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: transparent; }
+body { color: var(--ink); font: 400 13px/1.45 var(--font-sans, system-ui, -apple-system, "Segoe UI", sans-serif); -webkit-font-smoothing: antialiased; }
+.card { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; }
+.head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.logo { width: 14px; height: 14px; border-radius: 4px; flex: none; background: conic-gradient(from 210deg, #e5484d, #f5a524, #30a46c, #0090ff, #8e4ec6, #e5484d); }
+.head b { font-weight: 600; }
+.head .sub { color: var(--muted); }
+.tag { font: 500 11px/1.4 ui-monospace, Menlo, monospace; border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; color: var(--muted); }
+.grow { flex: 1; }
+button { font: inherit; color: inherit; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 5px 10px; cursor: pointer; font-weight: 500; }
+button:hover { background: var(--soft); }
+button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.shots { display: grid; gap: 10px; padding: 12px; background: var(--soft); }
+.shots.two { grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); align-items: start; }
+figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+figure img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+figcaption { color: var(--muted); font-size: 11px; }
+.shotwrap { max-height: 520px; overflow: auto; border-radius: 8px; }
+.body { padding: 12px; display: grid; gap: 10px; }
+.score { display: flex; align-items: baseline; gap: 8px; }
+.score b { font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
+.score span { color: var(--muted); }
+.find { display: grid; gap: 2px; padding: 8px 10px; border-radius: 8px; background: var(--soft); }
+.find .sev { font-size: 10px; font-weight: 700; }
+.sev.high { color: var(--bad); } .sev.medium { color: var(--warn); } .sev.low { color: var(--muted); }
+.find small { color: var(--muted); overflow-wrap: anywhere; }
+.rowlist { display: grid; gap: 4px; }
+.rowlist div { display: flex; gap: 8px; align-items: center; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
+.dot.approved { background: var(--ok); } .dot.discarded { background: var(--bad); }
+.muted { color: var(--muted); }
+.empty { padding: 18px 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="card" id="card"><div class="empty">Esperando el resultado…</div></div>
+<script>
+(() => {
+  // ---- Protocolo MCP Apps (JSON-RPC por postMessage con la ventana que contiene el iframe) ----
+  let nextId = 1;
+  const pending = new Map();
+  const post = (msg) => parent.postMessage({ jsonrpc: "2.0", ...msg }, "*");
+  const request = (method, params) => new Promise((ok, fail) => { const id = nextId++; pending.set(id, { ok, fail }); post({ id, method, params }); });
+  const notify = (method, params = {}) => post({ method, params });
+  const handlers = {
+    "ui/notifications/tool-result": (p) => render(p),
+    "ui/notifications/host-context-changed": (p) => theme(p),
+    "ui/notifications/tool-input": () => {},
+    "ui/notifications/tool-input-partial": () => {},
+    "ui/notifications/tool-cancelled": () => { if (!shown) card.innerHTML = '<div class="empty">Se canceló.</div>'; },
+  };
+  addEventListener("message", (e) => {
+    if (e.source !== parent) return;
+    const m = e.data;
+    if (!m || m.jsonrpc !== "2.0") return;
+    if (m.id !== undefined && !m.method) {
+      const p = pending.get(m.id);
+      if (!p) return;
+      pending.delete(m.id);
+      m.error ? p.fail(new Error(m.error.message || "error")) : p.ok(m.result);
+      return;
+    }
+    if (m.method && m.id !== undefined) return post({ id: m.id, result: {} }); // ping, ui/resource-teardown
+    if (m.method && handlers[m.method]) handlers[m.method](m.params || {});
+  });
+
+  const card = document.getElementById("card");
+  let shown = false;
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function theme(ctx) {
+    if (!ctx) return;
+    if (ctx.theme === "dark" || ctx.theme === "light") document.documentElement.setAttribute("data-theme", ctx.theme);
+    const vars = ctx.styles && ctx.styles.variables;
+    if (vars && vars["--font-sans"]) document.documentElement.style.setProperty("--font-sans", vars["--font-sans"]);
+  }
+  let lastH = 0;
+  const size = () => {
+    const h = Math.ceil(document.documentElement.getBoundingClientRect().height);
+    if (h !== lastH) { lastH = h; notify("ui/notifications/size-changed", { width: Math.ceil(innerWidth), height: h }); }
+  };
+  new ResizeObserver(size).observe(document.body);
+
+  const SEV = { high: "alta", medium: "media", low: "baja" };
+  function findingsHtml(list) {
+    return list
+      .slice(0, 8)
+      .map((f) => `<div class="find"><span class="sev ${esc(f.severity)}">${SEV[f.severity] || ""} · ${esc(f.area)}</span><b>${esc(f.message)}</b>${f.where ? `<small>${esc(f.where)}</small>` : ""}<small>→ ${esc(f.fix)}</small></div>`)
+      .join("") + (list.length > 8 ? `<span class="muted">y ${list.length - 8} más</span>` : "");
+  }
+
+  function render(result) {
+    shown = true;
+    const content = result.content || [];
+    // los datos van en el primer bloque de texto (JSON): así el modelo y la vista leen lo mismo
+    let d = result.structuredContent || {};
+    if (!result.structuredContent) {
+      const first = content.find((c) => c.type === "text" && /^\s*\{/.test(c.text || ""));
+      try { if (first) d = JSON.parse(first.text); } catch {}
+    }
+    // imágenes con el rótulo del bloque de texto "↓ …" que las precede
+    const shots = [];
+    let label = "";
+    for (const c of content) {
+      if (c.type === "text" && /^↓/.test(c.text || "")) label = c.text.replace(/^↓\s*/, "");
+      if (c.type === "image") { shots.push({ src: `data:${c.mimeType};base64,${c.data}`, label }); label = ""; }
+    }
+    if (result.isError) {
+      card.innerHTML = `<div class="head"><i class="logo"></i><b>Matiz Estudio</b></div><div class="empty">${esc((content.find((c) => c.type === "text") || {}).text || "Error")}</div>`;
+      return size();
+    }
+    const title = d.name || d.screen || d.board_name || d.board || "Estudio";
+    const sub = [d.board && d.screen ? d.board : "", d.viewport, d.version ? `v${d.version}` : ""].filter(Boolean);
+    const problems = Array.isArray(d.findings) ? d.findings : [];
+    const quick = Array.isArray(d.problems) ? d.problems : [];
+    const screens = Array.isArray(d.screens) ? d.screens : [];
+    const comments = Array.isArray(d.comments) ? d.comments.filter((c) => c.status !== "resolved") : [];
+    const two = shots.length === 2 && d.kind === "check";
+    card.innerHTML = `
+      <div class="head"><i class="logo"></i><b>${esc(title)}</b>${sub.map((s) => `<span class="tag">${esc(s)}</span>`).join("")}
+        <div class="grow"></div>
+        ${d.board && d.screen && d.kind !== "check" ? `<button id="measure">Medir</button>` : ""}
+        ${d.canvas ? `<button class="primary" id="open">Abrir el lienzo</button>` : ""}
+      </div>
+      ${shots.length ? `<div class="shots${two ? " two" : ""}">${shots.map((s) => `<figure><div class="shotwrap"><img alt="${esc(s.label || title)}" src="${s.src}"></div>${s.label ? `<figcaption>${esc(s.label)}</figcaption>` : ""}</figure>`).join("")}</div>` : ""}
+      <div class="body">
+        ${typeof d.score === "number" ? `<div class="score"><b>${d.score}</b><span>/ 100 · ${esc((d.summary || "").replace(/\s*Puntaje \d+\/100\.?/, ""))}</span></div>` : ""}
+        ${problems.length ? findingsHtml(problems) : ""}
+        ${!problems.length && quick.length ? `<div class="rowlist">${quick.slice(0, 6).map((q) => `<div class="find"><small>${esc(q)}</small></div>`).join("")}</div>` : ""}
+        ${!problems.length && d.problems === "ninguno medible" ? `<span class="muted">Sin problemas de render medibles.</span>` : ""}
+        ${d.sequence ? `<span class="muted">Estructura: ${esc(d.sequence.join(" → "))}</span>` : ""}
+        ${screens.length ? `<div class="rowlist">${screens.map((s) => `<div><span class="dot ${esc(s.status)}"></span><b>${esc(s.name)}</b><span class="tag">${esc(s.viewport)}</span><span class="tag">v${esc(s.version)}</span>${s.problems ? `<span class="muted">${s.problems} problema(s)</span>` : ""}</div>`).join("")}</div>` : ""}
+        ${comments.length ? `<div class="rowlist">${comments.map((c) => `<div class="find"><span class="sev medium">comentario · ${esc(c.screen)}</span><b>${esc(c.text)}</b>${c.on ? `<small>en &lt;${esc(c.on.tag)}&gt; ${esc(c.on.text || "")}</small>` : ""}</div>`).join("")}</div>` : ""}
+        ${d.render_error ? `<span class="sev high">No se pudo renderizar: ${esc(d.render_error)}</span>` : ""}
+      </div>`;
+    const open = document.getElementById("open");
+    if (open) open.onclick = () => request("ui/open-link", { url: d.canvas }).catch(() => {});
+    const measure = document.getElementById("measure");
+    if (measure)
+      measure.onclick = async () => {
+        measure.disabled = true;
+        measure.textContent = "Midiendo…";
+        try {
+          render(await request("tools/call", { name: "check_screen", arguments: { board: d.board, screen: d.screen, image: true } }));
+        } catch (e) {
+          measure.disabled = false;
+          measure.textContent = "Medir";
+        }
+      };
+    size();
+  }
+
+  request("ui/initialize", { appInfo: { name: "Matiz Estudio", version: "0.3.0" }, appCapabilities: {}, protocolVersion: "2026-01-26" })
+    .then((r) => { theme(r && r.hostContext); notify("ui/notifications/initialized"); size(); })
+    .catch(() => {});
+  // para probar la vista sin host
+  window.__matizRender = render;
+})();
+</script>
+</body>
+</html>

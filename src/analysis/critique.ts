@@ -165,15 +165,15 @@ export function critique(target: Dna, ref: Dna, refName = "la referencia"): Crit
       message: `Radio típico ${rr(target)} vs ${rr(ref)}.`,
       yours: rr(target),
       reference: rr(ref),
-      fix: `Unifica radios en ${rr(ref)} (escala de referencia: ${ref.shape.scale.join(", ") || "—"}px).`,
+      fix: `Unifica radios en ${rr(ref)}${ref.shape.scale.length ? ` (escala de referencia: ${ref.shape.scale.join(", ")}px)` : ""}.`,
     });
   if (target.shape.shadows !== ref.shape.shadows)
     f.push({
       severity: "low",
       area: "shape",
       message: `Sombras: ${target.shape.shadows} vs ${ref.shape.shadows}.`,
-      yours: target.shape.shadowSamples[0] ?? "none",
-      reference: ref.shape.shadowSamples[0] ?? "none",
+      yours: target.shape.shadowSamples[0] ?? target.shape.shadows,
+      reference: ref.shape.shadowSamples[0] ?? ref.shape.shadows,
       fix: ref.shape.shadows === "none" ? "Quita sombras; separa con borde 1px o cambio de superficie." : `Usa una sombra tipo: ${ref.shape.shadowSamples[0]}`,
     });
 

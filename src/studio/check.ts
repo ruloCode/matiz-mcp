@@ -26,9 +26,15 @@ export interface ProbeResult {
     lowContrast: Array<ElementDesc & { ratio: number; min: number; fg: string; bg: string; size: number }>;
     missingFonts: string[];
     smallTargets: ElementDesc[];
+    /** Textos que se pisan (porcentaje del más chico tapado). */
+    overlaps?: Array<{ a: ElementDesc; b: ElementDesc; share: number }>;
   };
   targets: ElementDesc[];
 }
+
+export interface TellEx { tag: string; text: string; path: string; box: [number, number, number, number] }
+export interface Tell { count: number; examples: TellEx[]; [k: string]: unknown }
+export type Tells = { fonts?: { body: string; heading: string }; [k: string]: Tell | { body: string; heading: string } | undefined };
 
 export type Severity = "high" | "medium" | "low";
 export interface StudioFinding {
@@ -64,6 +70,15 @@ export function probeFindings(p: ProbeResult): StudioFinding[] {
       where: where(c),
       fix: "Usa text-foreground o text-muted del tablero, o un fondo con más contraste.",
     });
+  const ov = p.issues.overlaps ?? [];
+  if (ov.length)
+    f.push({
+      severity: ov.some((o) => o.share >= 40) ? "high" : "medium",
+      area: "overlap",
+      message: `${ov.length} par(es) de textos encimados.`,
+      where: ov.slice(0, 3).map((o) => `«${o.a.text.slice(0, 30)}» pisa «${o.b.text.slice(0, 30)}» (${o.share}%) — ${o.a.path}`).join(" · "),
+      fix: "Revisa posiciones absolutas y alturas fijas: en anchos chicos usa flujo normal (flex/grid) o esconde las etiquetas secundarias.",
+    });
   if (p.issues.brokenImages.length)
     f.push({ severity: "medium", area: "images", message: `${p.issues.brokenImages.length} imagen(es) no cargaron.`, where: p.issues.brokenImages.slice(0, 3).join(" · "), fix: "Usa URLs https públicas o un placeholder (div con bg-surface y aspect-ratio)." });
   if (p.issues.missingFonts.length)
@@ -76,6 +91,41 @@ export function probeFindings(p: ProbeResult): StudioFinding[] {
       where: p.issues.smallTargets.slice(0, 3).map((e) => `${where(e)} ${e.box[2]}×${e.box[3]}`).join(" · "),
       fix: "Botones y enlaces sueltos de al menos 44px de alto en móvil (py-3, min-h-11).",
     });
+  return f;
+}
+
+const DEFAULT_FAMILIES = /^(inter|roboto|arial|helvetica|helvetica neue|system-ui|-apple-system|segoe ui|open sans|sans-serif|ui-sans-serif)$/i;
+const exWhere = (t: Tell) => t.examples.map((e) => `<${e.tag}>${e.text ? ` «${e.text.slice(0, 40)}»` : ""} (${e.path})`).join(" · ") || undefined;
+
+/**
+ * Señales de plantilla: tratamientos que un modelo pone por defecto sea cual sea el encargo.
+ * Cada una es legítima si el brief la pide; por eso van como aviso (low/medium) con el conteo
+ * y el lugar, y el arreglo siempre es "decide": o la justificas o la quitas.
+ */
+export function tellFindings(tells: Tells, theme: BoardTheme): StudioFinding[] {
+  const f: StudioFinding[] = [];
+  const add = (id: string, severity: Severity, message: (t: Tell) => string, fix: string) => {
+    const t = tells[id] as Tell | undefined;
+    if (t) f.push({ severity, area: `tell:${id}`, message: message(t), where: exWhere(t), fix });
+  };
+  add("gradient", "medium", (t) => `${t.count} degradado(s) de adorno${(t.purple as number) ? `, ${t.purple} hacia el morado` : ""}: es el recurso por defecto de una página generada.`, "Usa color plano del tablero, o deja UN degradado si es la idea central de la pantalla.");
+  add("eyebrow", "low", (t) => `${t.count} etiqueta(s) en mayúsculas encima de un título.`, "Quita las que no aportan información; el título ya dice de qué va la sección.");
+  add("accent-word", "low", (t) => `${t.count} titular(es) con una sola palabra en otro color o en cursiva.`, "Deja el titular en un solo tratamiento; el énfasis va en lo que dice.");
+  add("card-kit", "medium", (t) => `${t.groups} bloques de contenido picados en tarjetas idénticas (mismo radio, misma sombra).`, "Varía la forma según el contenido: una lista, una tabla, un bloque destacado y dos menores, texto corrido. No todo es una tarjeta.");
+  add("one-radius", "low", (t) => `Un solo radio (${t.radius}px) en ${t.count} elementos, sin jerarquía.`, "Usa 2–3 radios según el tamaño (contenedor > tarjeta > control) o ninguno.");
+  add("one-shadow", "low", (t) => `La misma sombra bajo ${t.count} elementos.`, "Reserva la sombra para lo que flota (menús, modales); separa lo demás con borde o fondo.");
+  add("emoji-icon", "medium", (t) => `${t.count} emoji usados como ícono.`, "Usa SVG en línea con el trazo y color del tablero, o quita el ícono.");
+  add("arrow-suffix", "low", (t) => `${t.count} enlaces o botones terminan en flecha.`, "Deja la flecha en uno como mucho; el texto del botón ya dice la acción.");
+  add("numbered", "low", (t) => `${t.count} marcadores 01/02/03.`, "Solo si el contenido es de verdad una secuencia (pasos, cronología); si no, quítalos.");
+  add("middot", "low", (t) => `${t.count} líneas de metadatos unidas con «·».`, "Preséntalos como dato (etiqueta + valor) o redúcelos a lo que el usuario necesita.");
+  add("glass", "low", (t) => `${t.count} panel(es) de vidrio (backdrop-filter).`, "Fondo sólido del tablero salvo que el desenfoque muestre algo que importa detrás.");
+  add("long-lines", "medium", (t) => `${t.count} párrafo(s) con más de 85 caracteres por línea.`, "Limita el ancho del texto (max-w-prose / max-w-2xl): 45–75 caracteres por línea se leen mejor.");
+  add("type-sizes", "low", (t) => `${t.count} tamaños de letra distintos (${(t.sizes as number[]).join(", ")}px): no hay escala.`, "Quédate con 5–7 tamaños de una escala y reúsalos.");
+  add("all-centered", "low", (t) => `${t.count} de ${t.of} bloques de texto centrados.`, "Centra el hero o el cierre; el contenido de lectura va alineado a la izquierda.");
+  add("animate-all", "low", (t) => `${t.count} elementos con animación de entrada.`, "Un solo momento orquestado (la carga) llega mejor que animar cada bloque.");
+  const fonts = tells.fonts;
+  if (fonts && !theme.source && DEFAULT_FAMILIES.test(fonts.body) && DEFAULT_FAMILIES.test(fonts.heading))
+    f.push({ severity: "low", area: "tell:default-font", message: `Títulos y texto en «${fonts.heading}»: la familia por defecto, y el tablero no parte de una marca.`, fix: "Elige la tipografía a propósito: suggest_type_pairings (free_only) da pares reales del corpus; fíjala con create_board." });
   return f;
 }
 
@@ -137,11 +187,13 @@ export function systemFindings(d: Dna, t: BoardTheme): StudioFinding[] {
 }
 
 export interface CheckReport {
+  /** Cuántas señales de plantilla distintas tiene (0 = ninguna de las 16 que se miden). */
+  tells: number;
   summary: string;
   score: number;
   findings: StudioFinding[];
   reference?: { ref_id: string; name: string; composition: { similarity: number; missing: string[]; extra: string[] } };
-  measured: {
+  measured?: {
     theme: Dna["theme"];
     palette: Record<string, string | undefined>;
     heading?: string;
@@ -154,10 +206,22 @@ export interface CheckReport {
 
 const WEIGHT: Record<Severity, number> = { high: 12, medium: 5, low: 2 };
 
-export function checkScreen(o: { probe: ProbeResult; dna: Dna; theme: BoardTheme; ref?: { id: string; name: string; dna: Dna } }): CheckReport {
-  const findings = [...probeFindings(o.probe), ...systemFindings(o.dna, o.theme)];
+export function checkScreen(o: {
+  probe: ProbeResult;
+  /** Sin ADN (pantalla sin bloques de texto) se mide lo demás: render, responsive y señales. */
+  dna?: Dna;
+  theme: BoardTheme;
+  ref?: { id: string; name: string; dna: Dna };
+  tells?: Tells;
+  /** El mismo HTML medido en otros anchos (responsive): solo aporta sus problemas de render. */
+  responsive?: Array<{ viewport: string; width: number; probe: ProbeResult }>;
+}): CheckReport {
+  const findings = [...probeFindings(o.probe), ...(o.dna ? systemFindings(o.dna, o.theme) : []), ...(o.tells ? tellFindings(o.tells, o.theme) : [])];
+  for (const r of o.responsive ?? [])
+    for (const x of probeFindings(r.probe).filter((x) => ["overflow", "overlap", "touch", "render"].includes(x.area)))
+      findings.push({ ...x, area: `${x.area}@${r.viewport}`, message: `A ${r.width}px: ${x.message}` });
   let reference: CheckReport["reference"];
-  if (o.ref) {
+  if (o.ref && o.dna) {
     const r = critique(o.dna, o.ref.dna, o.ref.name);
     // el contraste ya lo midió la sonda texto por texto: de la crítica se toma lo de la referencia
     for (const x of r.findings.filter((x) => x.area !== "contrast"))
@@ -168,21 +232,29 @@ export function checkScreen(o: { probe: ProbeResult; dna: Dna; theme: BoardTheme
   findings.sort((a, b) => order[a.severity] - order[b.severity]);
   const score = Math.max(0, 100 - findings.reduce((s, x) => s + WEIGHT[x.severity], 0));
   const n = (s: Severity) => findings.filter((x) => x.severity === s).length;
-  const t = o.dna.typography;
+  const tellCount = findings.filter((x) => x.area.startsWith("tell:")).length;
   return {
-    summary: findings.length ? `${n("high")} alta(s), ${n("medium")} media(s), ${n("low")} baja(s). Puntaje ${score}/100.` : "Sin problemas medibles. Puntaje 100/100.",
+    tells: tellCount,
+    summary: findings.length ? `${n("high")} alta(s), ${n("medium")} media(s), ${n("low")} baja(s)${tellCount ? `, de ellas ${tellCount} señal(es) de plantilla` : ""}. Puntaje ${score}/100.` : "Sin problemas medibles. Puntaje 100/100.",
     score,
     findings,
     reference,
-    measured: {
-      theme: o.dna.theme,
-      palette: { background: o.dna.palette.background, surface: o.dna.palette.surface, text: o.dna.palette.text, muted: o.dna.palette.mutedText, accent: o.dna.palette.accent, border: o.dna.palette.border },
-      heading: (t.heading ?? t.display) && `${(t.heading ?? t.display)!.family} ${Math.round((t.heading ?? t.display)!.size)}px`,
-      body: t.body && `${t.body.family} ${t.body.size}px`,
-      radius: o.dna.shape.radius,
-      contentWidth: o.dna.layout.contentWidth,
-      sequence: o.dna.sequence,
-    },
+    measured: o.dna
+      ? (() => {
+          const d = o.dna!;
+          const t = d.typography;
+          const h = t.heading ?? t.display;
+          return {
+            theme: d.theme,
+            palette: { background: d.palette.background, surface: d.palette.surface, text: d.palette.text, muted: d.palette.mutedText, accent: d.palette.accent, border: d.palette.border },
+            heading: h && `${h.family} ${Math.round(h.size)}px`,
+            body: t.body && `${t.body.family} ${t.body.size}px`,
+            radius: d.shape.radius,
+            contentWidth: d.layout.contentWidth,
+            sequence: d.sequence,
+          };
+        })()
+      : undefined,
   };
 }
 

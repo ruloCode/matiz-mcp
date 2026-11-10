@@ -1,6 +1,6 @@
 {
   "name": "matiz-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Matiz: MCP de referencias de diseño: pantallas, secciones, marca y composición como DATOS (tokens, estructura, DESIGN.md), capturadas de la web pública.",
   "type": "module",
   "license": "MIT",
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree','brand','deep'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html');f.copyFileSync('src/gallery/studio.html','dist/gallery/studio.html');f.copyFileSync('src/studio/probe.browser.js','dist/studio/probe.browser.js')\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"const f=require('fs');for(const n of ['extract','tree','brand','deep'])f.copyFileSync('src/capture/'+n+'.browser.js','dist/capture/'+n+'.browser.js');f.copyFileSync('src/gallery/app.html','dist/gallery/app.html');f.copyFileSync('src/gallery/studio.html','dist/gallery/studio.html');for(const n of ['probe','tells'])f.copyFileSync('src/studio/'+n+'.browser.js','dist/studio/'+n+'.browser.js');f.copyFileSync('src/studio/app-view.html','dist/studio/app-view.html')\"",
     "prepare": "npm run build",
     "export-pack": "tsx scripts/export-pack.ts",
     "build:fonts": "tsx scripts/build-fonts.ts",

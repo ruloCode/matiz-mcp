@@ -64,7 +64,7 @@ function tokens(d: Dna) {
 const MAX_IMAGES = 8;
 
 const server = new McpServer(
-  { name: "matiz", version: "0.2.0" },
+  { name: "matiz", version: "0.3.0" },
   {
     instructions:
       "Referencias de diseño como datos. Flujo recomendado para diseñar algo nuevo: " +

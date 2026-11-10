@@ -208,3 +208,90 @@ test("classGuide: anuncia los contrastes reales (text-primary sobre fondo oscuro
   const line = g.contrast.find((l: string) => l.startsWith("text-primary sobre bg-background"))!;
   assert.match(line, /NO como texto/);
 });
+
+test("screenLinks: data-go con comillas dobles o simples, deduplicado y en slug", async () => {
+  const { screenLinks } = await import("../src/studio/doc.js");
+  assert.deepEqual(screenLinks(`<a data-go="Precios">x</a><button data-go='Registro · Paso 1'>y</button><a data-go="precios">z</a>`), ["precios", "registro-paso-1"]);
+  assert.deepEqual(screenLinks("<a href='#'>nada</a>"), []);
+});
+
+test("screenDocument con nav: el lienzo recibe postMessage y la exportación abre el HTML hermano", () => {
+  const post = screenDocument({ html: "<a data-go='Precios'>x</a>", theme: DEFAULT_THEME, title: "x", assetOrigin: "http://localhost:4040", nav: "post" });
+  assert.match(post, /parent\.postMessage\(\{matiz:"go"/);
+  const file = screenDocument({ html: "<a data-go='Precios'>x</a>", theme: DEFAULT_THEME, title: "x", assetOrigin: "..", csp: false, nav: "file" });
+  assert.match(file, /location\.href=to\+"\.html"/);
+  assert.doesNotMatch(screenDocument({ html: "<p>x</p>", theme: DEFAULT_THEME, title: "x", assetOrigin: ".." }), /data-go/);
+});
+
+test("wireframeHtml: tipos conocidos en orden, los desconocidos se reportan, cada sección marcada", async () => {
+  const { wireframeHtml, WIREFRAME_TYPES } = await import("../src/studio/wireframe.js");
+  const r = wireframeHtml(["navbar", "hero", "Pricing", "carrusel-3d", "footer"]);
+  assert.deepEqual(r.used, ["navbar", "hero", "pricing", "footer"]);
+  assert.deepEqual(r.unknown, ["carrusel-3d"]);
+  assert.deepEqual([...r.html.matchAll(/data-wf="([a-z-]+)"/g)].map((m) => m[1]), ["navbar", "hero", "pricing", "footer"]);
+  assert.ok(WIREFRAME_TYPES.length >= 24); // cubre todos los tipos del clasificador
+  // solo tokens del tablero: nada de grises por defecto de Tailwind
+  assert.doesNotMatch(r.html, /\b(gray|slate|zinc|neutral)-\d/);
+});
+
+test("tellFindings: cada señal medida se vuelve un hallazgo con dónde y qué decidir; sin señales no hay nada", async () => {
+  const { tellFindings } = await import("../src/studio/check.js");
+  const ex = { tag: "div", text: "x", path: "section > div", box: [0, 0, 10, 10] as [number, number, number, number] };
+  assert.deepEqual(tellFindings({ fonts: { body: "Fraunces", heading: "Fraunces" } }, DEFAULT_THEME), []);
+  const f = tellFindings(
+    {
+      gradient: { count: 3, purple: 2, examples: [ex] },
+      "card-kit": { count: 2, groups: 2, examples: [ex] },
+      "long-lines": { count: 1, examples: [ex] },
+      eyebrow: { count: 4, examples: [ex] },
+      fonts: { body: "Inter", heading: "Inter" },
+    },
+    DEFAULT_THEME,
+  );
+  const areas = f.map((x) => x.area);
+  assert.deepEqual(areas, ["tell:gradient", "tell:eyebrow", "tell:card-kit", "tell:long-lines", "tell:default-font"]);
+  assert.match(f[0].message, /2 hacia el morado/);
+  assert.ok(f.every((x) => x.severity !== "high"), "una señal nunca es alta: puede ser una decisión");
+  // con marca base, la fuente por defecto es de la marca: no se avisa
+  assert.ok(!tellFindings({ fonts: { body: "Inter", heading: "Inter" } }, { ...DEFAULT_THEME, source: { ref_id: "x", name: "x", url: "x" } }).length);
+});
+
+test("checkScreen: lo que se rompe a 390 px entra como hallazgo propio", () => {
+  const d = buildDna(page());
+  const theme = themeFromDna(d);
+  const roto = probe({ overflow: { scrollWidth: 620, viewport: 390, culprits: [] } });
+  const r = checkScreen({ probe: probe(), dna: d, theme, responsive: [{ viewport: "390", width: 390, probe: roto }] });
+  assert.equal(r.findings[0].area, "overflow@390");
+  assert.match(r.findings[0].message, /^A 390px:/);
+});
+
+test("store: referencias fijadas en orden, sin duplicar, y se pueden quitar", () => {
+  useMemoryDb();
+  store.resetStudioSchema();
+  store.saveBoard({ id: "refs", name: "Refs", theme: DEFAULT_THEME });
+  const before = store.boardStamp("refs");
+  store.pinRef("refs", "linear.app", "la jerarquía del hero");
+  store.pinRef("refs", "stripe.com#3");
+  store.pinRef("refs", "linear.app"); // repetir no duplica ni borra la nota
+  assert.deepEqual(store.listRefs("refs").map((r) => [r.refId, r.note]), [["linear.app", "la jerarquía del hero"], ["stripe.com#3", undefined]]);
+  assert.notEqual(store.boardStamp("refs"), before, "el lienzo se entera");
+  store.unpinRef("refs", "linear.app");
+  assert.deepEqual(store.listRefs("refs").map((r) => r.refId), ["stripe.com#3"]);
+});
+
+test("ensureLegible: un muted casi igual al texto principal no da jerarquía y se deriva uno más suave", () => {
+  const t = ensureLegible({ ...DEFAULT_THEME, colors: { background: "#F6F8F7", foreground: "#000000", primary: "#1E6B3C", muted: "#0F0E12", surface: "#ECEEED", border: "#D8DAD9", "on-primary": "#FFFFFF" } });
+  const bg = parseColor(t.colors.background)!;
+  const m = contrastRatio(parseColor(t.colors.muted!)!, bg);
+  assert.ok(m >= 4.5 && m < 9, `muted ${t.colors.muted} = ${m.toFixed(2)}:1`);
+  assert.ok(contrastRatio(parseColor(t.colors.muted!)!, parseColor(t.colors.surface!)!) >= 4.5, "también sobre surface");
+  assert.match(t.adjusted![0], /casi el mismo color del texto/);
+});
+
+test("probeFindings: textos encimados salen como hallazgo con los dos textos", () => {
+  const el = (text: string) => ({ tag: "span", text, classes: "", path: "div > span", box: [0, 0, 10, 10] as [number, number, number, number] });
+  const f = probeFindings(probe({ overlaps: [{ a: el("Papa criolla"), b: el("Mora de Castilla"), share: 55 }] }));
+  assert.equal(f[0].area, "overlap");
+  assert.equal(f[0].severity, "high");
+  assert.match(f[0].where!, /«Papa criolla» pisa «Mora de Castilla» \(55%\)/);
+});

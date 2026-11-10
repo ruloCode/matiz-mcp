@@ -15,7 +15,7 @@ Además responde preguntas que ninguna galería responde:
 - *¿Mi build se parece a la referencia? ¿Qué le falta?* Lo mide sobre tu `localhost`.
 - *¿Qué me gustó en este proyecto?* Guarda una memoria de gusto que reordena las búsquedas.
 
-Y desde la 0.2.0 tiene un **Estudio**: un lienzo tipo Figma donde tu agente diseña las pantallas *antes* de tocar el código del proyecto, con el sistema de una marca medida, y donde tú comentas sobre cualquier elemento. Matiz no diseña ni llama a ningún modelo: diseña el modelo que ya usas, con los datos de Matiz.
+Y tiene un **Estudio**: un lienzo tipo Figma donde tu agente diseña las pantallas *antes* de tocar el código del proyecto, con el sistema de una marca medida, y donde tú comentas sobre cualquier elemento. Matiz no diseña ni llama a ningún modelo: diseña el modelo que ya usas, con los datos de Matiz.
 
 El corpus se arma con **sitios públicos que capturas tú** (Playwright) y con **DESIGN.md de repos con licencia MIT**. No copia catálogos de servicios pagos.
 
@@ -49,13 +49,17 @@ Las rutas exactas de cada archivo de configuración están en [matiz-mcp.vercel.
 
 ### Estudio: diseñar antes del código
 
-Pídele a tu agente algo como *"diseña en el Estudio de Matiz la landing de mi producto"* (o usa el prompt `design_in_studio`). El flujo:
+Pídele a tu agente algo como *"diseña en el Estudio de Matiz la landing de mi producto"* (o usa el prompt `design_in_studio`). Matiz no diseña ni llama a ningún modelo: diseña el modelo que ya usas, con los datos de Matiz. El flujo:
 
-1. `create_board` fija el sistema del tablero. Con `base_ref` toma la marca medida de un sitio del corpus (colores con rol, tipografías con alternativa libre, radio, ancho) y verifica que se lea: si un rol medido no pasa AA o falta, lo deriva y lo anota. Devuelve la guía de clases (`bg-background`, `text-muted`, `bg-primary`, `font-heading`, `rounded-brand`, `max-w-content`…) con el contraste real de cada combinación.
-2. `put_screen` dibuja una pantalla: el agente escribe el `<body>` en HTML + Tailwind v4 y Matiz lo renderiza en Chromium (escritorio 1440, tablet 834 o móvil 390), le devuelve la **miniatura** para que vea lo que hizo y le dice lo que se rompió: desborde horizontal con el elemento culpable, contraste texto por texto, imágenes rotas, fuentes que no cargaron, botones táctiles chicos. Cada llamada es una **versión** nueva; `variant_of` pone variantes debajo de la original para compararlas.
-3. `check_screen` mide la pantalla como si fuera un sitio del corpus: colores fuera del sistema del tablero (el `text-gray-500` de siempre), tipografías y radio que no son los del tablero y la crítica completa contra la marca de referencia. Puntaje 0–100.
-4. `open_board` te abre el lienzo: zoom y desplazamiento, capas, variantes lado a lado, vista en vivo interactiva, historial de versiones, **Aprobar / Descartar**, y comentarios con **C**: haces clic sobre un elemento y el agente recibe con `get_board` qué elemento señalaste (etiqueta, texto, clases y selector).
-5. `export_board` entrega a código: HTML autónomo por pantalla, capturas, `theme.css` con el `@theme` de Tailwind v4 y `handoff.md` con tokens, pantallas, notas y comentarios.
+1. **Estructura primero.** `draft_wireframe` dibuja la página en bloques grises con la secuencia de secciones que el corpus mide para tu industria (o la que pidas), para acordar qué va y en qué orden antes del detalle.
+2. **Sistema medido.** `create_board` fija el sistema del tablero. Con `base_ref` toma la marca medida de un sitio del corpus (colores con rol, tipografías con alternativa libre, radio, ancho) y verifica que se lea: si un rol medido no pasa AA, no se distingue del texto principal o falta, lo deriva y lo anota. Devuelve la guía de clases (`bg-background`, `text-muted`, `bg-primary`, `font-heading`, `rounded-brand`, `max-w-content`…) con el contraste real de cada combinación y la lista de tratamientos por defecto que conviene decidir antes de dibujar.
+3. **Referencias a la vista.** `pin_reference` pone en el lienzo las referencias del corpus que vas a usar, con una nota de qué tomas de cada una, como un moodboard.
+4. **Pantallas.** `put_screen` recibe el `<body>` en HTML + Tailwind v4 y lo renderiza en Chromium (escritorio 1440, tablet 834 o móvil 390). Devuelve la **miniatura** para que el agente vea lo que hizo, y lo que se rompió: desborde horizontal con el elemento culpable, textos encimados, contraste texto por texto, imágenes rotas, fuentes que no cargaron, botones táctiles chicos. Cada llamada es una **versión** nueva; `variant_of` pone variantes debajo de la original. `data-go="Otra pantalla"` en un botón dibuja la flecha del flujo y vuelve el lienzo un prototipo navegable.
+5. **Medición.** `check_screen` mide la pantalla como si fuera un sitio del corpus: colores fuera del sistema del tablero (el `text-gray-500` de siempre), tipografías y radio que no son los del tablero, la crítica contra la marca de referencia, el mismo HTML a 390 px y **16 señales de plantilla** (degradados de adorno, etiquetas en mayúsculas sobre cada título, contenido picado en tarjetas idénticas, emoji de ícono, flechas al final de cada botón, líneas de más de 85 caracteres…), cada una con dónde está. Puntaje 0–100.
+6. **El humano decide.** `open_board` abre el lienzo: zoom y desplazamiento, capas, referencias, variantes lado a lado, flechas de flujo, vista en vivo interactiva, historial de versiones, **Aprobar / Descartar**, y comentarios con **C**: haces clic sobre un elemento y el agente recibe con `get_board` qué elemento señalaste (etiqueta, texto, clases y selector).
+7. **A código.** `export_board` entrega HTML autónomo por pantalla (con el flujo navegable entre archivos), capturas, `theme.css` con el `@theme` de Tailwind v4 y `handoff.md` con tokens, pantallas, notas y comentarios.
+
+**Dentro del chat:** en los clientes que soportan [MCP Apps](https://modelcontextprotocol.io/extensions/apps/build) (Claude web y Desktop), `put_screen`, `check_screen`, `draft_wireframe`, `pin_reference` y `get_board` se muestran como una tarjeta interactiva con la captura, los hallazgos y los botones *Medir* y *Abrir el lienzo*. En los demás clientes llegan como texto e imagen, igual que siempre.
 
 `npx -y matiz-mcp studio` abre el lienzo sin pasar por el agente. Todo vive en `~/.matiz` (tableros en la misma SQLite, capturas en `~/.matiz/studio/`). Las pantallas se renderizan sin red salvo Google Fonts e imágenes https, y la vista en vivo corre aislada (iframe con sandbox y CSP sin `connect-src`).
 
@@ -78,6 +82,7 @@ npx -y matiz-mcp studio     # el lienzo del Estudio
 pnpm install && pnpm test
 pnpm smoke                 # las tools de referencias por MCP real
 pnpm build && pnpm smoke:studio   # el Estudio de punta a punta (MATIZ_HOME aislado; --keep deja el lienzo arriba)
+pnpm build && npx tsx scripts/studio-demo.ts <dir>   # el tablero de demostración del sitio, hecho con las tools
 pnpm eval                  # exactitud del clasificador contra research/eval
 pnpm ask <tool> '<json>'   # llama una tool y guarda sus imágenes en .ask/
 pnpm export-pack           # empaqueta el corpus actual para distribuir
@@ -108,10 +113,12 @@ pnpm build:site            # regenera la landing con las cifras reales del corpu
 
 | Tool | Para qué |
 |---|---|
-| `create_board` | Crea o actualiza un tablero con su sistema: marca medida (`base_ref`) y/o tema a mano. Devuelve la guía de clases con contrastes reales. |
-| `put_screen` | Dibuja una pantalla (HTML + Tailwind v4) en desktop, tablet o móvil. Devuelve la miniatura y los problemas medidos. Cada llamada = versión nueva. |
+| `create_board` | Crea o actualiza un tablero con su sistema: marca medida (`base_ref`) y/o tema a mano. Devuelve la guía de clases con contrastes reales y los tratamientos por defecto que hay que decidir. |
+| `draft_wireframe` | La estructura en baja fidelidad, desde la composición medida del corpus o una secuencia a mano. |
+| `pin_reference` | Fija una referencia del corpus en el lienzo, con la nota de qué se toma de ella. |
+| `put_screen` | Dibuja una pantalla (HTML + Tailwind v4) en desktop, tablet o móvil. Devuelve la miniatura y los problemas medidos. Cada llamada = versión nueva; `data-go` une pantallas en un flujo. |
 | `get_screen` | El HTML de una pantalla (actual o anterior), su historial y sus comentarios abiertos. |
-| `check_screen` | Mide la pantalla contra el sistema del tablero y una referencia del corpus. Puntaje 0–100 con dónde y qué cambiar. |
+| `check_screen` | Mide la pantalla contra el sistema del tablero, una referencia del corpus, el mismo HTML a 390 px y 16 señales de plantilla. Puntaje 0–100 con dónde y qué cambiar. |
 | `get_board` | Pantallas, estados que marcó el humano y comentarios con el elemento exacto; vista general en una imagen. |
 | `open_board` | Abre el lienzo en el navegador. |
 | `manage_screen` | Aprobar, descartar, restaurar una versión, mover o borrar. |

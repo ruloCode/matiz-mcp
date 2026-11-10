@@ -6,11 +6,11 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { HOME } from "../db.js";
+import { HOME, findSite } from "../db.js";
 import * as store from "../studio/store.js";
 import { layoutBoard } from "../studio/layout.js";
 import { pickTarget } from "../studio/check.js";
-import { TAILWIND_PATH, VIEWPORTS, screenCsp, screenDocument, slugify } from "../studio/doc.js";
+import { TAILWIND_PATH, VIEWPORTS, screenCsp, screenDocument, screenLinks, slugify } from "../studio/doc.js";
 import { tailwindSource } from "../studio/render.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -58,12 +58,44 @@ function boardPayload(id: string) {
       shot: s.shot ? imgUrl(id, s.slug, s.version, "full") : null,
       live: `/studio/s/${encodeURIComponent(id)}/${encodeURIComponent(s.slug)}`,
       findings: s.findings,
+      links: screenLinks(s.html).map((to) => ({ to, exists: screens.some((x) => x.slug === to) })),
       renderError: s.renderError,
       versions: store.listVersions(id, s.slug).map((v) => ({ version: v.version, note: v.note, at: v.createdAt })),
       updatedAt: s.updatedAt,
     })),
     comments: store.listComments(id),
+    refs: pinnedRefs(id),
   };
+}
+
+/** Referencias fijadas: una fila encima de las pantallas, alineadas por abajo. */
+function pinnedRefs(id: string) {
+  let x = 0;
+  const out = [];
+  for (const r of store.listRefs(id)) {
+    const site = findSite(r.refId);
+    if (!site) continue;
+    const idx = r.refId.includes("#") ? +r.refId.split("#")[1] : undefined;
+    const sec = idx !== undefined ? site.dna.sections.find((s) => s.idx === idx) : undefined;
+    const width = site.viewport === "mobile" ? 390 : 1440;
+    const height = sec ? Math.min(sec.height, 1800) : site.viewport === "mobile" ? 844 : 900;
+    const file = sec ? sec.shot : site.shots.hero;
+    out.push({
+      refId: r.refId,
+      name: site.name,
+      url: site.url,
+      type: sec?.type ?? "página",
+      note: r.note,
+      width,
+      height,
+      x,
+      y: -height - 460,
+      img: file && existsSync(file) ? `/img/${encodeURIComponent(r.refId)}?size=hero` : null,
+      accent: site.dna.palette.accent,
+    });
+    x += width + 160;
+  }
+  return out;
 }
 
 function serveShot(res: ServerResponse, boardId: string, slug: string, version: number, size: string) {
@@ -117,7 +149,7 @@ export async function handleStudio(req: IncomingMessage, res: ServerResponse, ur
     if (!board || !s) return send(res, 404, "No existe", "text/plain; charset=utf-8"), true;
     const v = Number(url.searchParams.get("v") ?? 0);
     const html = v && v !== s.version ? store.getVersion(board.id, s.slug, v)?.html ?? s.html : s.html;
-    const doc = screenDocument({ html, theme: board.theme, title: `${s.name} · ${board.name}`, assetOrigin: origin });
+    const doc = screenDocument({ html, theme: board.theme, title: `${s.name} · ${board.name}`, assetOrigin: origin, nav: "post" });
     return send(res, 200, doc, "text/html; charset=utf-8", { "content-security-policy": screenCsp(origin) }), true;
   }
 

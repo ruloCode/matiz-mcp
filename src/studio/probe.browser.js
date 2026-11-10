@@ -2,7 +2,9 @@
 // Devuelve problemas medidos (no opiniones) y las cajas de los elementos que se pueden
 // señalar con un comentario en el lienzo.
 (opts) => {
-  const vw = window.innerWidth;
+  // el ancho PEDIDO: con emulación móvil Chromium agranda el viewport para que quepa lo ancho,
+  // y entonces innerWidth ya no delata el desborde
+  const vw = opts.width || window.innerWidth;
   const doc = document.documentElement;
   const sx = window.scrollX, sy = window.scrollY;
 
@@ -139,7 +141,36 @@
     }
   }
 
-  // 6) cajas señalables para los comentarios del lienzo
+  // 6) textos encimados: dos bloques de texto (hojas) que se pisan. Los desbordes no lo ven
+  //    (todo cabe en el ancho) y en móvil es el error más común de un layout con absolute.
+  const leaves = [];
+  for (const el of all) {
+    if (leaves.length >= 500) break;
+    const own = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim().length > 1);
+    if (!own || !visible(el)) continue;
+    // la caja del TEXTO (no la del elemento): un bloque ancho con poco texto no "pisa" nada
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const rects = Array.from(range.getClientRects()).filter((r) => r.width > 1 && r.height > 1);
+    if (rects.length) leaves.push({ el, rects });
+  }
+  const overlaps = [];
+  const area = (r) => r.width * r.height;
+  for (let i = 0; i < leaves.length && overlaps.length < 6; i++)
+    for (let j = i + 1; j < leaves.length && overlaps.length < 6; j++) {
+      const a = leaves[i], b = leaves[j];
+      if (a.el.contains(b.el) || b.el.contains(a.el)) continue;
+      let hit = 0, small = 0;
+      for (const ra of a.rects)
+        for (const rb of b.rects) {
+          const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+          const h = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+          if (w > 2 && h > 2) { hit += w * h; small = Math.max(small, Math.min(area(ra), area(rb))); }
+        }
+      if (hit > 0 && hit / small > 0.15) overlaps.push({ a: desc(a.el), b: desc(b.el), share: Math.round((hit / small) * 100) });
+    }
+
+  // 7) cajas señalables para los comentarios del lienzo
   const TARGET = "h1,h2,h3,h4,h5,h6,p,a,button,img,svg,input,textarea,select,label,li,nav,header,footer,section,article,figure,blockquote,table,form,[role=button]";
   const targets = [];
   for (const el of document.body.querySelectorAll(TARGET)) {
@@ -157,7 +188,7 @@
     height: Math.max(doc.scrollHeight, document.body.scrollHeight),
     tailwind,
     empty: !document.body.innerText.trim() && !document.images.length && !document.querySelector("svg"),
-    issues: { overflow, brokenImages, lowContrast: lowContrast.slice(0, 10), missingFonts, smallTargets },
+    issues: { overflow, brokenImages, lowContrast: lowContrast.slice(0, 10), missingFonts, smallTargets, overlaps },
     targets,
   };
 }

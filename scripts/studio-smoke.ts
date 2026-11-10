@@ -36,7 +36,13 @@ async function call(name: string, args: Record<string, unknown>) {
 }
 
 const tools = (await client.listTools()).tools.map((t) => t.name);
-for (const t of ["create_board", "put_screen", "get_screen", "check_screen", "get_board", "open_board", "manage_screen", "resolve_comment", "export_board"]) check(tools.includes(t), `tool ${t}`);
+for (const t of ["create_board", "put_screen", "get_screen", "check_screen", "get_board", "open_board", "manage_screen", "resolve_comment", "export_board", "draft_wireframe", "pin_reference"]) check(tools.includes(t), `tool ${t}`);
+const listed = (await client.listTools()).tools;
+check((listed.find((t) => t.name === "put_screen")?._meta as any)?.ui?.resourceUri === "ui://matiz/studio.html", "put_screen anuncia la vista en el chat (MCP Apps)");
+const resList = await client.listResources();
+check(resList.resources.some((r) => r.uri === "ui://matiz/studio.html" && r.mimeType === "text/html;profile=mcp-app"), "recurso ui://matiz/studio.html");
+const view = await client.readResource({ uri: "ui://matiz/studio.html" });
+check(/ui\/initialize/.test(String((view.contents[0] as any).text)), "la vista habla el protocolo de MCP Apps");
 
 const base = (await call("search_references", { query: "fintech payments", kind: "site", limit: 1, images: false })).json.results?.[0]?.ref_id ?? "stripe.com";
 const b = await call("create_board", { name: "Smoke Nube", brief: "Landing de un SaaS de agentes de IA para pymes", base_ref: base });
@@ -87,12 +93,54 @@ const c = await call("check_screen", { board: "smoke-nube", screen: "Home", imag
 check(typeof c.json.score === "number" && c.json.findings?.some((f: any) => f.area === "palette" || f.area === "contrast"), `check_screen Home: ${c.json.summary}`);
 check(c.json.reference?.ref_id, `crítica contra la referencia ${c.json.reference?.name}`);
 
+// wireframe desde la composición medida del corpus
+const wf = await call("draft_wireframe", { board: "smoke-nube", name: "Estructura", industry: "ai" });
+check(!wf.isError && wf.json.sequence?.includes("hero") && wf.images === 1, `draft_wireframe: ${wf.json.sequence?.join(" → ")} (${wf.json.evidence?.sites} sitios)`);
+
+// referencia fijada en el lienzo
+const pin = await call("pin_reference", { board: "smoke-nube", ref_id: base, note: "la marca base" });
+check(!pin.isError && pin.json.pinned === base, `pin_reference ${base}: ${pin.json.image}`);
+
+// flujo: un botón lleva a otra pantalla
+const flow = await call("put_screen", { board: "smoke-nube", name: "Precios", html: '<section class="mx-auto max-w-content px-6 py-24"><h1 class="font-heading text-5xl">Precios</h1><a data-go="Home" class="mt-6 inline-block bg-primary text-on-primary rounded-brand px-5 py-3">Volver</a></section>' });
+check(flow.json.links?.[0] === "home", "data-go se reporta como flujo");
+
+// señales de plantilla: una página "de IA" a propósito vs. una hecha con decisiones
+const SLOP = `
+<section class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white py-24 text-center">
+  <p class="text-xs uppercase tracking-widest">Plataforma de IA</p>
+  <h1 class="text-6xl font-bold">El futuro del <span class="text-pink-300">trabajo</span></h1>
+  <p class="mt-4">Potencia tu equipo con agentes inteligentes.</p>
+  <a class="mt-6 inline-block bg-white text-purple-700 rounded-xl px-6 py-3">Empezar →</a> <a class="inline-block rounded-xl px-6 py-3">Ver demo →</a>
+</section>
+<section class="py-20 text-center"><p class="text-xs uppercase tracking-widest">Funciones</p><h2 class="text-4xl font-bold">Todo lo que necesitas</h2>
+  <div class="mt-10 grid grid-cols-3 gap-6 max-w-5xl mx-auto">${["🚀 Rápido", "🔒 Seguro", "✨ Mágico"].map((t, i) => `<div class="rounded-xl shadow-md p-6 bg-white"><p>0${i + 1}</p><p class="text-3xl">${t.split(" ")[0]}</p><h3 class="font-bold">${t.split(" ")[1]}</h3><p>Descripción de la función con texto de relleno.</p></div>`).join("")}</div></section>
+<section class="py-20 text-center"><p class="text-xs uppercase tracking-widest">Testimonios</p><h2 class="text-4xl font-bold">Lo que dicen</h2>
+  <div class="mt-10 grid grid-cols-3 gap-6 max-w-5xl mx-auto">${[1, 2, 3].map(() => `<div class="rounded-xl shadow-md p-6 bg-white"><p>“Increíble producto, cambió todo.”</p><p class="text-sm">Ana · CEO · Startup</p></div>`).join("")}</div></section>
+<section class="py-16 text-center"><p class="text-lg">${"Este es un párrafo muy largo que ocupa todo el ancho de la pantalla sin ningún límite de medida, así que cada línea termina teniendo muchísimos caracteres y se vuelve cansado de leer para cualquier persona que llegue hasta aquí. ".repeat(3)}</p></section>`;
+await call("create_board", { name: "Smoke Slop" });
+await call("put_screen", { board: "smoke-slop", name: "Slop", html: SLOP });
+const slop = await call("check_screen", { board: "smoke-slop", screen: "Slop", responsive: false });
+const tellAreas = (slop.json.findings ?? []).filter((f: any) => f.area.startsWith("tell:")).map((f: any) => f.area.slice(5));
+console.log("  señales en la página genérica:", tellAreas.join(", "));
+for (const t of ["gradient", "eyebrow", "accent-word", "card-kit", "emoji-icon", "arrow-suffix", "numbered", "long-lines"]) check(tellAreas.includes(t), `detecta ${t}`);
+check((slop.json.findings ?? []).some((f: any) => f.area === "tell:gradient" && /morado/.test(f.message)), "el degradado se reconoce como morado");
+const clean = await call("check_screen", { board: "smoke-nube", screen: "Home · B", responsive: true });
+const cleanTells = (clean.json.findings ?? []).filter((f: any) => f.area.startsWith("tell:")).map((f: any) => f.area.slice(5));
+console.log("  señales en la página con decisiones:", cleanTells.join(", ") || "ninguna");
+check(cleanTells.length < tellAreas.length - 4, `la página cuidada tiene muchas menos señales (${cleanTells.length} vs ${tellAreas.length})`);
+const wide = await call("put_screen", { board: "smoke-slop", name: "Ancha", html: '<div class="flex gap-6 p-6">' + [1,2,3,4].map(() => '<div class="w-[320px] shrink-0 h-40 bg-surface rounded-brand"></div>').join("") + "</div>" });
+const wideCheck = await call("check_screen", { board: "smoke-slop", screen: "Ancha" });
+check((wideCheck.json.findings ?? []).some((f: any) => f.area === "overflow@390"), "check_screen responsive caza el desborde a 390 px");
+
 // el humano comenta en el lienzo: POST como lo hace la página
-const gallery = `http://localhost:${port}`;
+const gallery = String(b.json.canvas ?? "").replace(/\/studio\/.*$/, "") || `http://localhost:${port}`;
 const page = await fetch(`${gallery}/studio/smoke-nube`).then((r) => r.status);
 check(page === 200, "el lienzo responde /studio/smoke-nube");
 const boardData = await fetch(`${gallery}/studio/api/board/smoke-nube`).then((r) => r.json());
-check(boardData.screens?.length === 3 && boardData.screens.every((s: any) => s.thumb), "API del lienzo: 3 pantallas con captura");
+check(boardData.screens?.length === 5 && boardData.screens.every((s: any) => s.thumb), `API del lienzo: ${boardData.screens?.length} pantallas con captura`);
+check(boardData.refs?.length === 1 && boardData.refs[0].img, "API del lienzo: la referencia fijada con su imagen");
+check(boardData.screens.find((s: any) => s.slug === "precios")?.links?.[0]?.exists, "API del lienzo: la flecha Precios → Home");
 const live = await fetch(`${gallery}/studio/s/smoke-nube/home`);
 check(live.status === 200 && /content-security-policy/i.test([...live.headers.keys()].join(" ")), "vista en vivo con CSP");
 const noHeader = await fetch(`${gallery}/studio/api/board/smoke-nube/comments`, { method: "POST", body: "{}" });

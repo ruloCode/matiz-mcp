@@ -82,8 +82,9 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
 .stage.commenting .board-img { cursor: crosshair; }
 .world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
 .art { position: absolute; }
-.art .lbl { position: absolute; left: 0; bottom: 100%; display: flex; gap: 6px; align-items: center; white-space: nowrap; transform-origin: 0 100%; transform: scale(var(--inv)); padding-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 500; cursor: move; user-select: none; }
-.art .lbl b { color: var(--ink); font-weight: 600; }
+.art .lbl { max-width: calc(var(--w) * 1px / var(--inv)); overflow: hidden; position: absolute; left: 0; bottom: 100%; display: flex; gap: 6px; align-items: center; white-space: nowrap; transform-origin: 0 100%; transform: scale(var(--inv)); padding-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 500; cursor: move; user-select: none; }
+.art .lbl b { color: var(--ink); font-weight: 600; flex: none; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.art .lbl .tag, .art .lbl .st { flex: none; }
 .art .lbl .tag { font-family: var(--mono); font-size: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
 .art .lbl .st { font-size: 10px; font-weight: 600; border-radius: 4px; padding: 0 5px; color: #fff; }
 .art .lbl .st.approved { background: var(--ok); }
@@ -93,6 +94,14 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
 .art.discarded .frame { opacity: .35; }
 .board-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; user-select: none; -webkit-user-drag: none; }
 .art .ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: calc(14px * var(--inv)); text-align: center; padding: 20px; }
+.art.ref .frame { box-shadow: 0 0 0 calc(1px * var(--inv)) rgba(0,0,0,.1); background: var(--soft); }
+.art.ref .lbl a { color: inherit; }
+.art .refnote { position: absolute; left: 0; top: 100%; transform-origin: 0 0; transform: scale(var(--inv)); padding-top: 8px; font-size: 12px; color: var(--muted); max-width: calc(var(--w) * 1px / var(--inv)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rowlbl { position: absolute; transform-origin: 0 100%; transform: scale(var(--inv)); font-size: 11px; font-weight: 600; color: var(--muted); white-space: nowrap; padding-bottom: 34px; }
+svg.links { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
+svg.links path { fill: none; stroke: var(--mark); stroke-width: 2; vector-effect: non-scaling-stroke; opacity: .85; }
+svg.links path.missing { stroke: var(--bad); stroke-dasharray: 6 5; }
+svg.links circle { fill: var(--mark); r: calc(5px * var(--inv)); }
 .pin { position: absolute; width: 26px; height: 26px; margin: -26px 0 0 0; transform-origin: 0 100%; transform: scale(var(--inv)); border-radius: 13px 13px 13px 2px; background: var(--pin); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); cursor: pointer; border: 2px solid #fff; }
 .pin.resolved { background: var(--muted); opacity: .7; }
 .pin.hot { outline: 3px solid color-mix(in oklab, var(--pin) 40%, transparent); }
@@ -274,7 +283,7 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
   }
 
   function bounds(list) {
-    const items = list.length ? list : S.data.screens;
+    const items = list.length ? list : [...S.data.screens, ...(S.data.refs || [])];
     if (!items.length) return null;
     const minX = Math.min(...items.map((s) => s.x));
     const minY = Math.min(...items.map((s) => s.y)) - 40;
@@ -323,9 +332,58 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
     if (slug) history.replaceState(null, "", `#${slug}`);
   }
 
+  function linksSvg() {
+    const { screens } = S.data;
+    const by = new Map(screens.map((s) => [s.slug, s]));
+    let out = "";
+    for (const s of screens)
+      for (const l of s.links || []) {
+        const t = by.get(l.to);
+        if (!t || t === s) continue;
+        const forward = t.x >= s.x + s.width;
+        const sameCol = Math.abs(t.x - s.x) < 10;
+        let d, ex, ey;
+        if (forward) {
+          // hacia adelante: de borde a borde, a media altura de la primera pantalla
+          const x1 = s.x + s.width, y1 = s.y + Math.min(s.height, 900) / 2;
+          ex = t.x; ey = t.y + Math.min(t.height, 900) / 2;
+          d = `M ${x1} ${y1} C ${x1 + 120} ${y1}, ${ex - 120} ${ey}, ${ex} ${ey}`;
+        } else if (sameCol) {
+          const y1 = s.y + Math.min(s.height, 900) / 2;
+          ex = t.x; ey = t.y + Math.min(t.height, 900) / 2;
+          d = `M ${s.x} ${y1} C ${s.x - 220} ${y1}, ${t.x - 220} ${ey}, ${ex} ${ey}`;
+        } else {
+          // hacia atrás: por ENCIMA de las pantallas, sin cruzar las de en medio
+          const top = Math.min(...screens.map((x) => x.y)) - 300;
+          const x1 = s.x + s.width / 2;
+          ex = t.x + t.width / 2; ey = t.y;
+          d = `M ${x1} ${s.y} C ${x1} ${top}, ${ex} ${top}, ${ex} ${ey}`;
+        }
+        out += `<path d="${d}"/><circle cx="${ex}" cy="${ey}"/>`;
+      }
+    return `<svg class="links">${out}</svg>`;
+  }
+
+  function refsHtml() {
+    const refs = S.data.refs || [];
+    if (!refs.length) return "";
+    const top = Math.min(...refs.map((r) => r.y));
+    return (
+      `<div class="rowlbl" style="left:${refs[0].x}px;top:${top}px">Referencias medidas</div>` +
+      refs
+        .map(
+          (r) => `<div class="art ref" data-ref="${esc(r.refId)}" style="left:${r.x}px;top:${r.y}px;width:${r.width}px;--w:${r.width}">
+          <div class="lbl"><b>${esc(r.name)}</b><span class="tag">${esc(r.type)}</span><a class="tag" href="${esc(r.url)}" target="_blank" rel="noopener">abrir sitio ↗</a></div>
+          <div class="frame" style="height:${r.height}px">${r.img ? `<img class="board-img" alt="${esc(r.name)}" draggable="false" data-w="${r.width}" data-thumb="${r.img}" data-full="${r.img}" src="${r.img}">` : `<div class="ph">Sin captura en esta máquina</div>`}</div>
+          ${r.note ? `<div class="refnote">${esc(r.note)}</div>` : ""}</div>`,
+        )
+        .join("")
+    );
+  }
+
   function renderWorld() {
     const { screens, comments } = S.data;
-    world.innerHTML = screens
+    world.innerHTML = refsHtml() + linksSvg() + screens
       .map((s) => {
         const pins = comments
           .filter((c) => c.slug === s.slug)
@@ -337,7 +395,7 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
         const body = s.thumb
           ? `<img class="board-img" alt="${esc(s.name)}" draggable="false" data-w="${s.width}" data-thumb="${s.thumb}" data-full="${s.shot}" src="${s.thumb}">`
           : `<div class="ph">${s.renderError ? `No se pudo renderizar: ${esc(s.renderError)}` : "Renderizando…"}</div>`;
-        return `<div class="art ${s.status}${S.sel === s.slug ? " sel" : ""}" data-slug="${esc(s.slug)}" style="left:${s.x}px;top:${s.y}px;width:${s.width}px">
+        return `<div class="art ${s.status}${S.sel === s.slug ? " sel" : ""}" data-slug="${esc(s.slug)}" style="left:${s.x}px;top:${s.y}px;width:${s.width}px;--w:${s.width}">
           <div class="lbl" data-drag="${esc(s.slug)}"><b>${esc(s.name)}</b><span class="tag">${s.viewport} · ${s.width}</span><span class="tag">v${s.version}</span>${st}</div>
           <div class="frame" style="height:${s.height}px">${body}${hl}${pins}</div></div>`;
       })
@@ -386,6 +444,7 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
         <a class="btn" href="${s.live}" target="_blank" rel="noopener">Abrir en pestaña ↗</a>
       </div>
       ${s.note ? `<div class="note">${esc(s.note)}</div>` : ""}
+      ${(s.links || []).length ? `<div><h3>Lleva a</h3><div class="row">${s.links.map((l) => (l.exists ? `<button class="btn" data-goto="${esc(l.to)}">→ ${esc(l.to)}</button>` : `<span class="btn" style="color:var(--bad)" title="Esa pantalla aún no existe">→ ${esc(l.to)} (falta)</span>`)).join("")}</div></div>` : ""}
       <div><h3>Comentarios ${cs.length ? `(${cs.filter((c) => c.status === "open").length} abiertos)` : ""}</h3>
         <div style="display:grid;gap:6px">${
           cs.length
@@ -494,7 +553,7 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
     const vh = s.viewportHeight;
     const m = document.createElement("div");
     m.className = "modal";
-    m.innerHTML = `<div class="mbar"><b>${esc(s.name)}</b><span>${s.viewport} · ${s.width}×${vh} · interactiva (hover, clics, scroll)</span><div class="grow"></div>
+    m.innerHTML = `<div class="mbar"><b>${esc(s.name)}</b><span>${s.viewport} · ${s.width}×${vh} · interactiva (hover, clics, scroll)${(s.links || []).some((l) => l.exists) ? " · prototipo: los botones con flujo navegan" : ""}</span><div class="grow"></div>
       <a class="btn" href="${s.live}${version ? `?v=${version}` : ""}" target="_blank" rel="noopener">Abrir en pestaña ↗</a><button class="btn" data-x>Cerrar · Esc</button></div>
       <div class="wrap"><div class="device ${s.viewport}"><iframe sandbox="allow-scripts" referrerpolicy="no-referrer" width="${s.width}" height="${vh}" src="${s.live}${version ? `?v=${version}` : ""}" title="${esc(s.name)}"></iframe></div></div>`;
     document.body.appendChild(m);
@@ -505,7 +564,13 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
     };
     fit();
     addEventListener("resize", fit);
-    const close = () => { m.remove(); removeEventListener("resize", fit); removeEventListener("keydown", onKey, true); };
+    const onGo = (e) => {
+      if (!e.data || e.data.matiz !== "go" || e.source !== $("iframe", m).contentWindow) return;
+      const t = S.data.screens.find((x) => x.slug === e.data.to);
+      if (t) { close(); openLive(t.slug); select(t.slug); }
+    };
+    addEventListener("message", onGo);
+    const close = () => { m.remove(); removeEventListener("resize", fit); removeEventListener("keydown", onKey, true); removeEventListener("message", onGo); };
     const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
     addEventListener("keydown", onKey, true);
     $("[data-x]", m).onclick = close;
@@ -534,7 +599,7 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
     }, { passive: false });
 
     stage.addEventListener("pointerdown", (e) => {
-      if (e.target.closest(".pop")) return;
+      if (e.target.closest(".pop") || e.target.closest("a")) return;
       const r = stage.getBoundingClientRect();
       const pin = e.target.closest(".pin");
       if (pin) {
@@ -552,7 +617,7 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
         stage.setPointerCapture(e.pointerId);
         return;
       }
-      const art = e.target.closest(".art");
+      const art = e.target.closest(".art:not(.ref)");
       if (art && S.tool === "comment" && !space && e.button === 0) {
         const w = toWorld(e.clientX - r.left, e.clientY - r.top);
         select(art.dataset.slug);
@@ -623,6 +688,8 @@ h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; color: var(--muted); te
         return;
       }
       if (e.target.closest("#live")) return openLive(s.slug);
+      const gt = e.target.closest("[data-goto]");
+      if (gt) return focusScreen(gt.dataset.goto, { whole: true });
       const ver = e.target.closest("[data-ver]");
       if (ver) return openLive(s.slug, Number(ver.dataset.ver));
       const res = e.target.closest("[data-resolve]");

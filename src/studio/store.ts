@@ -86,6 +86,10 @@ function db() {
       status TEXT NOT NULL DEFAULT 'open', reply TEXT, created_at TEXT NOT NULL, resolved_at TEXT
     );
     CREATE INDEX IF NOT EXISTS comments_board ON comments(board_id, status);
+    CREATE TABLE IF NOT EXISTS board_refs (
+      board_id TEXT NOT NULL, ref_id TEXT NOT NULL, note TEXT, ord INTEGER NOT NULL, created_at TEXT NOT NULL,
+      PRIMARY KEY (board_id, ref_id)
+    );
   `);
   ready = true;
   return d;
@@ -308,8 +312,38 @@ export function boardStamp(boardId: string): string {
   const r = db()
     .prepare(
       `SELECT b.updated_at AS u, (SELECT max(updated_at) FROM screens WHERE board_id = b.id) AS s,
-              (SELECT count(*) FROM comments WHERE board_id = b.id) AS c FROM boards b WHERE b.id = ?`,
+              (SELECT count(*) FROM comments WHERE board_id = b.id) AS c,
+              (SELECT count(*) FROM board_refs WHERE board_id = b.id) AS r FROM boards b WHERE b.id = ?`,
     )
     .get(boardId) as Row | undefined;
-  return r ? `${r.u}|${r.s}|${r.c}` : "";
+  return r ? `${r.u}|${r.s}|${r.c}|${r.r}` : "";
+}
+
+export interface PinnedRef {
+  refId: string;
+  note?: string;
+  order: number;
+}
+
+/** Referencias del corpus fijadas en el tablero (el moodboard junto a las pantallas). */
+export function pinRef(boardId: string, refId: string, note?: string) {
+  const d = db();
+  const ord = (d.prepare("SELECT coalesce(max(ord), -1) + 1 AS o FROM board_refs WHERE board_id = ?").get(boardId) as { o: number }).o;
+  d.prepare(
+    "INSERT INTO board_refs (board_id, ref_id, note, ord, created_at) VALUES (?,?,?,?,?) ON CONFLICT(board_id, ref_id) DO UPDATE SET note=coalesce(excluded.note, note)",
+  ).run(boardId, refId, note ?? null, ord, now());
+  touchBoard(boardId);
+}
+
+export function unpinRef(boardId: string, refId: string) {
+  db().prepare("DELETE FROM board_refs WHERE board_id = ? AND ref_id = ?").run(boardId, refId);
+  touchBoard(boardId);
+}
+
+export function listRefs(boardId: string): PinnedRef[] {
+  return (db().prepare("SELECT ref_id, note, ord FROM board_refs WHERE board_id = ? ORDER BY ord").all(boardId) as Row[]).map((r) => ({
+    refId: String(r.ref_id),
+    note: (r.note as string) ?? undefined,
+    order: Number(r.ord),
+  }));
 }

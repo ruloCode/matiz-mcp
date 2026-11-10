@@ -211,7 +211,7 @@ function serveImage(res: ServerResponse, refId: string, size: string) {
   if (!site) return send(res, 404, { error: "no existe" });
   const idx = refId.includes("#") ? +refId.split("#")[1] : undefined;
   const sec = idx !== undefined ? site.dna.sections.find((s) => s.idx === idx) : undefined;
-  const file = sec ? (size === "full" ? sec.shot : sec.thumb) : size === "full" ? site.shots.full : site.shots.heroThumb;
+  const file = sec ? (size === "thumb" ? sec.thumb : sec.shot) : size === "full" ? site.shots.full : size === "hero" ? site.shots.hero : site.shots.heroThumb;
   if (!file) return send(res, 404, { error: "sin imagen en esta máquina" });
   const abs = resolve(file);
   if (!abs.startsWith(resolve(SHOTS)) || !existsSync(abs)) return send(res, 404, { error: "sin imagen" });

@@ -47,7 +47,25 @@ export function screenCsp(assetOrigin: string): string {
   ].join("; ");
 }
 
-export function screenDocument(o: { html: string; theme: BoardTheme; title: string; assetOrigin: string; csp?: boolean }): string {
+/** Destinos de navegación de una pantalla: `data-go="Nombre de otra pantalla"` en cualquier elemento. */
+export function screenLinks(html: string): string[] {
+  const out = new Set<string>();
+  for (const m of html.matchAll(/\sdata-go\s*=\s*(?:"([^"]+)"|'([^']+)')/gi)) out.add(slugify(m[1] ?? m[2]));
+  return [...out];
+}
+
+/**
+ * Navegación del prototipo. En el lienzo ("post") el clic en un data-go avisa a la página que
+ * contiene el iframe; exportado ("file") abre el HTML hermano. Los enlaces normales no navegan
+ * (una pantalla suelta no tiene a dónde ir).
+ */
+function navScript(mode: "post" | "file"): string {
+  const slug = `(s)=>s.normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)`;
+  const go = mode === "post" ? `parent.postMessage({matiz:"go",to:to},"*")` : `location.href=to+".html"`;
+  return `<script>(()=>{const slug=${slug};document.addEventListener("click",(e)=>{const g=e.target.closest("[data-go]");const a=e.target.closest("a[href]");if(g){e.preventDefault();const to=slug(g.getAttribute("data-go"));${go};}else if(a){e.preventDefault();}},true);const st=document.createElement("style");st.textContent="[data-go]{cursor:pointer}";document.head.appendChild(st);})();</script>`;
+}
+
+export function screenDocument(o: { html: string; theme: BoardTheme; title: string; assetOrigin: string; csp?: boolean; nav?: "post" | "file" }): string {
   const { head, body, bodyAttrs } = splitHtml(o.html);
   const fonts = fontLinks(o.theme)
     .map((h) => `<link rel="stylesheet" href="${esc(h)}">`)
@@ -68,6 +86,7 @@ ${head}
 </head>
 <body${bodyAttrs}>
 ${body}
+${o.nav ? navScript(o.nav) : ""}
 </body>
 </html>`;
 }

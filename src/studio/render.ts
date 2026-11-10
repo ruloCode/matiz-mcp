@@ -11,11 +11,12 @@ import { buildDna } from "../analysis/dna.js";
 import type { Dna, RawPage } from "../types.js";
 import { TAILWIND_PATH, VIEWPORTS, screenDocument, type ViewportName } from "./doc.js";
 import type { BoardTheme } from "./theme.js";
-import type { ProbeResult } from "./check.js";
+import type { ProbeResult, Tells } from "./check.js";
 import { STUDIO } from "./store.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PROBE = readFileSync(join(here, "probe.browser.js"), "utf8").replace(/^\s*\/\/.*$/gm, "").trim();
+const TELLS = readFileSync(join(here, "tells.browser.js"), "utf8").replace(/^\s*\/\/.*$/gm, "").trim();
 const EXTRACT = readFileSync(join(here, "..", "capture", "extract.browser.js"), "utf8");
 
 let tailwindJs: Buffer | undefined;
@@ -35,6 +36,7 @@ export interface RenderResult {
   height: number;
   probe: ProbeResult;
   dna?: Dna;
+  tells?: Tells;
   ms: number;
 }
 
@@ -87,7 +89,7 @@ export async function renderScreen(o: {
     await page.evaluate(() => document.fonts?.ready).catch(() => {});
     await page.waitForTimeout(250);
 
-    const probe = (await page.evaluate(`(${PROBE})(${JSON.stringify({ fonts: [...new Set([o.theme.fonts.heading, o.theme.fonts.body])], touch: vp.mobile })})`)) as ProbeResult;
+    const probe = (await page.evaluate(`(${PROBE})(${JSON.stringify({ fonts: [...new Set([o.theme.fonts.heading, o.theme.fonts.body])], touch: vp.mobile, width: vp.width })})`)) as ProbeResult;
     const dir = join(STUDIO, o.boardId);
     mkdirSync(dir, { recursive: true });
     const height = Math.min(Math.max(probe.height, vp.height), 14_000);
@@ -98,11 +100,13 @@ export async function renderScreen(o: {
     writeFileSync(thumb, await thumbnail(ctx, jpg, o.viewport === "desktop" ? 900 : 480));
 
     let dna: Dna | undefined;
+    let tells: Tells | undefined;
     if (o.measure) {
       const raw = (await page.evaluate(EXTRACT)) as RawPage;
       if (raw.sections.length) dna = buildDna(raw);
+      tells = (await page.evaluate(`(${TELLS})({})`).catch(() => undefined)) as Tells | undefined;
     }
-    return { shot, thumb, height, probe, dna, ms: Date.now() - t0 };
+    return { shot, thumb, height, probe, dna, tells, ms: Date.now() - t0 };
   } finally {
     await ctx.close().catch(() => {});
   }

@@ -79,10 +79,11 @@ export function mix(a: string, b: string, t: number): string {
 const cr = (a: string, b: string) => contrastRatio(rgbOf(a), rgbOf(b));
 
 /** Un gris de texto secundario que pasa AA sobre el fondo: lo más suave posible sin bajar de 4.6:1. */
-export function deriveMuted(fg: string, bg: string): string {
+export function deriveMuted(fg: string, bg: string, also: string[] = []): string {
+  // pasa AA sobre el fondo Y sobre las superficies donde también se usa
   for (let t = 0.45; t <= 1.001; t += 0.05) {
     const m = mix(fg, bg, t);
-    if (cr(m, bg) >= 4.6) return m;
+    if ([bg, ...also].every((b) => cr(m, b) >= 4.6)) return m;
   }
   return fg;
 }
@@ -100,15 +101,27 @@ export function ensureLegible(t: BoardTheme): BoardTheme {
     notes.push(`foreground ${c.foreground} no se lee sobre ${c.background} (${cr(c.foreground, c.background).toFixed(2)}:1) → ${fixed}`);
     c.foreground = fixed;
   }
-  if (!c.muted || cr(c.muted, c.background) < 4.5) {
-    const fixed = deriveMuted(c.foreground, c.background);
-    notes.push(c.muted ? `muted ${c.muted} no se lee sobre el fondo (${cr(c.muted, c.background).toFixed(2)}:1) → ${fixed}` : `sin muted medido → ${fixed}`);
-    c.muted = fixed;
-  }
   if (!c.surface || cr(c.surface, c.background) > 1.6) {
     const fixed = mix(c.foreground, c.background, t.scheme === "dark" ? 0.07 : 0.04);
     notes.push(c.surface ? `surface ${c.surface} está muy lejos del fondo (${cr(c.surface, c.background).toFixed(2)}:1) → ${fixed}` : `sin surface medida → ${fixed}`);
     c.surface = fixed;
+  }
+  // el secundario tiene que leerse (AA) Y distinguirse del principal: si da casi el mismo
+  // contraste que el texto, en la práctica no hay jerarquía
+  const sameAsText = c.muted && cr(c.foreground, c.background) / cr(c.muted, c.background) < 1.25;
+  const onSurface = c.muted && c.surface ? cr(c.muted, c.surface) : 99;
+  if (!c.muted || cr(c.muted, c.background) < 4.5 || onSurface < 4.5 || sameAsText) {
+    const fixed = deriveMuted(c.foreground, c.background, c.surface ? [c.surface] : []);
+    notes.push(
+      !c.muted
+        ? `sin muted medido → ${fixed}`
+        : sameAsText
+          ? `muted ${c.muted} es casi el mismo color del texto (${cr(c.muted, c.background).toFixed(1)}:1 contra ${cr(c.foreground, c.background).toFixed(1)}:1): no hay jerarquía → ${fixed}`
+          : onSurface < 4.5 && cr(c.muted, c.background) >= 4.5
+            ? `muted ${c.muted} no se lee sobre surface (${onSurface.toFixed(2)}:1) → ${fixed}`
+            : `muted ${c.muted} no se lee sobre el fondo (${cr(c.muted, c.background).toFixed(2)}:1) → ${fixed}`,
+    );
+    c.muted = fixed;
   }
   if (!c.border || cr(c.border, c.background) > 2.2 || cr(c.border, c.background) < 1.08) {
     const fixed = mix(c.foreground, c.background, t.scheme === "dark" ? 0.16 : 0.12);
