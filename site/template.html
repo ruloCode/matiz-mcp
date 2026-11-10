@@ -317,7 +317,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
       <a href="#preguntas">Preguntas</a>
     </nav>
     <div class="right">
-      <a class="gh" href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a class="gh" href="https://www.npmjs.com/package/matiz-mcp" target="_blank" rel="noopener">npm</a>
       <a class="btn btn-ink" href="#instalar">Conectar MCP</a>
     </div>
   </div>
@@ -489,7 +489,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
   <div class="wrap">
     <span>Matiz · MIT · hecho por <a href="https://github.com/ruloCode" target="_blank" rel="noopener">RuloCode</a></span>
     <span id="foot-stats" style="font-variant-numeric:tabular-nums"></span>
-    <a href="https://github.com/ruloCode/matiz-mcp" target="_blank" rel="noopener">github.com/ruloCode/matiz-mcp</a>
+    <a href="https://www.npmjs.com/package/matiz-mcp" target="_blank" rel="noopener">npmjs.com/package/matiz-mcp</a>
   </div>
 </footer>
 
@@ -497,7 +497,7 @@ footer.site .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify
 (() => {
   // Datos reales del corpus, inyectados por `pnpm build:site`.
   const D = /*__MATIZ_DATA__*/null || { spectrum: [], demo: [], brands: 0, pages: 0, mobile: 0, sections: 0 };
-  const PKG = "github:ruloCode/matiz-mcp";
+  const PKG = "matiz-mcp";
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const fmt = (n) => Number(n || 0).toLocaleString("es-CO");
